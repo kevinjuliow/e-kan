@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -18,12 +17,12 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "pembeli")
-public class PembeliModel implements UserDetails {
+@Table(name = "penjual")
+public class PenjualModel implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(unique = true)
-    private UUID id_pembeli;
+    private UUID id_penjual;
 
     @Column(nullable = false)
     private String nama ;

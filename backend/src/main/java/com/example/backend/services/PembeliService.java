@@ -18,8 +18,6 @@ public class PembeliService {
     @Autowired
     private PembeliRepo repo ;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder ;
 
    public List<PembeliModel> get () {
        return repo.findAll();
@@ -30,7 +28,32 @@ public class PembeliService {
               .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
    }
 
-   public void store (PembeliModel models) {
-    passwordEncoder.encode(models.getPassword());
+   public PembeliModel update (PembeliModel body) {
+       try {
+           PembeliModel existingPembeli = getbyid(body.getId_pembeli());
+
+           if (body.getNama() != null && !body.getNama().equals(existingPembeli.getNama())) {
+               existingPembeli.setNama(body.getNama());
+           }
+           if (body.getEmail() != null && !body.getEmail().equals(existingPembeli.getEmail())) {
+               existingPembeli.setEmail(body.getEmail());
+           }
+           if (body.getPassword() != null && !body.getPassword().equals(existingPembeli.getPassword())) {
+               existingPembeli.setPassword(body.getPassword());
+           }
+           if (body.getTanggal_lahir() != null && !body.getTanggal_lahir().equals(existingPembeli.getTanggal_lahir())) {
+               existingPembeli.setTanggal_lahir(body.getTanggal_lahir());
+           }
+           if (body.getNo_telp() != null && !body.getNo_telp().equals(existingPembeli.getNo_telp())) {
+               existingPembeli.setNo_telp(body.getNo_telp());
+           }
+           return repo.save(existingPembeli);
+       } catch (ResponseStatusException e) {
+           throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+       } catch (Exception e) {
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to update pembeli", e);
+       }
    }
+
+
 }
