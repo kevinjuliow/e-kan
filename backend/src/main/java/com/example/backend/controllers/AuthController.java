@@ -9,6 +9,7 @@ import com.example.backend.models.PembeliModel;
 import com.example.backend.models.PenjualModel;
 import com.example.backend.services.AuthService;
 import com.example.backend.services.JwtService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/pembeli/signup")
-    public ResponseEntity<ApiResponse<PembeliModel>> registerPembeli (@RequestBody RegisterPembeliDto registerPembeliDto ){
+    public ResponseEntity<ApiResponse<PembeliModel>> registerPembeli (@Valid @RequestBody RegisterPembeliDto registerPembeliDto ){
         PembeliModel registeredPembeli = authService.signupPembeli(registerPembeliDto);
         ApiResponse<PembeliModel> response = new ApiResponse<>(
                 HttpStatus.CREATED.value() ,
@@ -50,7 +51,7 @@ public class AuthController {
         return ResponseEntity.ok(loginResponse);
     }
     @PostMapping("/penjual/signup")
-    public ResponseEntity<ApiResponse<PenjualModel>> registerPenjual (@RequestBody RegisterPenjualDto registerPenjualDto ){
+    public ResponseEntity<ApiResponse<PenjualModel>> registerPenjual (@Valid @RequestBody RegisterPenjualDto registerPenjualDto ){
         PenjualModel registerPenjual = authService.signupPenjual(registerPenjualDto);
         ApiResponse<PenjualModel> response = new ApiResponse<>(
                 HttpStatus.CREATED.value() ,

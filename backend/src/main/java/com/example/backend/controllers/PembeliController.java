@@ -39,7 +39,7 @@ public class PembeliController {
             );
             return ResponseEntity.ok(response);
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @PutMapping("/profile")

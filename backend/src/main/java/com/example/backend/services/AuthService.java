@@ -87,9 +87,7 @@ public class AuthService {
                         input.getPassword()
                 )
         );
-
         return penjualRepo.findByEmail(input.getEmail())
                 .orElseThrow();
     }
-
 }

@@ -33,7 +33,7 @@ public class SecurityConfiguration {
         http.csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/auth/**" , "/api/pembeli")
+                .requestMatchers("/api/auth/**" , "/api/pembeli" , "/api/penjual" , "/api/penjual/{id}")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -43,7 +43,6 @@ public class SecurityConfiguration {
                 .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
