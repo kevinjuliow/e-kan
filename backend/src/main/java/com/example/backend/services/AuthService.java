@@ -2,7 +2,9 @@ package com.example.backend.services;
 
 import com.example.backend.dtos.LoginDto;
 import com.example.backend.dtos.pembeliDtos.RegisterPembeliDto;
+import com.example.backend.dtos.penjualDtos.RegisterPenjualDto;
 import com.example.backend.models.PembeliModel;
+import com.example.backend.models.PenjualModel;
 import com.example.backend.repositories.PembeliRepo;
 import com.example.backend.repositories.PenjualRepo;
 import lombok.AllArgsConstructor;
@@ -59,22 +61,26 @@ public class AuthService {
 
 
     //Penjual Auth
-    public PembeliModel signupPenjual(RegisterPembeliDto input) {
-        PembeliModel pembeli = new PembeliModel();
-        pembeli.setNama(input.getNama());
-        pembeli.setEmail(input.getEmail());
-        pembeli.setPassword(passwordEncoder.encode(input.getPassword()));
+    public PenjualModel signupPenjual(RegisterPenjualDto input) {
+        PenjualModel penjual = new PenjualModel();
+        penjual.setNama(input.getNama());
+        penjual.setEmail(input.getEmail());
+        penjual.setPassword(passwordEncoder.encode(input.getPassword()));
+
         if (input.getNo_telp() != null && !input.getNo_telp().trim().isEmpty()) {
-            pembeli.setNo_telp(input.getNo_telp().trim());
+            penjual.setNo_telp(input.getNo_telp().trim());
         }
-        if (input.getTanggal_lahir() != null) {
-            pembeli.setTanggal_lahir(input.getTanggal_lahir());
+        if (input.getAlamat() != null) {
+            penjual.setAlamat(input.getAlamat());
+        }
+        if (input.getWebsite() != null) {
+            penjual.setWebsite(input.getWebsite());
         }
 
-        return pembeliRepo.save(pembeli);
+        return penjualRepo.save(penjual);
     }
 
-    public PembeliModel loginPenjual(LoginDto input) {
+    public PenjualModel loginPenjual(LoginDto input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail() ,
@@ -82,7 +88,7 @@ public class AuthService {
                 )
         );
 
-        return pembeliRepo.findByEmail(input.getEmail())
+        return penjualRepo.findByEmail(input.getEmail())
                 .orElseThrow();
     }
 
