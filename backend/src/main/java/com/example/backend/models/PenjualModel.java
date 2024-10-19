@@ -1,5 +1,6 @@
 package com.example.backend.models;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -35,10 +36,12 @@ public class PenjualModel implements UserDetails {
     @Size(min = 6)
     private String password ;
 
-    private Date tanggal_lahir ;
-
     @Size(min = 9 , max = 13)
     private String no_telp ;
+
+    private String website ;
+
+    private String alamat ;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")

@@ -1,10 +1,10 @@
 package com.example.backend.controllers;
 
-import com.example.backend.dtos.LoginPembeliDto;
+import com.example.backend.dtos.LoginDto;
 import com.example.backend.dtos.LoginResponse;
-import com.example.backend.dtos.RegisterPembeliDto;
+import com.example.backend.dtos.pembeliDtos.RegisterPembeliDto;
 import com.example.backend.models.PembeliModel;
-import com.example.backend.services.AuthPembeliService;
+import com.example.backend.services.AuthService;
 import com.example.backend.services.JwtService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +21,18 @@ public class AuthController {
     @Autowired
     private JwtService jwtService ;
     @Autowired
-    private AuthPembeliService authPembeliService ;
+    private AuthService authPembeliService ;
 
     @PostMapping("/signup")
     public ResponseEntity<PembeliModel> register (@RequestBody RegisterPembeliDto registerPembeliDto ){
-        PembeliModel registeredPembeli = authPembeliService.signup(registerPembeliDto);
+        PembeliModel registeredPembeli = authPembeliService.signupPembeli(registerPembeliDto);
 
         return ResponseEntity.ok(registeredPembeli);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login (@RequestBody LoginPembeliDto loginPembeliDto) {
-        PembeliModel authenticatedPembeli = authPembeliService.login(loginPembeliDto);
+    public ResponseEntity<LoginResponse> login (@RequestBody LoginDto loginPembeliDto) {
+        PembeliModel authenticatedPembeli = authPembeliService.loginPembeli(loginPembeliDto);
 
         String jwtToken = jwtService.generateToken(authenticatedPembeli);
 

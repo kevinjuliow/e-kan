@@ -1,4 +1,4 @@
-package com.example.backend.dtos;
+package com.example.backend.dtos.pembeliDtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

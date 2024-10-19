@@ -1,4 +1,4 @@
-package com.example.backend.dtos;
+package com.example.backend.dtos.pembeliDtos;
 
 import lombok.Data;
 
@@ -12,5 +12,4 @@ public class RegisterPembeliDto {
     private String nama ;
     private String no_telp;
     private Date tanggal_lahir;
-
 }

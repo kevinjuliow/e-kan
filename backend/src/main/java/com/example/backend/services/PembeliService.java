@@ -1,16 +1,14 @@
 package com.example.backend.services;
 
+import com.example.backend.dtos.pembeliDtos.RegisterPembeliDto;
 import com.example.backend.models.PembeliModel;
 import com.example.backend.repositories.PembeliRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.text.html.Option;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,14 +21,11 @@ public class PembeliService {
        return repo.findAll();
    }
 
-   public PembeliModel getbyid (UUID id){
-      return repo.findById(id)
-              .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
-   }
+   public PembeliModel update (RegisterPembeliDto body , UUID id ) {
 
-   public PembeliModel update (PembeliModel body) {
-       try {
-           PembeliModel existingPembeli = getbyid(body.getId_pembeli());
+           PembeliModel existingPembeli = repo.findById(id).orElseThrow(
+                   ()-> new ResponseStatusException(HttpStatus.NOT_FOUND , "Pembeli Not FOund")
+           );
 
            if (body.getNama() != null && !body.getNama().equals(existingPembeli.getNama())) {
                existingPembeli.setNama(body.getNama());
@@ -47,9 +42,8 @@ public class PembeliService {
            if (body.getNo_telp() != null && !body.getNo_telp().equals(existingPembeli.getNo_telp())) {
                existingPembeli.setNo_telp(body.getNo_telp());
            }
+       try {
            return repo.save(existingPembeli);
-       } catch (ResponseStatusException e) {
-           throw new ResponseStatusException(HttpStatus.NOT_FOUND);
        } catch (Exception e) {
            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to update pembeli", e);
        }
