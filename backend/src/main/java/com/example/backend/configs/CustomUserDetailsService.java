@@ -19,18 +19,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private PenjualRepo penjualRepo ;
 
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<PembeliModel> pembeli = pembeliRepo.findByEmail(email);
-        if (pembeli.isPresent()) {
-            return pembeli.get();
-        }
-
         Optional<PenjualModel> penjual = penjualRepo.findByEmail(email);
         if (penjual.isPresent()) {
             return penjual.get();
         }
-
+        Optional<PembeliModel> pembeli = pembeliRepo.findByEmail(email);
+        if (pembeli.isPresent()) {
+            return pembeli.get();
+        }
         throw new UsernameNotFoundException("User not found with email: " + email);
     }
 }

@@ -12,6 +12,7 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,14 +49,16 @@ public class AuthService {
     }
 
     public PembeliModel loginPembeli(LoginDto input) {
-        authenticationManager.authenticate(
+       Authentication authentication =  authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail() ,
                         input.getPassword()
                 )
         );
 
-        return pembeliRepo.findByEmail(input.getEmail())
+       PembeliModel models = ((PembeliModel) authentication.getPrincipal());
+
+        return pembeliRepo.findByEmail(models.getEmail())
                 .orElseThrow();
     }
 
@@ -81,13 +84,14 @@ public class AuthService {
     }
 
     public PenjualModel loginPenjual(LoginDto input) {
-        authenticationManager.authenticate(
+        Authentication authentication =  authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail() ,
                         input.getPassword()
                 )
         );
-        return penjualRepo.findByEmail(input.getEmail())
-                .orElseThrow();
+        PenjualModel models = ((PenjualModel) authentication.getPrincipal());
+        return penjualRepo.findByEmail(models.getEmail())
+                .orElseThrow(() -> new RuntimeException("Penjual not found"));
     }
 }
