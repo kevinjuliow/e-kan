@@ -1,6 +1,7 @@
 package com.example.backend.Exceptions;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.AccountStatusException;
@@ -16,7 +17,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleSecurityException(Exception exception) {
         ProblemDetail errorDetail = null ;
-        // TODO send this stack trace to an observability tool
         exception.printStackTrace();
 
         if (exception instanceof BadCredentialsException) {

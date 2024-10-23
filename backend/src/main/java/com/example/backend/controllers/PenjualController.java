@@ -3,26 +3,29 @@ package com.example.backend.controllers;
 import com.example.backend.dtos.ApiResponse;
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import com.example.backend.dtos.penjualDtos.PenjualDto;
+import com.example.backend.dtos.penjualDtos.RegisterPenjualDto;
+import com.example.backend.models.PembeliModel;
 import com.example.backend.models.PenjualModel;
 import com.example.backend.services.PenjualService;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("penjual")
+@AllArgsConstructor
 public class PenjualController {
 
-    @Autowired
-    private PenjualService penjualService ;
+
+    private final PenjualService penjualService ;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<PenjualDto>>> listPenjual () {
@@ -54,8 +57,7 @@ public class PenjualController {
     public ResponseEntity<ApiResponse<PenjualDto>> getProfilePenjual () {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication.getPrincipal() instanceof PenjualModel) {
-            PenjualModel penjual = ((PenjualModel) authentication.getPrincipal());
+        if (authentication.getPrincipal() instanceof PenjualModel penjual) {
             PenjualDto penjualDto = new PenjualDto(
                     penjual.getId_penjual() , penjual.getNama() , penjual.getEmail() , penjual.getWebsite(),
                     penjual.getAlamat() , penjual.getNo_telp() , penjual.getCreatedAt() , penjual.getUpdatedAt()
@@ -69,5 +71,31 @@ public class PenjualController {
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<ApiResponse<PenjualDto>> updatePenjual (@RequestBody @Valid RegisterPenjualDto input) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication() ;
+
+        if (authentication.getPrincipal() instanceof PenjualModel) {
+            PenjualModel penjual = (PenjualModel) authentication.getPrincipal();
+            PenjualModel currentPenjual = penjualService.update(input , penjual.getId_penjual());
+            PenjualDto penjualDto = new PenjualDto(currentPenjual.getId_penjual() ,
+                    currentPenjual.getNama() , currentPenjual.getEmail() , currentPenjual.getWebsite() ,currentPenjual.getAlamat() ,  currentPenjual.getNo_telp()
+                    , currentPenjual.getCreatedAt() , currentPenjual.getUpdatedAt());
+            ApiResponse<PenjualDto> response = new ApiResponse<>(
+                    HttpStatus.OK.value() ,
+                    "Profile updated Successfully" ,
+                    penjualDto
+            );
+            return ResponseEntity.ok(response);
+        }
+
+        ApiResponse<PenjualDto> respError = new ApiResponse<>(
+                HttpStatus.BAD_REQUEST.value() ,
+                "BAD REQUEST" ,
+                null
+        );
+                return ResponseEntity.badRequest().body(respError) ;
     }
 }

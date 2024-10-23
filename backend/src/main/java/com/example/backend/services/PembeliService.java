@@ -26,12 +26,11 @@ public class PembeliService {
            PembeliModel existingPembeli = repo.findById(id).orElseThrow(
                    ()-> new ResponseStatusException(HttpStatus.NOT_FOUND , "Pembeli Not FOund")
            );
-
+           if(body.getEmail() != null) {
+               throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "Email Cannot be change");
+           }
            if (body.getNama() != null && !body.getNama().equals(existingPembeli.getNama())) {
                existingPembeli.setNama(body.getNama());
-           }
-           if (body.getEmail() != null && !body.getEmail().equals(existingPembeli.getEmail())) {
-               existingPembeli.setEmail(body.getEmail());
            }
            if (body.getPassword() != null && !body.getPassword().equals(existingPembeli.getPassword())) {
                existingPembeli.setPassword(body.getPassword());

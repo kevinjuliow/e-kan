@@ -4,6 +4,7 @@ import com.example.backend.models.PembeliModel;
 import com.example.backend.models.PenjualModel;
 import com.example.backend.repositories.PembeliRepo;
 import com.example.backend.repositories.PenjualRepo;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,11 +14,12 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-    @Autowired
-    private PembeliRepo pembeliRepo ;
-    @Autowired
-    private PenjualRepo penjualRepo ;
+
+    private final PembeliRepo pembeliRepo ;
+
+    private final PenjualRepo penjualRepo ;
 
 
     @Override
