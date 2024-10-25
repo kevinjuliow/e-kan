@@ -2,6 +2,7 @@ package com.example.backend.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -35,7 +36,9 @@ public class SecurityConfiguration {
         http.csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/auth/**" , "/api/pembeli" , "/api/penjual" , "/api/penjual/{id}")
+                .requestMatchers("/api/auth/**" , "/api/pembeli" , "/api/penjual" , "/api/penjual/{id}" )
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/item")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
