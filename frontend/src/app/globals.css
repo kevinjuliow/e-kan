@@ -7,7 +7,18 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
+* {
+  margin: 0;
+  padding: 0; 
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+@media (prefers-color-scheme: light) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
@@ -25,3 +36,68 @@ body {
     text-wrap: balance;
   }
 }
+
+.custom-hover-button {
+  /* box-shadow: 3px 3px rgba(255, 255, 255, .75); */
+  transition: .3s;
+}
+
+.custom-hover-button:hover {
+  box-shadow: 3px 3px rgba(0, 0, 0, .75);
+  transform: translate(-2px, -2px);
+}
+
+/* .custom-hover-button {
+  box-shadow: 3px 3px rgba(255, 255, 255, .75);
+  transition: .3s;
+}
+
+.custom-hover-button:hover {
+  transform: translate(2px, 2px);
+} */
+
+.custom-landing-button {
+  box-shadow: 6px 6px rgba(0, 117, 117, .8);
+  transition: .3s;
+}
+
+.custom-landing-button:hover {
+  box-shadow: none;
+  transform: translate(6px, 6px);
+}
+
+.custom-categories-image-style {
+  transition: .3s;
+}
+
+.custom-categories-image-style:hover {
+  box-shadow: 4px 4px rgba(0, 0, 0, .5);
+  transform: translate(-4px, -4px);
+}
+
+.bg-wave {
+  background-image: url('/wave-bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 320px;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+.bgmain-wave {
+  background-image: url('/mainwave-bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  /* position: absolute; */
+  top: 0;
+  width: 100%;
+  height: 840px;
+  z-index: -1;
+  opacity: 1;
+}
+
