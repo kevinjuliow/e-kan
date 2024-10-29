@@ -7,7 +7,10 @@ import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -22,7 +25,8 @@ import java.util.UUID;
 public class PembeliModel implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(unique = true)
+    @JdbcTypeCode(SqlTypes.BINARY)
+    @Column(unique = true , columnDefinition = "BINARY(16)")
     private UUID id_pembeli;
 
     @Column(nullable = false)

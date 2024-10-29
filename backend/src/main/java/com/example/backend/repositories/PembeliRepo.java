@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface PembeliRepo extends JpaRepository<PembeliModel , UUID> {
     Optional<PembeliModel> findByEmail(String email);
+    Optional<PembeliModel> findByNama(String nama);
 }

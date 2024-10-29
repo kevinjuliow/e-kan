@@ -2,7 +2,7 @@ package com.example.backend.controllers;
 
 import com.example.backend.dtos.ApiResponse;
 import com.example.backend.dtos.itemDtos.ItemDto;
-import com.example.backend.dtos.itemDtos.ItemMapper;
+import com.example.backend.dtos.DtoMapper;
 import com.example.backend.models.ItemModel;
 import com.example.backend.models.PenjualModel;
 import com.example.backend.services.ItemService;
@@ -22,14 +22,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/item")
 public class ItemController {
     private final ItemService itemService;
-    private final ItemMapper itemMapper;
+    private final DtoMapper itemMapper;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<ItemDto>>> index() {
         List<ItemModel> itemList = itemService.getAllItems();
 
         List<ItemDto> itemDtoList = itemList.stream()
-                .map(itemMapper::toDto)
+                .map(itemMapper::toItemDto)
                 .collect(Collectors.toList());
 
         if (itemDtoList.isEmpty()) {
@@ -68,7 +68,7 @@ public class ItemController {
         input.setPenjual(penjual);
 
         ItemModel savedItem = itemService.saveItem(input);
-        ItemDto itemDto = itemMapper.toDto(savedItem);
+        ItemDto itemDto = itemMapper.toItemDto(savedItem);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

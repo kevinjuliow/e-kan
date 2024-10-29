@@ -1,6 +1,7 @@
 package com.example.backend.controllers;
 
 import com.example.backend.dtos.ApiResponse;
+import com.example.backend.dtos.DtoMapper;
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import com.example.backend.dtos.pembeliDtos.RegisterPembeliDto;
 import com.example.backend.models.PembeliModel;
@@ -14,14 +15,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pembeli")
 @AllArgsConstructor
 public class PembeliController {
-    @Autowired
-    private PembeliService pembeliService ;
+
+    private final PembeliService pembeliService ;
+    private final DtoMapper mapper ;
 
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<PembeliDto>> authenticatedUser() {
@@ -89,6 +92,21 @@ public class PembeliController {
                 pembeliDtos
         );
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<PembeliDto>> showPembeli(@PathVariable UUID id) {
+        try {
+            System.out.println("ID : " + id);
+            PembeliModel pembeli = pembeliService.getById(id);
+            PembeliDto pembeliDto = mapper.toPembeliDto(pembeli);
+            return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
+                    "Success Retrieve User ID " + pembeli.getId_pembeli() , (pembeliDto)));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>(HttpStatus.NOT_FOUND.value(), e.getMessage() , null ));
+        }
     }
 
 }
