@@ -18,6 +18,7 @@ public class ItemDto {
     private PenjualDto penjual ;
 
 
+
     public void setPenjualDto(PenjualModel penjualModel) {
         this.penjual = new PenjualDto(
                 penjualModel.getId_penjual(),

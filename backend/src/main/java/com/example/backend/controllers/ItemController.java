@@ -59,7 +59,7 @@ public class ItemController {
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(new ApiResponse<>(
                             HttpStatus.UNAUTHORIZED.value(),
-                            "Only sellers can create items",
+                            "Unauthorized",
                             null
                     ));
         }
