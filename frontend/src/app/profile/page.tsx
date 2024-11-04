@@ -1,8 +1,12 @@
 import React from 'react'
+import Link from 'next/link'
 
 const Profile = () => {
   return (
-    <div>this is profile page</div>
+    <div className="w-full flex flex-col items-center justify-center mt-24"> 
+      <p>This is profile page</p>
+      <Link href={"/dashboard"}>dashboard</Link>
+    </div>
   )
 }
 
