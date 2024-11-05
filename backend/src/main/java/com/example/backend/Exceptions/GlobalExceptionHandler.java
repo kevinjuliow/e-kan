@@ -2,11 +2,9 @@ package com.example.backend.Exceptions;
 
 import com.example.backend.dtos.ApiResponse;
 import io.jsonwebtoken.ExpiredJwtException;
-import org.apache.coyote.BadRequestException;
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.AccountStatusException;
@@ -15,70 +13,24 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.nio.file.AccessDeniedException;
 import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Object>> handleAllExceptions(Exception exception) {
-        HttpStatus status;
-        String message;
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-        if (exception instanceof BadCredentialsException) {
-            status = HttpStatus.UNAUTHORIZED;
-            message = "The username or password is incorrect";
-        }
-        else if (exception instanceof AccountStatusException) {
-            status = HttpStatus.FORBIDDEN;
-            message = "The account is locked";
-        }
-        else if (exception instanceof AccessDeniedException) {
-            status = HttpStatus.FORBIDDEN;
-            message = "You are not authorized to access this resource";
-        }
-        else if (exception instanceof SignatureException) {
-            status = HttpStatus.FORBIDDEN;
-            message = "The JWT signature is invalid";
-        }
-        else if (exception instanceof ExpiredJwtException) {
-            status = HttpStatus.FORBIDDEN;
-            message = "The JWT token has expired";
-        }
-        else if (exception instanceof MethodArgumentNotValidException) {
-            status = HttpStatus.BAD_REQUEST;
-            message = "Validation failed";
-        }
-        else if (exception instanceof DataIntegrityViolationException) {
-            status = HttpStatus.CONFLICT;
-            message = "Data integrity violation occurred";
-        }
-        else if (exception instanceof HttpRequestMethodNotSupportedException) {
-            status = HttpStatus.METHOD_NOT_ALLOWED;
-            message = "Request method not supported";
-        }
-        else if (exception instanceof HttpMessageNotReadableException) {
-            status = HttpStatus.BAD_REQUEST;
-            message = "Malformed JSON request";
-        }
-        else {
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-            message = "Unknown internal server error";
-        }
 
-        ApiResponse<Object> response = new ApiResponse<>(
-                status.value(),
-                message,
-                null
-        );
-
-        return ResponseEntity.status(status).body(response);
-    }
-
+    // Handle validation errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
@@ -95,4 +47,157 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    // Handle resource not found
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        ApiResponse<Object> response = new ApiResponse<>(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    // Handle unauthorized access
+    @ExceptionHandler({UnauthorizedAccessException.class, AccessDeniedException.class})
+    public ResponseEntity<ApiResponse<Object>> handleUnauthorizedAccess(Exception ex) {
+        ApiResponse<Object> response = new ApiResponse<>(
+                HttpStatus.FORBIDDEN.value(),
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    // Handle JWT related exceptions
+    @ExceptionHandler({SignatureException.class, ExpiredJwtException.class, MalformedJwtException.class})
+    public ResponseEntity<ApiResponse<Object>> handleJwtExceptions(Exception ex) {
+        ApiResponse<Object> response = new ApiResponse<>(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Invalid or expired JWT token",
+                null
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    // Handle authentication exceptions
+    @ExceptionHandler({BadCredentialsException.class, AccountStatusException.class})
+    public ResponseEntity<ApiResponse<Object>> handleAuthenticationExceptions(Exception ex) {
+        String message = ex instanceof BadCredentialsException ?
+                "Invalid credentials" : "The account is locked";
+
+        ApiResponse<Object> response = new ApiResponse<>(
+                HttpStatus.UNAUTHORIZED.value(),
+                message,
+                null
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    // Handle data integrity violations
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Object>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        ApiResponse<Object> response = new ApiResponse<>(
+                HttpStatus.CONFLICT.value(),
+                "Data integrity violation: " + ex.getMostSpecificCause().getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    // Handle invalid data
+    @ExceptionHandler(InvalidDataException.class)
+    public ResponseEntity<ApiResponse<Object>> handleInvalidData(InvalidDataException ex) {
+        ApiResponse<Object> response = new ApiResponse<>(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    // Handle HTTP method not supported
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
+        ApiResponse<Object> response = new ApiResponse<>(
+                HttpStatus.METHOD_NOT_ALLOWED.value(),
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(response);
+    }
+
+    // Handle malformed JSON
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMalformedJSON(HttpMessageNotReadableException ex) {
+
+        ApiResponse<Object> response = new ApiResponse<>(
+                HttpStatus.BAD_REQUEST.value(),
+                "Malformed JSON request",
+                null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    //Handle UUID Not the same type
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        if (ex.getRequiredType() != null && ex.getRequiredType().equals(UUID.class)) {
+            ApiResponse<Object> response = new ApiResponse<>(
+                    HttpStatus.NOT_FOUND.value(),
+                    "Invalid UUID format",
+                    null
+            );
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        ApiResponse<Object> response = new ApiResponse<>(
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid argument type: " + ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    // Handle all other exceptions
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Object>> handleAllOtherExceptions(Exception ex) {
+        log.error("Unexpected error occurred", ex);
+        log.error("Exception type: {}", ex.getClass().getName());
+        log.error("Exception message: {}", ex.getMessage());
+
+        ApiResponse<Object> response = new ApiResponse<>(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "An unexpected error occurred",
+                null
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    // Custom exceptions as static inner classes
+    public static class ResourceNotFoundException extends RuntimeException {
+        public ResourceNotFoundException(String message) {
+            super(message);
+        }
+    }
+
+    public static class UnauthorizedAccessException extends RuntimeException {
+        public UnauthorizedAccessException(String message) {
+            super(message);
+        }
+    }
+
+    public static class ResourceAlreadyExistsException extends RuntimeException {
+        public ResourceAlreadyExistsException(String message) {
+            super(message);
+        }
+    }
+
+    public static class InvalidDataException extends RuntimeException {
+        public InvalidDataException(String message) {
+            super(message);
+        }
+    }
+
 }

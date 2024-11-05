@@ -42,6 +42,8 @@ public class SecurityConfiguration {
                 .permitAll()
                 .requestMatchers(HttpMethod.GET , "/api/pembeli/{id}")
                 .permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/item/{id}")
+                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
