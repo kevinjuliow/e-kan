@@ -24,7 +24,6 @@ public class PembeliService {
    }
 
    public PembeliModel update (RegisterPembeliDto body , UUID id ) {
-
            PembeliModel existingPembeli = repo.findById(id).orElseThrow(
                    ()-> new ResponseStatusException(HttpStatus.NOT_FOUND , "Pembeli Not FOund")
            );
@@ -43,11 +42,8 @@ public class PembeliService {
            if (body.getNo_telp() != null && !body.getNo_telp().equals(existingPembeli.getNo_telp())) {
                existingPembeli.setNo_telp(body.getNo_telp());
            }
-       try {
+
            return repo.save(existingPembeli);
-       } catch (Exception e) {
-           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to update pembeli", e);
-       }
    }
 
     public PembeliModel getById(UUID id) {
