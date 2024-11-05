@@ -96,17 +96,11 @@ public class PembeliController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<PembeliDto>> showPembeli(@PathVariable UUID id) {
-        try {
             System.out.println("ID : " + id);
             PembeliModel pembeli = pembeliService.getById(id);
             PembeliDto pembeliDto = mapper.toPembeliDto(pembeli);
             return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
                     "Success Retrieve User ID " + pembeli.getId_pembeli() , (pembeliDto)));
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(new ApiResponse<>(HttpStatus.NOT_FOUND.value(), e.getMessage() , null ));
-        }
     }
 
 }

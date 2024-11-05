@@ -21,6 +21,8 @@ public class DtoMapper {
                 model.getJenis_habitat(),
                 model.getJenis_bibit(),
                 model.getHarga(),
+                model.getStock(),
+                model.getDescription(),
                 null
         );
 

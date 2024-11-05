@@ -1,5 +1,6 @@
 package com.example.backend.services;
 
+import com.example.backend.Exceptions.GlobalExceptionHandler;
 import com.example.backend.models.ItemModel;
 import com.example.backend.repositories.ItemRepo;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,11 @@ public class ItemService {
 
     public ItemModel saveItem(ItemModel input) {
         return repo.save(input);
+    }
+
+    public ItemModel getById(UUID id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Item not found with id: " + id));
     }
 
 }

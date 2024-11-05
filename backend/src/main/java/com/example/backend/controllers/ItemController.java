@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -79,4 +80,22 @@ public class ItemController {
                 ));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<ItemDto>> showItem(@PathVariable UUID id) {
+        ItemModel item = itemService.getById(id);
+        ItemDto itemDto = itemMapper.toItemDto(item);
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(),
+                "Success Retrieve User ID " + item.getId_item(),
+                itemDto
+        ));
+    }
+
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<ApiResponse<ItemDto>> showItem(@PathVariable UUID id) {
+//
+//    }
+
 }
+
