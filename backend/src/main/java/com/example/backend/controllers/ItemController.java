@@ -86,16 +86,39 @@ public class ItemController {
         ItemDto itemDto = itemMapper.toItemDto(item);
         return ResponseEntity.ok(new ApiResponse<>(
                 HttpStatus.OK.value(),
-                "Success Retrieve User ID " + item.getId_item(),
+                "Success Retrieve Item ID " + item.getId_item(),
                 itemDto
         ));
     }
 
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<ApiResponse<ItemDto>> showItem(@PathVariable UUID id) {
-//
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<ItemDto>> showItem(@PathVariable UUID id, @RequestBody ItemModel input) {
+        // Get current authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication.getPrincipal() instanceof PenjualModel)) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>(
+                            HttpStatus.UNAUTHORIZED.value(),
+                            "Unauthorized",
+                            null
+                    ));
+        }
+
+        PenjualModel penjual = (PenjualModel) authentication.getPrincipal();
+        input.setPenjual(penjual);
+
+
+            ItemModel updatedItem = itemService.updateItem(input, id);
+            ItemDto itemDto = itemMapper.toItemDto(updatedItem);
+            return ResponseEntity.ok(new ApiResponse<>(
+                    HttpStatus.OK.value(),
+                    "Success Update Item ID " + updatedItem.getId_item(),
+                    itemDto
+            ));
+
+    }
 
 }
 
