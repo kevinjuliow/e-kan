@@ -20,7 +20,7 @@ public class ItemDto {
     private String jenis_bibit ;
     @NotNull
     private Double harga ;
-    @NotNull
+
     private int stock ;
 
     private String description ;

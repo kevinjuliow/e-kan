@@ -32,7 +32,6 @@ public class ItemModel {
     @NotNull
     private Double harga ;
 
-    @NotNull
     private int stock = 0;
 
     @Column(columnDefinition = "LONGTEXT")
