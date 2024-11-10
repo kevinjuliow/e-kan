@@ -32,7 +32,7 @@ const About = () => {
         </div>
 
         <p className="mt-10 text-xl text-darkaqua text-center">Didukung oleh:</p>
-        <Image src={"/Coat_of_arms_of_Yogyakarta.png"} alt="Provinsi DIY" width={100} height={100} />
+        <Image src={"/Coat_of_arms_of_Yogyakarta.png"} alt="Provinsi DIY" width={100} height={100} className="w-auto" />
         <div className="mt-2 font-bold flex flex-col items-center justify-center">
           <p className="text-center">BPTPB (Balai Pengembangan Teknologi Perikanan Budidaya)</p>
           <p className="text-center">Daerah Istimewa Yogyakarta</p>
