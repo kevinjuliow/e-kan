@@ -5,6 +5,7 @@ import "./globals.css";
 import { Provider } from "./providers";
 import Navbar from "./components/Navbar/Navbar";
 import { UserProvider } from "./userprovider";
+import MobileNavbar from "./components/mobile/MobileNavbar";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -38,6 +39,7 @@ export default function RootLayout({
             <main className="flex flex-wrap flex-col items-center justify-between mx-auto w-full">
               {children}
             </main>
+            <MobileNavbar />
           </body>
         </UserProvider>
       </Provider>
