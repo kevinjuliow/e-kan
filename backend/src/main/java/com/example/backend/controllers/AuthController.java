@@ -61,14 +61,18 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @PostMapping("/penjual/login")
-    public ResponseEntity<LoginResponse> loginPenjual (@RequestBody LoginDto loginInput) {
+    public ResponseEntity<ApiResponse<LoginResponse>> loginPenjual (@RequestBody LoginDto loginInput) {
         PenjualModel authenticatedPembeli = authService.loginPenjual(loginInput);
         String jwtToken = jwtService.generateToken(authenticatedPembeli);
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
 
-        return ResponseEntity.ok(loginResponse);
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(),
+                "Success" ,
+                loginResponse
+        ));
     }
 
 }
