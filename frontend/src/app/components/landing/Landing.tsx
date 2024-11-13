@@ -21,7 +21,7 @@ const Landing = () => {
   }, []);
   
   return (
-    <div className="w-full flex items-center justify-center mt-24 h-[600px]">
+    <div className="w-full flex items-center justify-center mt-24 h-[600px] landing-page">
       <div className={`bgmain-wave ${absolute ? 'absolute' : 'fixed'}`}></div>
       <div className="max-w-screen-xl w-full h-full p-8 lg:px-0 flex flex-col items-center justify-center">
         <h1 className="text-2xl md:text-5xl lg:text-6xl font-black text-white">Masa Depan Budidaya Ikan</h1>

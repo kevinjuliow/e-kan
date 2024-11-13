@@ -3,7 +3,7 @@ import React from 'react'
 
 const About = () => {
   return (
-    <div className="w-full flex items-center justify-center mt-24 h-[600px] mb-12">
+    <div className="w-full flex items-center justify-center mt-24 h-[600px] mb-12 about-page">
       <div className="max-w-screen-xl w-full h-full p-8 lg:px-0 flex flex-col items-center justify-center">
         <h1 className="text-3xl font-black text-center">Tentang Kami</h1>
         <p className="mt-2 text-xl text-darkaqua text-center">Mari berkenalan dengan kami, e-KAN</p>
