@@ -2,10 +2,10 @@ package com.example.backend.dtos;
 
 import com.example.backend.dtos.alamatDtos.AlamatPembeliDto;
 import com.example.backend.dtos.itemDtos.ItemDto;
+import com.example.backend.dtos.mediaSosialDtos.MediaSosialDto;
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
-import com.example.backend.models.AlamatPembeliModel;
-import com.example.backend.models.ItemModel;
-import com.example.backend.models.PembeliModel;
+import com.example.backend.dtos.penjualDtos.PenjualDto;
+import com.example.backend.models.*;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -60,5 +60,36 @@ public class DtoMapper {
                     toPembeliDto(model.getPembeli())
             );
             return dto;
+    }
+
+    public PenjualDto toPenjualDto(PenjualModel model) {
+        if (model == null) {
+            return null;
+        }
+        PenjualDto dto = new PenjualDto(
+                model.getId_penjual(),
+                model.getNama(),
+                model.getEmail(),
+                model.getWebsite(),
+                model.getAlamat(),
+                model.getNo_telp() ,
+                model.getCreatedAt() ,
+                model.getUpdatedAt()
+        );
+        return dto;
+    }
+
+    public MediaSosialDto toMediaSosialDto (MediaSosialModel model) {
+        if (model == null) {
+            return null;
+        }
+        MediaSosialDto dto = MediaSosialDto.builder()
+                .id_media_sosial(model.getId_media_sosial())
+                .platform(model.getPlatform())
+                .url(model.getUrl())
+                .nama_akun(model.getNama_akun())
+                .penjual(toPenjualDto(model.getPenjual())).build();
+
+        return dto ;
     }
 }
