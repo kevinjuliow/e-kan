@@ -1,5 +1,6 @@
 "use client"
 
+import BackButton from 'app/components/button/BackButton'
 import { Item } from 'app/interfaces/Item/types'
 import axios from 'axios'
 import Image from 'next/image'
@@ -52,11 +53,12 @@ const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
     <div className="mt-24">
       <div className="w-full flex items-center justify-center mt-24">
       <div className={`bgdetailitem-wave`}></div>
-        <div className="max-w-screen-xl w-full h-full p-8 lg:px-0 flex flex-col items-center justify-center">
+        <div className="max-w-screen-xl w-full h-full relative p-8 lg:px-0 flex flex-col items-center justify-center">
+          <BackButton />
           <div className="flex flex-col lg:flex-row items-start justify-center mb-10">
             <div className="grid grid-rows-[auto,auto] grid-cols-4 gap-3 items-center justify-center w-full max-w-[400px] md:max-w-full lg:max-w-[400px]">
               <div className="col-span-4">
-                <h1 className="lg:hidden font-black tracking-wide text-3xl mb-4">{itemData?.nama}</h1>
+                <h1 className="lg:hidden font-black tracking-wide text-4xl mb-4">{itemData?.nama}</h1>
                 <Image src={'/pexels-crisdip-35358-128756.jpg'} alt={`gambar-${itemData?.nama}`} height={400} width={400} className="w-full" />
               </div>
               <Image src={'/pexels-crisdip-35358-128756.jpg'} alt={`gambar-${itemData?.nama}`} height={90} width={90} />
@@ -65,7 +67,7 @@ const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
               <Image src={'/pexels-crisdip-35358-128756.jpg'} alt={`gambar-${itemData?.nama}`} height={90} width={90} />
             </div>
             <div className="ms-0 lg:ms-10 mt-8 lg:mt-0">
-              <h1 className="hidden lg:block font-black tracking-wide text-3xl mb-4">{itemData?.nama}</h1>
+              <h1 className="hidden lg:block font-black tracking-wide text-4xl mb-4">{itemData?.nama}</h1>
               <p className="max-w-screen-sm text-gray-600 leading-5">{itemData?.description?.slice(0, 400)}{(itemData?.description?.length || 0) > 400 ? '...' : ''}</p>
               <p className="relative mt-10 lg:mt-6">
                 <span className="text-darkaqua text-base font-bold relative top-[-16px]">Rp</span>
