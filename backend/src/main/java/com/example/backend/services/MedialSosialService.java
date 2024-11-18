@@ -1,5 +1,6 @@
 package com.example.backend.services;
 
+import com.example.backend.Exceptions.GlobalExceptionHandler;
 import com.example.backend.models.MediaSosialModel;
 import com.example.backend.models.PenjualModel;
 import com.example.backend.repositories.MediaSosialRepo;
@@ -16,10 +17,14 @@ public class MedialSosialService {
     private MediaSosialRepo repo ;
 
     public List<MediaSosialModel> getAll (PenjualModel id) {
-        return repo.findByPenjual(id).get();
+        return repo.findByPenjual(id).orElseThrow(
+                () -> new GlobalExceptionHandler.ResourceNotFoundException("Penjual Not Found")
+        );
     }
     public MediaSosialModel getById (UUID id) {
-        return repo.findById(id).get();
+        return repo.findById(id).orElseThrow(
+                () -> new GlobalExceptionHandler.ResourceNotFoundException("Media Social ID Not Found")
+        );
     }
 
     public MediaSosialModel saveMediaSosial(MediaSosialModel input)  {
