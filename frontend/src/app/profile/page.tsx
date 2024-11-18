@@ -1,88 +1,118 @@
-import React from 'react'
-import Link from 'next/link'
-import { Search, ShoppingCart, User } from 'lucide-react';
+"use client";
 
-const Profile = () => {
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+
+const Navbar = () => {
+  const [opened, setOpened] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const { data: session } = useSession();
+  const isLoggedIn = !!session;
+
+  const handleOpen = () => setOpened(!opened);
+  const handleLogin = () => signIn();
+  const handleLogout = () => signOut({ callbackUrl: "/", redirect: true });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 380) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <div className="w-full">
-      <nav className="bg-[#00B7B7] p-3 flex items-center justify-between">
-        <div className="flex items-center space-x-8">
-          <a href="/" className="text-white text-2xl font-bold">
-            e-KAN
-          </a>
-          <div className="flex space-x-6">
-            <a href="/" className="text-white hover:text-gray-200">
-              Home
-            </a>
-            <a href="/kategori" className="text-white hover:text-gray-200">
-              Kategori
-            </a>
-            <a href="/tentang-kami" className="text-white hover:text-gray-200">
-              Tentang Kami
-            </a>
-          </div>
+    <nav
+      className={`${
+        isScrolled ? "backdrop-blur-md bg-opacity-60" : ""
+      } w-full flex border-gray-200 h-24 items-center fixed z-50 bg-white`}
+    >
+      <div className="max-w-screen-xl w-full flex items-center justify-between mx-auto px-8 lg:px-0">
+        <Link href={"/"} className="flex items-center space-x-3 rtl:space-x-reverse">
+          <span className="self-center text-2xl font-semibold whitespace-nowrap text-black">
+            e-Kan
+          </span>
+        </Link>
+        <div className="flex space-x-6">
+          <Link href="/home" className="text-black hover:text-gray-500">Home</Link>
+          <Link href="/kategori" className="text-black hover:text-gray-500">Kategori</Link>
+          <Link href="/tentang-kami" className="text-black hover:text-gray-500">Tentang Kami</Link>
         </div>
-        
-        <div className="flex items-center space-x-6">
-          <div className="relative flex items-center">
-            <input
-              type="text"
-              placeholder="Search Item"
-              className="px-3 py-1 rounded-md w-72 bg-[#80DCDC] text-white placeholder-white text-sm focus:outline-none"
-            />
-            <Search className="absolute right-2 text-white w-4 h-4" />
-          </div>
-          <ShoppingCart className="text-white w-5 h-5 cursor-pointer" />
-          <User className="text-white w-5 h-5 cursor-pointer" />
+        <div className="flex items-center">
+          <input
+            type="text"
+            placeholder="Search Ikan"
+            className="border rounded-md px-3 py-1 mr-4"
+          />
         </div>
-      </nav>
-
-     
-      <div className="relative">
-        <div className="absolute w-full h-40 bg-[#00B7B7]">
-          <div className="absolute -bottom-1 w-full">
-            <svg
-              viewBox="0 0 1440 200"
-              className="w-full"
-              preserveAspectRatio="none"
-              height="150"
+        {!isLoggedIn ? (
+          <div className="flex">
+            <Link href="/auth/signup" className="text-black hover:text-gray-500 mr-4">
+              Sign-up
+            </Link>
+            <button
+              onClick={handleLogin}
+              className="w-20 border py-1 custom-hover-button cursor-pointer rounded-md font-bold bg-darkaqua text-white border-none"
             >
-              <path
-                fill="#ffffff"
-                d="M0,32L60,42.7C120,53,240,75,360,74.7C480,75,600,53,720,48C840,43,960,53,1080,58.7C1200,64,1320,64,1380,64L1440,64L1440,200L1380,200C1320,200,1200,200,1080,200C960,200,840,200,720,200C600,200,480,200,360,200C240,200,120,200,60,200L0,200Z"
-              ></path>
-            </svg>
+              Login
+            </button>
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center group relative">
+            <Link href="/keranjang" className="mr-4">
+              <span className="material-icons text-black">shopping_cart</span>
+            </Link>
+            <Image
+              src="/default_profile.png"
+              alt="default profile"
+              width={32}
+              height={32}
+              className="rounded-full border-2 border-darkaqua cursor-pointer"
+              onClick={handleOpen}
+            />
+            {opened && (
+              <div
+                id="userDropdown"
+                className="bg-white rounded-lg shadow w-fit absolute right-0 mt-3 top-8 transform translate-y-0 opacity-100"
+                style={{ boxShadow: "0px 2px 8px 1px rgba(0, 0, 0, .1)" }}
+              >
+                <div className="px-4 py-3 text-sm text-black">
+                  <div>John Doe</div>
+                  <div className="font-medium truncate">johndoe@gmail.com</div>
+                </div>
+                <div className="py-1 cursor-pointer">
+                  <Link
+                    href="/profile"
+                    className="block px-4 py-2 text-sm text-black hover:bg-gray-100"
+                  >
+                    Profile
+                  </Link>
+                </div>
+                <div className="py-1 cursor-pointer">
+                  <button
+                    className="block px-4 py-2 text-sm text-black hover:bg-gray-100 w-full"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
-
-      
-      <div className="mt-16 flex flex-col items-center">
-        <div className="w-28 h-28 rounded-full bg-gray-200 border-4 border-[#00B7B7] flex items-center justify-center">
-          <User className="w-14 h-14 text-gray-400" />
-        </div>
-        <h2 className="mt-3 text-lg font-medium">John Doe</h2>
-        <p className="text-gray-500 text-sm mt-1">pembeli</p>
-
-        
-        <div className="mt-8 flex w-full max-w-xl justify-center border-b border-gray-200">
-          <button className="px-8 py-2 text-white bg-[#008080] font-medium rounded-t-lg">
-            Akun Saya
-          </button>
-          <button className="px-8 py-2 text-gray-600 hover:bg-gray-50">
-            Pesanan Saya
-          </button>
-          <button className="px-8 py-2 text-gray-600 hover:bg-gray-50">
-            Riwayat Beli
-          </button>
-        </div>
-
-
-        <div className="w-full max-w-xl min-h-[400px] p-6">
-        </div>
-      </div>
-    </div>
+    </nav>
   );
 };
 
-export default Profile;
+export default Navbar;
