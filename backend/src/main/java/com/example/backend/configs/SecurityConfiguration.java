@@ -44,6 +44,8 @@ public class SecurityConfiguration {
                 .permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/item/{id}")
                 .permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/sosial/{id}")
+                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
