@@ -8,6 +8,7 @@ import com.example.backend.models.PenjualModel;
 import com.example.backend.services.ItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -28,6 +29,31 @@ public class ItemController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<ItemDto>>> index() {
         List<ItemModel> itemList = itemService.getAllItems();
+
+        List<ItemDto> itemDtoList = itemList.stream()
+                .map(itemMapper::toItemDto)
+                .collect(Collectors.toList());
+
+        if (itemDtoList.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .body(new ApiResponse<>(
+                            HttpStatus.NO_CONTENT.value(),
+                            "No items found",
+                            itemDtoList
+                    ));
+        }
+
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(),
+                "Items retrieved successfully",
+                itemDtoList
+        ));
+    }
+
+    @GetMapping("/penjual/{id}")
+    public ResponseEntity<ApiResponse<List<ItemDto>>> indexByPenjual(@PathVariable UUID id ) {
+        List<ItemModel> itemList = itemService.getAllItemsByPenjual(id);
 
         List<ItemDto> itemDtoList = itemList.stream()
                 .map(itemMapper::toItemDto)
