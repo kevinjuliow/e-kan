@@ -1,118 +1,167 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Image from "next/image";
 
-const Navbar = () => {
-  const [opened, setOpened] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  const { data: session } = useSession();
-  const isLoggedIn = !!session;
-
-  const handleOpen = () => setOpened(!opened);
-  const handleLogin = () => signIn();
-  const handleLogout = () => signOut({ callbackUrl: "/", redirect: true });
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 380) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
+const Profile = () => {
   return (
-    <nav
-      className={`${
-        isScrolled ? "backdrop-blur-md bg-opacity-60" : ""
-      } w-full flex border-gray-200 h-24 items-center fixed z-50 bg-white`}
-    >
-      <div className="max-w-screen-xl w-full flex items-center justify-between mx-auto px-8 lg:px-0">
-        <Link href={"/"} className="flex items-center space-x-3 rtl:space-x-reverse">
-          <span className="self-center text-2xl font-semibold whitespace-nowrap text-black">
-            e-Kan
-          </span>
-        </Link>
-        <div className="flex space-x-6">
-          <Link href="/home" className="text-black hover:text-gray-500">Home</Link>
-          <Link href="/kategori" className="text-black hover:text-gray-500">Kategori</Link>
-          <Link href="/tentang-kami" className="text-black hover:text-gray-500">Tentang Kami</Link>
-        </div>
-        <div className="flex items-center">
-          <input
-            type="text"
-            placeholder="Search Ikan"
-            className="border rounded-md px-3 py-1 mr-4"
+    <div className="w-full flex flex-col items-center justify-center mt-24">
+      <div className="flex flex-col md:flex-row items-start justify-center w-full px-8 md:px-24 lg:px-48">
+        {/* Gambar di sebelah kiri */}
+        <div className="flex-shrink-0 mb-6 md:mb-0 md:mr-8 mt-8">
+          <img
+            className="rounded-full w-96 h-96"
+            src="/docs/images/examples/image-4@2x.jpg"
+            alt="image description"
           />
         </div>
-        {!isLoggedIn ? (
-          <div className="flex">
-            <Link href="/auth/signup" className="text-black hover:text-gray-500 mr-4">
-              Sign-up
-            </Link>
-            <button
-              onClick={handleLogin}
-              className="w-20 border py-1 custom-hover-button cursor-pointer rounded-md font-bold bg-darkaqua text-white border-none"
-            >
-              Login
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center group relative">
-            <Link href="/keranjang" className="mr-4">
-              <span className="material-icons text-black">shopping_cart</span>
-            </Link>
-            <Image
-              src="/default_profile.png"
-              alt="default profile"
-              width={32}
-              height={32}
-              className="rounded-full border-2 border-darkaqua cursor-pointer"
-              onClick={handleOpen}
-            />
-            {opened && (
-              <div
-                id="userDropdown"
-                className="bg-white rounded-lg shadow w-fit absolute right-0 mt-3 top-8 transform translate-y-0 opacity-100"
-                style={{ boxShadow: "0px 2px 8px 1px rgba(0, 0, 0, .1)" }}
+
+        {/* Form di sebelah kanan */}
+        <form className="w-full max-w-lg">
+          <div className="grid gap-6 mb-6 md:grid-cols-2">
+            <div>
+              <label
+                htmlFor="first_name"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                <div className="px-4 py-3 text-sm text-black">
-                  <div>John Doe</div>
-                  <div className="font-medium truncate">johndoe@gmail.com</div>
-                </div>
-                <div className="py-1 cursor-pointer">
-                  <Link
-                    href="/profile"
-                    className="block px-4 py-2 text-sm text-black hover:bg-gray-100"
-                  >
-                    Profile
-                  </Link>
-                </div>
-                <div className="py-1 cursor-pointer">
-                  <button
-                    className="block px-4 py-2 text-sm text-black hover:bg-gray-100 w-full"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </button>
-                </div>
-              </div>
-            )}
+                First name
+              </label>
+              <input
+                type="text"
+                id="first_name"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Dimas"
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="last_name"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Last name
+              </label>
+              <input
+                type="text"
+                id="last_name"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Dodo"
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="username"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="username"
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="phone"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Phone number
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="123-45-678"
+                pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
+                required
+              />
+            </div>
+            
+            
           </div>
-        )}
+          <div className="mb-6">
+            <label
+              htmlFor="email"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Email address
+            </label>
+            <input
+              type="email"
+              id="email"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Dodo.Dimas@gmail.com"
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label
+              htmlFor="password"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="•••••••••"
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label
+              htmlFor="confirm_password"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Confirm password
+            </label>
+            <input
+              type="password"
+              id="confirm_password"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="•••••••••"
+              required
+            />
+          </div>
+          <div className="flex items-start mb-6">
+            <div className="flex items-center h-5">
+              <input
+                id="remember"
+                type="checkbox"
+                value=""
+                className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
+                required
+              />
+            </div>
+            <label
+              htmlFor="remember"
+              className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >
+              I agree with the{" "}
+              <a
+                href="#"
+                className="text-blue-600 hover:underline dark:text-blue-500"
+              >
+                terms and conditions
+              </a>
+              .
+            </label>
+          </div>
+          <button
+            type="submit"
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Submit
+          </button>
+        </form>
       </div>
-    </nav>
+
+      <Link href={"/dashboard"}></Link>
+    </div>
   );
 };
 
-export default Navbar;
+export default Profile;
