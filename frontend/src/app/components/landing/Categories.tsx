@@ -2,7 +2,7 @@ import React from 'react'
 
 const Categories = () => {
   return (
-    <div className="w-full flex items-center justify-center mt-24 h-[600px]">
+    <div className="w-full flex items-center justify-center mt-24 h-[600px] categories-page">
       <div className="max-w-screen-xl w-full h-full p-8 lg:px-0 flex flex-col items-center justify-center">
         <h1 className="text-3xl font-black text-center">Kategori ikan</h1>
         <p className="mt-2 text-xl text-darkaqua text-center">Kami menjual tiga jenis ikan yang dapat Anda pilih!</p>

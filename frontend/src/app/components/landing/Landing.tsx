@@ -1,5 +1,6 @@
 "use client"
 
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 
 const Landing = () => {
@@ -20,7 +21,7 @@ const Landing = () => {
   }, []);
   
   return (
-    <div className="w-full flex items-center justify-center mt-24 h-[600px]">
+    <div className="w-full flex items-center justify-center mt-24 h-[600px] landing-page">
       <div className={`bgmain-wave ${absolute ? 'absolute' : 'fixed'}`}></div>
       <div className="max-w-screen-xl w-full h-full p-8 lg:px-0 flex flex-col items-center justify-center">
         <h1 className="text-2xl md:text-5xl lg:text-6xl font-black text-white">Masa Depan Budidaya Ikan</h1>
@@ -30,9 +31,9 @@ const Landing = () => {
             <path d="M4.00028 25.4999V25.4999C86.6992 5.32132 172.285 -0.272798 256.907 8.96916L275.5 10.9998" stroke="#F6B50E" strokeWidth="8" strokeLinecap="round"/>
           </svg>
         </div>
-        <a href="/dashboard">
+        <Link href="/dashboard">
           <button className="w-60 border mt-8 py-2 px-4 cursor-pointer custom-landing-button rounded-md bg-darkaqua text-xl text-white border-none">Jelajahi Produk Sekarang</button>
-        </a>
+        </Link>
       </div>
     </div>
   )
