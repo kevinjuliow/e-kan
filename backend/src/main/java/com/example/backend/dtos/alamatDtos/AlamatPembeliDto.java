@@ -2,12 +2,14 @@ package com.example.backend.dtos.alamatDtos;
 
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class AlamatPembeliDto {
     private UUID id_alamat ;
     private String alamat_lengkap ;

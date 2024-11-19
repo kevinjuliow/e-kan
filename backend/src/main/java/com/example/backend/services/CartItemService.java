@@ -33,14 +33,14 @@ public class CartItemService {
         return repo.save(model);
     }
 
-    public CartItemModel update (CartItemModel input) {
-        CartItemModel existItem = repo.findById(input.getId_cart()).orElseThrow(
-                () -> new GlobalExceptionHandler.ResourceNotFoundException("Not Found"));
-
-
-
-
-    }
+//    public CartItemModel update (CartItemModel input)` {
+//        CartItemModel existItem = repo.findById(input.getId_cart()).orElseThrow(
+//                () -> new GlobalExceptionHandler.ResourceNotFoundException("Not Found"));
+//
+//
+//
+//
+//    }
 
 
 
