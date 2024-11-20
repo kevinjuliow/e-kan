@@ -6,6 +6,7 @@ import com.example.backend.dtos.itemDtos.ItemDto;
 import com.example.backend.dtos.mediaSosialDtos.MediaSosialDto;
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import com.example.backend.dtos.penjualDtos.PenjualDto;
+import com.example.backend.dtos.profilePictureDtos.ProfilePictureDto;
 import com.example.backend.models.*;
 import org.springframework.stereotype.Component;
 
@@ -102,6 +103,25 @@ public class DtoMapper {
                 .jumlah_item(model.getJumlah_item())
                 .pembeli(toPembeliDto(model.getPembeli()))
                 .item(toItemDto(model.getItem())).build();
+
+        return dto ;
+    }
+
+
+    public ProfilePictureDto toProfilePictureDto (ProfilePictureModel model) {
+        if (model == null) {
+            return null;
+        }
+
+        ProfilePictureDto dto = ProfilePictureDto.builder()
+                .id(model.getId())
+                .data(model.getData())
+                .fileName(model.getFileName())
+                .fileType(model.getFileType())
+                .pembeli(toPembeliDto(model.getPembeli()))
+                .createdAt(model.getCreatedAt())
+                .updatedAt(model.getUpdatedAt())
+                .build();
 
         return dto ;
     }

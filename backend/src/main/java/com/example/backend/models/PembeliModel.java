@@ -54,8 +54,8 @@ public class PembeliModel implements UserDetails {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @Nullable
-    private String profile_picture ;
+    @OneToOne(mappedBy = "pembeli", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProfilePictureModel profilePicture;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
