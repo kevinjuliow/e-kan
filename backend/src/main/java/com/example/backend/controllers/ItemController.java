@@ -93,7 +93,7 @@ public class ItemController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ItemDto>> showItem(@PathVariable UUID id, @RequestBody ItemModel input) {
+    public ResponseEntity<ApiResponse<ItemDto>> updateItem (@PathVariable UUID id, @RequestBody ItemModel input) {
         // Get current authenticated user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication.getPrincipal() instanceof PenjualModel)) {

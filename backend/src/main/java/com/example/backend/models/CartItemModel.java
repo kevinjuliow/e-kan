@@ -1,8 +1,6 @@
 package com.example.backend.models;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,25 +9,29 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
-@Table(name = "media_sosial")
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Data
-public class MediaSosialModel {
+@Table(name = "cart_item")
+public class CartItemModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(unique = true)
-    private UUID id_media_sosial ;
+    private UUID id_cart ;
 
-    @NotNull
-    private String platform;
-    @NotNull
-    private String nama_akun ;
+    @Column
+    private int jumlah_item = 1;
 
-    private String url ;
+    @Column
+    private Boolean is_checked = false ;
 
     @ManyToOne
     @JoinColumn(name = "penjual_id")
     private PenjualModel penjual ;
+
+    @ManyToOne
+    @JoinColumn(name = "pembeli_id")
+    private PembeliModel pembeli ;
+
 }

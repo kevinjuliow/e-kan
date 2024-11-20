@@ -23,7 +23,7 @@ export const AuthOptions: NextAuthOptions = {
           console.log(response.data)
 
           // Cek jika login berhasil dan menerima token
-          const { token } = response.data;
+          const { token } = response.data.data;
           if (token) {
             // Return user dengan token sebagai bagian dari objek user
             return { accessToken: token };
