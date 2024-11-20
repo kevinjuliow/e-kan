@@ -20,6 +20,12 @@ public class CartItemService {
                 .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Not Found"));
     }
 
+    public CartItemModel getById (UUID id ) {
+        return repo.findById(id).orElseThrow(
+                ()-> new GlobalExceptionHandler.ResourceNotFoundException("Cart item not found with id : " + id )
+        );
+    }
+
 
     public void delete (UUID id ) {
         try {
@@ -33,14 +39,17 @@ public class CartItemService {
         return repo.save(model);
     }
 
-//    public CartItemModel update (CartItemModel input)` {
-//        CartItemModel existItem = repo.findById(input.getId_cart()).orElseThrow(
-//                () -> new GlobalExceptionHandler.ResourceNotFoundException("Not Found"));
-//
-//
-//
-//
-//    }
+    public CartItemModel update (CartItemModel input , UUID id){
+        CartItemModel existItem = repo.findById(id).orElseThrow(
+                () -> new GlobalExceptionHandler.ResourceNotFoundException("Cart Item"));
+        if (existItem.getIs_checked() != input.getIs_checked()) {
+            existItem.setIs_checked(input.getIs_checked());
+        }
+        if (existItem.getJumlah_item() != input.getJumlah_item()) {
+            existItem.setJumlah_item(input.getJumlah_item());
+        }
+        return repo.save(existItem);
+    }
 
 
 

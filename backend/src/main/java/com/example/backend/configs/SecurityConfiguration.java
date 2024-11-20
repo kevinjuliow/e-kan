@@ -38,7 +38,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/api/pembeli", "/api/penjual", "/api/penjual/{id}")
                         .permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/item", "/api/item/{id}", "/api/pembeli/{id}", "/api/sosial/{id}" , "/api/item/penjual/{id}")
+                        .requestMatchers(HttpMethod.GET, "/api/item", "/api/item/{id}", "/api/pembeli/{id}", "/api/sosial/{id}" ,
+                                "/api/item/penjual/{id}" )
                         .permitAll()
                         .anyRequest()
                         .authenticated()

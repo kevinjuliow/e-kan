@@ -1,6 +1,7 @@
 package com.example.backend.dtos;
 
 import com.example.backend.dtos.alamatDtos.AlamatPembeliDto;
+import com.example.backend.dtos.cartItemDtos.CartItemDto;
 import com.example.backend.dtos.itemDtos.ItemDto;
 import com.example.backend.dtos.mediaSosialDtos.MediaSosialDto;
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
@@ -87,6 +88,20 @@ public class DtoMapper {
                 .url(model.getUrl())
                 .nama_akun(model.getNama_akun())
                 .penjual(toPenjualDto(model.getPenjual())).build();
+
+        return dto ;
+    }
+
+    public CartItemDto toCartItemDto(CartItemModel model) {
+        if (model == null) {
+            return null;
+        }
+        CartItemDto dto = CartItemDto.builder()
+                .id_cart(model.getId_cart())
+                .is_checked(model.getIs_checked())
+                .jumlah_item(model.getJumlah_item())
+                .pembeli(toPembeliDto(model.getPembeli()))
+                .item(toItemDto(model.getItem())).build();
 
         return dto ;
     }

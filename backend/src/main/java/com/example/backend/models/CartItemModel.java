@@ -27,8 +27,8 @@ public class CartItemModel {
     private Boolean is_checked = false ;
 
     @ManyToOne
-    @JoinColumn(name = "penjual_id")
-    private PenjualModel penjual ;
+    @JoinColumn(name = "item_id")
+    private ItemModel item ;
 
     @ManyToOne
     @JoinColumn(name = "pembeli_id")
