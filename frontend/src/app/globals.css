@@ -101,3 +101,36 @@ body {
   opacity: 1;
 }
 
+.bgdashboard-wave {
+  background-image: url('/dashboardwave-bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 280px;
+  z-index: -1;
+  opacity: 1;
+}
+
+.bgdetailitem-wave {
+  background-image: url('/dashboardwave-bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;
+  top: -200px;
+  width: 100%;
+  height: 360px;
+  z-index: -1;
+  opacity: 1;
+}
+
+.custom-box-shadow-bottom {
+  box-shadow: 0px 3px 4px rgba(0, 0, 0, .25);
+}
+
+.custom-box-shadow-top {
+  box-shadow: 3px 0px 4px rgba(0, 0, 0, .25);
+}
