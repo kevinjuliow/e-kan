@@ -1,6 +1,6 @@
 import type { NextAuthOptions, User } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
-import axios from 'axios'
+import { authorize } from './authorize'
 
 export const AuthOptions: NextAuthOptions = {
   providers: [
@@ -11,27 +11,7 @@ export const AuthOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) { // if there is no credentials
-          return null;
-        }
-        try {
-          console.log(`ENV URL: ${process.env.API_BASEURL}`)
-          const response = await axios.post(`${process.env.API_BASEURL}/api/auth/pembeli/login`, {
-            email: credentials.email,
-            password: credentials.password,
-          })
-          console.log(response.data)
-
-          // Cek jika login berhasil dan menerima token
-          const { token } = response.data.data;
-          if (token) {
-            // Return user dengan token sebagai bagian dari objek user
-            return { accessToken: token };
-          }
-          return null
-        } catch (error: any) {
-          throw new Error(error);
-        }
+        return await authorize(credentials)
       }
     })
   ],
@@ -44,7 +24,8 @@ export const AuthOptions: NextAuthOptions = {
       return {
         ...token,
         accessToken: (user as User & { accessToken?: string }).accessToken,
-        id: user.id
+        id: user.id,
+        userType: user.userType
       }
     },
     async session({ session, token }) {

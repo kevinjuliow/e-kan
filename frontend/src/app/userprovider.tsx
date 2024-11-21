@@ -30,12 +30,17 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
     const fetchUser = async () => {
       if (session?.accessToken) {
         try {
-          const response = await axios.get(`${process.env.API_BASEURL}/api/pembeli/profile`, {
-            headers: {
-              Authorization: `Bearer ${session.accessToken}`,
-            },
-          });
-          setUser(response.data);
+          let response = await getUser(session?.accessToken, 'pembeli')
+    
+          if (!response) {
+            response = await getUser(session?.accessToken, 'penjual')
+          }
+
+          if (!response) {
+            throw new Error()
+          }
+
+          setUser(response);
         } catch (error) {
           console.error("Failed to fetch user data:", error);
         }
@@ -53,6 +58,21 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
     </UserContext.Provider>
   );
 };
+
+const getUser = async (accessToken: string, userType: string) => {
+  try {
+    const response = await axios.get(`${process.env.API_BASEURL}/api/${userType}/profile`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data
+  } catch (error) {
+    if (error.response.status === 401) {
+      return null
+    }
+  }
+}
 
 // Custom hook to access user data
 export const useUser = () => {
