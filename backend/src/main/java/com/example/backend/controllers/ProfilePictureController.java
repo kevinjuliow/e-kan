@@ -26,7 +26,7 @@ public class ProfilePictureController {
     private final ProfilePictureService service ;
     private final DtoMapper mapper;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     public ResponseEntity<ApiResponse<ProfilePictureDto>> uploadProfilePicture(@RequestParam("file") MultipartFile file) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -62,7 +62,8 @@ public class ProfilePictureController {
     }
 
     @GetMapping
-    public ResponseEntity<byte[]> getProfilePicture() {
+    public ResponseEntity<ApiResponse<byte[]>> getProfilePicture() {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() instanceof PembeliModel currentPembeli) {
@@ -72,10 +73,43 @@ public class ProfilePictureController {
                     .contentType(MediaType.parseMediaType(profilePicture.getFileType()))
                     .header(HttpHeaders.CONTENT_DISPOSITION,
                             "attachment; filename=\"" + profilePicture.getFileName() + "\"")
-                    .body(profilePicture.getData());
+                    .body(  new ApiResponse<>(
+                            HttpStatus.INTERNAL_SERVER_ERROR.value() ,
+                            "Couldn't upload profile-picture " ,
+                            profilePicture.getData()
+                    ));
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                new ApiResponse<>(
+                        HttpStatus.UNAUTHORIZED.value() ,
+                        "Unauthorized" ,
+                        null
+                )
+        );
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<Object>> destroy (UUID id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof PembeliModel currentPembeli) {
+            service.deleteProfilePicture(currentPembeli.getId_pembeli());
+            return ResponseEntity.ok(
+                    new ApiResponse<>(
+                            HttpStatus.OK.value(),
+                            "Success delete profile picture",
+                            null
+                    )
+            );
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                new ApiResponse<>(
+                        HttpStatus.UNAUTHORIZED.value() ,
+                        "Unauthorized" ,
+                        null
+                )
+        );
     }
 
 
