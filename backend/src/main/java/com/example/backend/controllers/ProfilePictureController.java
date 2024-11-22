@@ -26,7 +26,7 @@ public class ProfilePictureController {
     private final ProfilePictureService service ;
     private final DtoMapper mapper;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<ProfilePictureDto>> uploadProfilePicture(@RequestParam("file") MultipartFile file) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -62,8 +62,7 @@ public class ProfilePictureController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<byte[]>> getProfilePicture() {
-
+    public ResponseEntity<byte[]> getProfilePicture() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() instanceof PembeliModel currentPembeli) {
@@ -73,20 +72,10 @@ public class ProfilePictureController {
                     .contentType(MediaType.parseMediaType(profilePicture.getFileType()))
                     .header(HttpHeaders.CONTENT_DISPOSITION,
                             "attachment; filename=\"" + profilePicture.getFileName() + "\"")
-                    .body(  new ApiResponse<>(
-                            HttpStatus.INTERNAL_SERVER_ERROR.value() ,
-                            "Couldn't upload profile-picture " ,
-                            profilePicture.getData()
-                    ));
+                    .body(profilePicture.getData());
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                new ApiResponse<>(
-                        HttpStatus.UNAUTHORIZED.value() ,
-                        "Unauthorized" ,
-                        null
-                )
-        );
 
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 
