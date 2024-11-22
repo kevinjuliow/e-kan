@@ -113,5 +113,28 @@ public class ProfilePictureController {
     }
 
 
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<Object>> destroy (UUID id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof PembeliModel currentPembeli) {
+            service.deleteProfilePicture(currentPembeli.getId_pembeli());
+            return ResponseEntity.ok(
+                    new ApiResponse<>(
+                            HttpStatus.OK.value(),
+                            "Success delete profile picture",
+                            null
+                    )
+            );
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                new ApiResponse<>(
+                        HttpStatus.UNAUTHORIZED.value() ,
+                        "Unauthorized" ,
+                        null
+                )
+        );
+    }
+
+
 
 }
