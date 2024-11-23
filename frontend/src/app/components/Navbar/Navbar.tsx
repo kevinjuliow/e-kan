@@ -6,7 +6,6 @@ import "../../globals.css"
 import { usePathname } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import { useUser } from "app/userprovider";
 import { navbarMenuList } from "app/constant";
 import { Link as ReactScroll } from 'react-scroll'
 
@@ -57,8 +56,6 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [isLanding]);
-
-  const { user } = useUser();
 
   const changeTextColor = (isLanding || isDashboard) && isScrolled ? 'text-black' : (isLanding || isDashboard) && !isScrolled ? 'text-white' : (isLoginPage || isSignupPage) || ((!isLanding && !isDashboard && !isLoginPage && !isSignupPage) && isScrolled) ? 'text-black' :  'text-white'
   const changeIconColor = (isLanding || isDashboard) && isScrolled ? '#000000' : (isLanding || isDashboard) && !isScrolled ? '#ffffff' : (isLoginPage || isSignupPage) || ((!isLanding && !isDashboard && !isLoginPage && !isSignupPage) && isScrolled) ? '#000000' :  '#ffffff'
@@ -118,8 +115,8 @@ const Navbar = () => {
               className="bg-white rounded-lg shadow w-fit absolute right-0 mt-3 top-8 transform translate-y-[-10px] opacity-0 duration-300 ease-in-out group-hover:translate-y-0 group-hover:opacity-100"
               style={{ boxShadow: "0px 2px 8px 1px rgba(0, 0, 0, .1)" }}>
               <div className="px-4 py-3 text-sm text-black">
-                <div>{user?.data?.nama}</div>
-                <div className="font-medium truncate">{user?.data?.email}</div>
+                <div>{session?.user?.name}</div>
+                <div className="font-medium truncate">{session?.user?.email}</div>
               </div>
               <div className="py-1 cursor-pointer">
                 <Link href="/applicants/profile" className="block px-4 py-2 text-sm text-black hover:bg-gray-100 cursor-pointer">

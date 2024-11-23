@@ -25,7 +25,9 @@ export const AuthOptions: NextAuthOptions = {
         ...token,
         accessToken: (user as User & { accessToken?: string }).accessToken,
         id: user.id,
-        userType: user.userType
+        userType: user.userType,
+        name: user.name,
+        email: user.email
       }
     },
     async session({ session, token }) {
@@ -34,7 +36,9 @@ export const AuthOptions: NextAuthOptions = {
         user: {
           ...session.user,
           // id: token
-          id: token.sub // put id from user to property id
+          id: token.sub, // put id from user to property id
+          name: token.name,
+          email: token.email
         },
         accessToken: token.accessToken,
       }
