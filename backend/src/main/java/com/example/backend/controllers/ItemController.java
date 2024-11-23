@@ -145,6 +145,29 @@ public class ItemController {
             ));
 
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteItem(@PathVariable UUID id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication.getPrincipal() instanceof PenjualModel)) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>(
+                            HttpStatus.UNAUTHORIZED.value(),
+                            "Unauthorized",
+                            null
+                    ));
+        }
+
+        PenjualModel penjual = (PenjualModel) authentication.getPrincipal();
+
+        itemService.deleteItem(id, penjual);
+
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(),
+                "Item deleted successfully",
+                null
+        ));
+    }
 
 }
 

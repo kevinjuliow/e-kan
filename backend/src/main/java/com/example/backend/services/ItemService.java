@@ -70,4 +70,16 @@ public class ItemService {
         }
         return repo.save(existingItem);
     }
+
+    public void deleteItem(UUID id, PenjualModel penjual) {
+        ItemModel existingItem = repo.findById(id).orElseThrow(
+                () -> new GlobalExceptionHandler.ResourceNotFoundException("Item not found with id: " + id)
+        );
+        if (penjual == null ||
+                existingItem.getPenjual() == null ||
+                !existingItem.getPenjual().getId_penjual().equals(penjual.getId_penjual())) {
+            throw new GlobalExceptionHandler.UnauthorizedAccessException("Unauthorized - Only the owner can delete this item");
+        }
+        repo.deleteById(id);
+    }
 }
