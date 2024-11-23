@@ -1,6 +1,6 @@
 package com.example.backend.controllers;
 
-import com.example.backend.dtos.ApiResponse;
+import com.example.backend.dtos.ApiResp;
 import com.example.backend.dtos.DtoMapper;
 import com.example.backend.dtos.cartItemDtos.CartItemDto;
 import com.example.backend.models.CartItemModel;
@@ -29,7 +29,7 @@ public class CartItemController {
 
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CartItemDto>>> index () {
+    public ResponseEntity<ApiResp<List<CartItemDto>>> index () {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() instanceof PembeliModel) {
@@ -40,7 +40,7 @@ public class CartItemController {
             List<CartItemDto> cartPembeliDto = cartPembeli.stream().map(mapper :: toCartItemDto).collect(Collectors.toList());
 
             return ResponseEntity.ok(
-                    new ApiResponse<>(
+                    new ApiResp<>(
                             HttpStatus.OK.value() ,
                             "Success retrieve cart items" ,
                             cartPembeliDto
@@ -48,7 +48,7 @@ public class CartItemController {
             );
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                new ApiResponse<>(
+                new ApiResp<>(
                         HttpStatus.UNAUTHORIZED.value() ,
                         "Unauthorized" ,
                         null
@@ -57,7 +57,7 @@ public class CartItemController {
     }
 
     @PostMapping("/add/{id}")
-    public ResponseEntity<ApiResponse<CartItemDto>> store (@RequestBody CartItemModel input , @PathVariable UUID id ) {
+    public ResponseEntity<ApiResp<CartItemDto>> store (@RequestBody CartItemModel input , @PathVariable UUID id ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() instanceof PembeliModel) {
@@ -69,7 +69,7 @@ public class CartItemController {
             CartItemDto toDto = mapper.toCartItemDto(savedCartItem);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(
-                    new ApiResponse<>(
+                    new ApiResp<>(
                             HttpStatus.CREATED.value(),
                             "Success create new cart item" ,
                             toDto
@@ -77,7 +77,7 @@ public class CartItemController {
             );
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                new ApiResponse<>(
+                new ApiResp<>(
                         HttpStatus.UNAUTHORIZED.value() ,
                         "Unauthorized" ,
                         null
@@ -86,7 +86,7 @@ public class CartItemController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<CartItemDto>> destroy (@PathVariable UUID id ) {
+    public ResponseEntity<ApiResp<CartItemDto>> destroy (@PathVariable UUID id ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
@@ -95,7 +95,7 @@ public class CartItemController {
             if (!foundModel.getPembeli().getId_pembeli().equals(currentUser.getId_pembeli())){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(
-                                new ApiResponse<>(
+                                new ApiResp<>(
                                         HttpStatus.UNAUTHORIZED.value(),
                                         "current user is not the same as in the cart item user" ,
                                         null
@@ -105,7 +105,7 @@ public class CartItemController {
 
             service.delete(id);
             return ResponseEntity.ok(
-                    new ApiResponse<>(
+                    new ApiResp<>(
                             HttpStatus.OK.value() ,
                             "success delete cart item" ,
                             null
@@ -114,7 +114,7 @@ public class CartItemController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(
-                        new ApiResponse<>(
+                        new ApiResp<>(
                                 HttpStatus.UNAUTHORIZED.value(),
                                 "Unauthorized" ,
                                 null
@@ -124,7 +124,7 @@ public class CartItemController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<CartItemDto>> update (@PathVariable UUID id , @RequestBody CartItemModel input) {
+    public ResponseEntity<ApiResp<CartItemDto>> update (@PathVariable UUID id , @RequestBody CartItemModel input) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
@@ -133,7 +133,7 @@ public class CartItemController {
             if (!foundModel.getPembeli().getId_pembeli().equals(currentUser.getId_pembeli())){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(
-                                new ApiResponse<>(
+                                new ApiResp<>(
                                         HttpStatus.UNAUTHORIZED.value(),
                                         "current user is not the same as in the cart item user" ,
                                         null
@@ -144,7 +144,7 @@ public class CartItemController {
             CartItemModel update = service.update(input , id);
             CartItemDto toDto = mapper.toCartItemDto(update);
             return ResponseEntity.ok(
-                    new ApiResponse<>(
+                    new ApiResp<>(
                             HttpStatus.OK.value() ,
                             "success update cart item" ,
                             toDto
@@ -153,7 +153,7 @@ public class CartItemController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(
-                        new ApiResponse<>(
+                        new ApiResp<>(
                                 HttpStatus.UNAUTHORIZED.value(),
                                 "Unauthorized" ,
                                 null

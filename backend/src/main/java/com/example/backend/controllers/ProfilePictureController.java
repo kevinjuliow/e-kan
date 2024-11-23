@@ -1,6 +1,6 @@
 package com.example.backend.controllers;
 
-import com.example.backend.dtos.ApiResponse;
+import com.example.backend.dtos.ApiResp;
 import com.example.backend.dtos.DtoMapper;
 import com.example.backend.dtos.profilePictureDtos.ProfilePictureDto;
 import com.example.backend.models.PembeliModel;
@@ -28,7 +28,7 @@ public class ProfilePictureController {
     private final DtoMapper mapper;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<ProfilePictureDto>> uploadProfilePicture(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ApiResp<ProfilePictureDto>> uploadProfilePicture(@RequestParam("file") MultipartFile file) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -36,7 +36,7 @@ public class ProfilePictureController {
                 ProfilePictureModel profilePicture = service.uploadProfilePicturePembeli(currentPembeli.getId_pembeli(), file);
 
                 return ResponseEntity.ok(
-                        new ApiResponse<>(
+                        new ApiResp<>(
                                 HttpStatus.OK.value() ,
                                 "Profile picture saved" ,
                                 mapper.toProfilePictureDto(profilePicture)
@@ -46,7 +46,7 @@ public class ProfilePictureController {
             if (authentication.getPrincipal() instanceof PenjualModel currentPenjual) {
                 ProfilePictureModel profilePicture = service.uploadProfilePicturePenjual(currentPenjual.getId_penjual(), file);
                 return ResponseEntity.ok(
-                        new ApiResponse<>(
+                        new ApiResp<>(
                                 HttpStatus.OK.value() ,
                                 "Profile picture saved" ,
                                 mapper.toProfilePictureDto(profilePicture)
@@ -54,7 +54,7 @@ public class ProfilePictureController {
                 );
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    new ApiResponse<>(
+                    new ApiResp<>(
                             HttpStatus.UNAUTHORIZED.value() ,
                             "Unauthorized" ,
                             null
@@ -63,7 +63,7 @@ public class ProfilePictureController {
 
         } catch (IOException e) {
             return ResponseEntity.internalServerError().body(
-                    new ApiResponse<>(
+                    new ApiResp<>(
                             HttpStatus.INTERNAL_SERVER_ERROR.value() ,
                             "Couldn't upload profile-picture " ,
                             null
@@ -101,12 +101,12 @@ public class ProfilePictureController {
 
 
     @DeleteMapping
-    public ResponseEntity<ApiResponse<Object>> destroy (UUID id) {
+    public ResponseEntity<ApiResp<Object>> destroy (UUID id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof PembeliModel currentPembeli) {
             service.deleteProfilePicturePembeli(currentPembeli.getId_pembeli());
             return ResponseEntity.ok(
-                    new ApiResponse<>(
+                    new ApiResp<>(
                             HttpStatus.OK.value(),
                             "Success delete profile picture",
                             null
@@ -116,7 +116,7 @@ public class ProfilePictureController {
         if (authentication.getPrincipal() instanceof PenjualModel currentPenjual) {
             service.deleteProfilePicturePenjual(currentPenjual.getId_penjual());
             return ResponseEntity.ok(
-                    new ApiResponse<>(
+                    new ApiResp<>(
                             HttpStatus.OK.value(),
                             "Success delete profile picture",
                             null
@@ -124,7 +124,7 @@ public class ProfilePictureController {
             );
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                new ApiResponse<>(
+                new ApiResp<>(
                         HttpStatus.UNAUTHORIZED.value() ,
                         "Unauthorized" ,
                         null

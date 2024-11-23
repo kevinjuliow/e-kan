@@ -1,6 +1,6 @@
 package com.example.backend.controllers;
 
-import com.example.backend.dtos.ApiResponse;
+import com.example.backend.dtos.ApiResp;
 import com.example.backend.dtos.DtoMapper;
 import com.example.backend.dtos.itemPicturesDtos.ItemPIcturesDto;
 import com.example.backend.models.ItemModel;
@@ -67,7 +67,7 @@ public class ItemPicturesController {
     }
 
     @PostMapping(value = "/{itemId}/pictures", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<ItemPIcturesDto>> storePicture (@RequestParam("file") MultipartFile file , @PathVariable UUID itemId){
+    public ResponseEntity<ApiResp<ItemPIcturesDto>> storePicture (@RequestParam("file") MultipartFile file , @PathVariable UUID itemId){
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -76,7 +76,7 @@ public class ItemPicturesController {
 
                 if (!(item.getPenjual().getId_penjual().equals(currentPenjual.getId_penjual()))){
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-                            new ApiResponse<>(
+                            new ApiResp<>(
                                     HttpStatus.FORBIDDEN.value() ,
                                     "Only owner can post item picture" ,
                                     null
@@ -85,7 +85,7 @@ public class ItemPicturesController {
                 }
                 ItemPicturesModel itemPicture = service.uploadImage(itemId, file);
                 return ResponseEntity.ok(
-                        new ApiResponse<>(
+                        new ApiResp<>(
                                 HttpStatus.OK.value() ,
                                 "Picture saved" ,
                                 mapper.toItemPicturesDto(itemPicture)
@@ -94,7 +94,7 @@ public class ItemPicturesController {
             }
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    new ApiResponse<>(
+                    new ApiResp<>(
                             HttpStatus.UNAUTHORIZED.value() ,
                             "Unauthorized" ,
                             null
@@ -104,7 +104,7 @@ public class ItemPicturesController {
 
         }catch (IOException e) {
             return ResponseEntity.internalServerError().body(
-                    new ApiResponse<>(
+                    new ApiResp<>(
                             HttpStatus.INTERNAL_SERVER_ERROR.value() ,
                             "Couldn't upload profile-picture " ,
                             null

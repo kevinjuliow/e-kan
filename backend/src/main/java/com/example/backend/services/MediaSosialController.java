@@ -1,6 +1,6 @@
 package com.example.backend.services;
 
-import com.example.backend.dtos.ApiResponse;
+import com.example.backend.dtos.ApiResp;
 import com.example.backend.dtos.DtoMapper;
 import com.example.backend.dtos.mediaSosialDtos.MediaSosialDto;
 import com.example.backend.models.MediaSosialModel;
@@ -27,12 +27,12 @@ public class MediaSosialController {
     private PenjualService servicePenjual ;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<List<MediaSosialDto>>> index (@PathVariable UUID id ) {
+    public ResponseEntity<ApiResp<List<MediaSosialDto>>> index (@PathVariable UUID id ) {
         PenjualModel findPenjual = servicePenjual.getById(id);
         List<MediaSosialModel> list = service.getAll(findPenjual) ;
         if (list.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(
-                    new ApiResponse<>(
+                    new ApiResp<>(
                             HttpStatus.NO_CONTENT.value(),
                             "No Content" ,
                             null
@@ -43,7 +43,7 @@ public class MediaSosialController {
         List<MediaSosialDto> dtoList = list.stream().map(mapper::toMediaSosialDto).collect(Collectors.toList());
 
         return ResponseEntity.ok(
-                new ApiResponse<>(
+                new ApiResp<>(
                         HttpStatus.OK.value(),
                         "Success Retrieve Social Media" ,
                         dtoList
@@ -52,14 +52,14 @@ public class MediaSosialController {
 
     }
     @PostMapping
-    public ResponseEntity<ApiResponse<MediaSosialDto>> store (@RequestBody @Valid  MediaSosialModel input) {
+    public ResponseEntity<ApiResp<MediaSosialDto>> store (@RequestBody @Valid  MediaSosialModel input) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
 
         if (!(principal instanceof PenjualModel)) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
-                    .body(new ApiResponse<>(
+                    .body(new ApiResp<>(
                             HttpStatus.UNAUTHORIZED.value(),
                             "Unauthorized",
                             null
@@ -73,7 +73,7 @@ public class MediaSosialController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(
-                        new ApiResponse<>(
+                        new ApiResp<>(
                                 HttpStatus.CREATED.value(),
                                 "Media Sosial Created" ,
                                 mapper.toMediaSosialDto(savedMediaSosial)
