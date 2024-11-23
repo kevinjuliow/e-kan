@@ -33,6 +33,13 @@ public class ProfilePictureModel {
     @Column(columnDefinition = "LONGBLOB" , nullable = false)
     private byte[] data;
 
+    @Column(nullable = false)
+    private String user_type ;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "penjual_id")
+    private PenjualModel penjual;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pembeli_id")
     private PembeliModel pembeli;

@@ -161,6 +161,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<?> handleMultipartException(MultipartException ex) {
+
+        ApiResponse<Object> response = new ApiResponse<>(
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid multipart request: " + ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+    }
+
     // Handle all other exceptions
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Object>> handleAllOtherExceptions(Exception ex) {
@@ -174,17 +186,6 @@ public class GlobalExceptionHandler {
                 null
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-    }
-
-    @ExceptionHandler(MultipartException.class)
-    public ResponseEntity<?> handleMultipartException(MultipartException ex) {
-
-        ApiResponse<Object> response = new ApiResponse<>(
-                HttpStatus.BAD_REQUEST.value(),
-                "Invalid multipart request: " + ex.getMessage(),
-                null
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     // Custom exceptions as static inner classes
