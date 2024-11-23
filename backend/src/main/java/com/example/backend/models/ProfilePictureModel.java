@@ -30,7 +30,7 @@ public class ProfilePictureModel {
     private String fileType;
 
     @Lob
-    @Column(nullable = false)
+    @Column(columnDefinition = "LONGBLOB" , nullable = false)
     private byte[] data;
 
     @OneToOne(fetch = FetchType.LAZY)
