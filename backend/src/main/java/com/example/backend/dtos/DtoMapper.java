@@ -113,16 +113,32 @@ public class DtoMapper {
             return null;
         }
 
-        ProfilePictureDto dto = ProfilePictureDto.builder()
-                .id(model.getId())
-                .data(model.getData())
-                .fileName(model.getFileName())
-                .fileType(model.getFileType())
-                .pembeli(toPembeliDto(model.getPembeli()))
-                .createdAt(model.getCreatedAt())
-                .updatedAt(model.getUpdatedAt())
-                .build();
+        if (model.getPembeli() != null ) {
+            ProfilePictureDto dto = ProfilePictureDto.builder()
+                    .id(model.getId())
+                    .data(model.getData())
+                    .fileName(model.getFileName())
+                    .fileType(model.getFileType())
+                    .user_type(model.getUser_type())
+                    .pembeli(toPembeliDto(model.getPembeli()))
+                    .createdAt(model.getCreatedAt())
+                    .updatedAt(model.getUpdatedAt())
+                    .build();
 
-        return dto ;
+            return dto ;
+        }
+            ProfilePictureDto dto = ProfilePictureDto.builder()
+                    .id(model.getId())
+                    .data(model.getData())
+                    .fileName(model.getFileName())
+                    .fileType(model.getFileType())
+                    .user_type(model.getUser_type())
+                    .penjual(toPenjualDto(model.getPenjual()))
+                    .createdAt(model.getCreatedAt())
+                    .updatedAt(model.getUpdatedAt())
+                    .build();
+
+            return dto ;
+
     }
 }
