@@ -3,6 +3,7 @@ package com.example.backend.dtos;
 import com.example.backend.dtos.alamatDtos.AlamatPembeliDto;
 import com.example.backend.dtos.cartItemDtos.CartItemDto;
 import com.example.backend.dtos.itemDtos.ItemDto;
+import com.example.backend.dtos.itemPicturesDtos.ItemPIcturesDto;
 import com.example.backend.dtos.mediaSosialDtos.MediaSosialDto;
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import com.example.backend.dtos.penjualDtos.PenjualDto;
@@ -140,5 +141,22 @@ public class DtoMapper {
 
             return dto ;
 
+    }
+
+
+    public ItemPIcturesDto toItemPicturesDto (ItemPicturesModel model) {
+        if (model == null) {
+            return null;
+        }
+        ItemPIcturesDto dto = ItemPIcturesDto.builder()
+                .id(model.getId())
+                .data(model.getData())
+                .item(toItemDto(model.getItem()))
+                .fileName(model.getFileName())
+                .createdAt(model.getCreatedAt())
+                .updatedAt(model.getUpdatedAt())
+                .build() ;
+
+        return dto ;
     }
 }
