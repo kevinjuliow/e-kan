@@ -1,6 +1,6 @@
 "use client"
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
@@ -68,8 +68,10 @@ const getUser = async (accessToken: string, userType: string) => {
     });
     return response.data
   } catch (error) {
-    if (error.response.status === 401) {
-      return null
+    if (error instanceof AxiosError) {
+      if (error?.response?.status === 401) {
+        return null
+      }
     }
   }
 }
