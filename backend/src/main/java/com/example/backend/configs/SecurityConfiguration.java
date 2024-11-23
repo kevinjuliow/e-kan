@@ -36,8 +36,13 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/pembeli", "/api/penjual", "/api/penjual/{id}" ,
-                                "/swagger-ui.html" , "/swagger-ui/**" , "/v3/api-docs/**" , "api-docs")
+                        .requestMatchers("/api/auth/**", "/api/pembeli", "/api/penjual", "/api/penjual/{id}" )
+                        .permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        )
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/items", "/api/items/{id}", "/api/pembeli/{id}", "/api/sosial/{id}" ,
                                 "/api/items/penjual/{id}" , "api/items/{itemId}/pictures" , "api/items/pictures/{pictureId}" )
@@ -65,6 +70,8 @@ public class SecurityConfiguration {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
         source.registerCorsConfiguration("/api/**", configuration);
+        source.registerCorsConfiguration("/v3/api-docs/**", configuration);
+        source.registerCorsConfiguration("/swagger-ui/**", configuration);
         return source;
     }
 
