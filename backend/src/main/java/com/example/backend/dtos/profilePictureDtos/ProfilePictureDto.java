@@ -1,7 +1,9 @@
 package com.example.backend.dtos.profilePictureDtos;
 
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
+import com.example.backend.dtos.penjualDtos.PenjualDto;
 import com.example.backend.models.PembeliModel;
+import com.example.backend.models.PenjualModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,11 +26,15 @@ public class ProfilePictureDto {
 
     private String fileType;
 
-    private byte[] data;
+    private String user_type ;
+
+    private PenjualDto penjual ;
 
     private PembeliDto pembeli;
 
     private Date createdAt;
 
     private Date updatedAt;
+
+    private byte[] data;
 }
