@@ -9,6 +9,7 @@ import com.example.backend.models.PenjualModel;
 import com.example.backend.services.ItemPicturesService;
 import com.example.backend.services.ItemService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -31,23 +34,36 @@ public class ItemPicturesController {
     private DtoMapper mapper ;
 
     @GetMapping("/{itemId}/pictures")
-    public ResponseEntity<List<byte[]>> getAllPictForItems(@PathVariable UUID itemId) {
+    public ResponseEntity<List<Map<String, Object>>> getAllPictForItems(@PathVariable UUID itemId) {
         List<ItemPicturesModel> itemPicts = service.getAllPictures(itemId);
         if (itemPicts.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        List<byte[]> picturesData = itemPicts.stream()
-                .map(ItemPicturesModel::getData)
+        List<Map<String, Object>> responses = itemPicts.stream()
+                .map(pic -> {
+                    Map<String, Object> pictureData = new HashMap<>();
+                    pictureData.put("id", pic.getId());
+                    pictureData.put("fileName", pic.getFileName());
+                    pictureData.put("fileType", pic.getFileType());
+                    pictureData.put("data", pic.getData());
+                    return pictureData;
+                })
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(picturesData);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(responses);
     }
 
     @GetMapping("/pictures/{pictureId}")
     public ResponseEntity<byte[]> getPictureById (@PathVariable UUID pictureId) {
        ItemPicturesModel itemPict = service.getPicture(pictureId);
-        return ResponseEntity.ok(itemPict.getData());
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(itemPict.getFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + itemPict.getFileName() + "\"")
+                .body(itemPict.getData());
     }
 
     @PostMapping(value = "/{itemId}/pictures", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
