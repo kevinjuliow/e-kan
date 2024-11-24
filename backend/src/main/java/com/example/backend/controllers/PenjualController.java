@@ -1,6 +1,8 @@
 package com.example.backend.controllers;
 
+import com.example.backend.Exceptions.GlobalExceptionHandler;
 import com.example.backend.dtos.ApiResp;
+import com.example.backend.dtos.DtoMapper;
 import com.example.backend.dtos.penjualDtos.PenjualDto;
 import com.example.backend.dtos.penjualDtos.RegisterPenjualDto;
 import com.example.backend.models.PenjualModel;
@@ -20,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -30,6 +33,7 @@ public class PenjualController {
 
 
     private final PenjualService penjualService ;
+    private final DtoMapper mapper ;
 
     @GetMapping
     @Operation(
@@ -82,6 +86,38 @@ public class PenjualController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{id}")
+    @Operation(
+            summary = "Get penjual by id",
+            description = "Retrieves the profile information of the penjual based on searched id"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Success retrieve penjual with id : {id}",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PenjualDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Penjual not found",
+                    content = @Content(
+                            schema = @Schema(implementation = GlobalExceptionHandler.ResourceNotFoundException.class)
+                    )
+            )
+    })
+    public ResponseEntity<ApiResp<PenjualDto>> showPenjual(UUID id) {
+        PenjualModel penjual = penjualService.getById(id);
+        return ResponseEntity.ok(
+                new ApiResp<>(
+                        HttpStatus.OK.value() ,
+                        "Success retrieve penjual with id : " + id  ,
+                        mapper.toPenjualDto(penjual)
+                )
+        );
+    }
     @GetMapping("/profile")
     @Operation(
             summary = "Get authenticated seller profile",
@@ -152,11 +188,11 @@ public class PenjualController {
     public ResponseEntity<ApiResp<PenjualDto>> updatePenjual (@RequestBody @Valid RegisterPenjualDto input) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication() ;
 
-        if (authentication.getPrincipal() instanceof PenjualModel) {
-            PenjualModel penjual = (PenjualModel) authentication.getPrincipal();
+        if (authentication.getPrincipal() instanceof PenjualModel penjual) {
             PenjualModel currentPenjual = penjualService.update(input , penjual.getId_penjual());
             PenjualDto penjualDto = new PenjualDto(currentPenjual.getId_penjual() ,
-                    currentPenjual.getNama() , currentPenjual.getEmail() , currentPenjual.getWebsite() ,currentPenjual.getAlamat() ,  currentPenjual.getNo_telp()
+                    currentPenjual.getNama() , currentPenjual.getEmail() , currentPenjual.getWebsite()
+                    ,currentPenjual.getAlamat() ,  currentPenjual.getNo_telp()
                     , currentPenjual.getCreatedAt() , currentPenjual.getUpdatedAt());
             ApiResp<PenjualDto> response = new ApiResp<>(
                     HttpStatus.OK.value() ,
@@ -173,4 +209,5 @@ public class PenjualController {
         );
                 return ResponseEntity.badRequest().body(respError) ;
     }
+
 }
