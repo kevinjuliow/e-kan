@@ -10,7 +10,7 @@ const ShowItem: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${process.env.API_BASEURL}/api/item`)
+        const response = await axios.get(`${process.env.API_BASEURL}/api/items`)
 
         if (!response) {
           throw new Error('Some error occurred!')
