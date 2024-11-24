@@ -5,6 +5,12 @@ import com.example.backend.dtos.penjualDtos.PenjualDto;
 import com.example.backend.dtos.penjualDtos.RegisterPenjualDto;
 import com.example.backend.models.PenjualModel;
 import com.example.backend.services.PenjualService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("penjual")
+@Tag(name = "Penjual", description = "Penjual Management APIs")
 @AllArgsConstructor
 public class PenjualController {
 
@@ -25,6 +32,31 @@ public class PenjualController {
     private final PenjualService penjualService ;
 
     @GetMapping
+    @Operation(
+            summary = "Get all penjual",
+            description = "Retrieve a list of all sellers (penjual) in the system"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully retrieved list of sellers",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    implementation = ApiResp.class,
+                                    subTypes = {PenjualDto.class}
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "No sellers found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResp.class)
+                    )
+            )
+    })
     public ResponseEntity<ApiResp<List<PenjualDto>>> listPenjual () {
         List<PenjualModel> penjualList = penjualService.get();
         List<PenjualDto> penjualDtos = penjualList.stream().map(
@@ -51,6 +83,25 @@ public class PenjualController {
     }
 
     @GetMapping("/profile")
+    @Operation(
+            summary = "Get authenticated seller profile",
+            description = "Retrieves the profile information of the currently authenticated seller (penjual)"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully retrieved seller profile",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PenjualDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized - Seller not authenticated",
+                    content = @Content
+            )
+    })
     public ResponseEntity<ApiResp<PenjualDto>> getProfilePenjual () {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -71,6 +122,33 @@ public class PenjualController {
     }
 
     @PutMapping("/profile")
+    @Operation(
+            summary = "Update seller profile",
+            description = "Update profile information for authenticated seller (penjual)"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Profile updated successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PenjualDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad Request - Invalid input data",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResp.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized - Seller not authenticated",
+                    content = @Content
+            )
+    })
     public ResponseEntity<ApiResp<PenjualDto>> updatePenjual (@RequestBody @Valid RegisterPenjualDto input) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication() ;
 
