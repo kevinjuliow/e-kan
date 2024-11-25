@@ -8,6 +8,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { navbarMenuList } from "app/constant";
 import { Link as ReactScroll } from 'react-scroll'
+import { CartIcon, PlusNonSolid } from "../icon";
 
 const Navbar = () => {
   const pathname = usePathname()
@@ -55,8 +56,8 @@ const Navbar = () => {
     };
   }, [isLanding]);
 
-  const changeTextColor = (isLanding || isDashboard) && isScrolled ? 'text-black' : (isLanding || isDashboard) && !isScrolled ? 'text-white' : (isLoginPage || isSignupPage) || ((!isLanding && !isDashboard && !isLoginPage && !isSignupPage) && isScrolled) ? 'text-black' :  'text-white'
-  const changeIconColor = (isLanding || isDashboard) && isScrolled ? '#000000' : (isLanding || isDashboard) && !isScrolled ? '#ffffff' : (isLoginPage || isSignupPage) || ((!isLanding && !isDashboard && !isLoginPage && !isSignupPage) && isScrolled) ? '#000000' :  '#ffffff'
+  const changeTextColor = (isLanding || isDashboard) && isScrolled ? 'text-gray-800' : (isLanding || isDashboard) && !isScrolled ? 'text-white' : (isLoginPage || isSignupPage) || ((!isLanding && !isDashboard && !isLoginPage && !isSignupPage) && isScrolled) ? 'text-gray-800' :  'text-white'
+  const changeIconColor = (isLanding || isDashboard) && isScrolled ? '#1f2937' : (isLanding || isDashboard) && !isScrolled ? '#ffffff' : (isLoginPage || isSignupPage) || ((!isLanding && !isDashboard && !isLoginPage && !isSignupPage) && isScrolled) ? '#1f2937' :  '#ffffff'
 
   return (
     <nav className={`${!isLanding && isBlur ? 'backdrop-blur-xl bg-opacity-100 bg-[#D4EBEF] transition duration-300 custom-box-shadow-bottom' : isBlur ? 'backdrop-blur-md bg-opacity-60' : 'backdrop-blur-none bg-opacity-100'} w-full flex h-24 items-center fixed z-50`}>
@@ -99,13 +100,14 @@ const Navbar = () => {
 
         {(!isSignupPage && !isLoginPage) && isLoggedIn && 
         <div className="flex items-center justify-center">
-          <Link href={"/cart"} className="me-4">
-            <svg className="transition duration-300" width="24px" height="24px" strokeWidth="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color={`${changeIconColor}`}>
-              <path d="M3 6H22L19 16H6L3 6ZM3 6L2.25 3.5" stroke={`${changeIconColor}`} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-              <path d="M11 19.5C11 20.3284 10.3284 21 9.5 21C8.67157 21 8 20.3284 8 19.5" stroke={`${changeIconColor}`} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-              <path d="M17 19.5C17 20.3284 16.3284 21 15.5 21C14.6716 21 14 20.3284 14 19.5" stroke={`${changeIconColor}`} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-            </svg>
-          </Link>
+          {session?.user?.userType === 'PEMBELI'
+            ? <Link href={"/cart"} className="me-4">
+                <CartIcon size={24} hexColor={changeIconColor} />
+              </Link>
+            : <Link href={"/product/add"} className={`flex items-end justify-center rounded-lg border px-2 py-1 me-4`} style={{ borderColor: changeIconColor }}>
+                <PlusNonSolid size={24} hexColor={changeIconColor} />
+                <p className={`${changeTextColor} ms-1 font-medium text-sm`}>Tambah Produk</p>
+              </Link>}
           <div className="flex text-center items-center group relative">
             <Image src="/default_profile.png" alt="default profile" width={32} height={32} className="rounded-full border-2 border-darkaqua" />
             <div
