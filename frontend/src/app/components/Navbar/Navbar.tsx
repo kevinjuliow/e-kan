@@ -10,7 +10,6 @@ import { navbarMenuList } from "app/constant";
 import { Link as ReactScroll } from 'react-scroll'
 
 const Navbar = () => {
-  const [opened, setOpened] = useState(false)
   const pathname = usePathname()
   const isSignupPage = pathname === '/auth/signup'
   const isLoginPage = pathname === '/auth/login'
@@ -18,7 +17,6 @@ const Navbar = () => {
   const isLanding = pathname === '/'
   const isDashboard = pathname === '/dashboard'
 
-  const handleOpen = () => setOpened(!opened)
   const handleLogin = () => signIn();
   const handleLogout = () => signOut({ callbackUrl: "/", redirect: true });
 
@@ -109,7 +107,7 @@ const Navbar = () => {
             </svg>
           </Link>
           <div className="flex text-center items-center group relative">
-            <Image src="/default_profile.png" alt="default profile" width={32} height={32} className="rounded-full border-2 border-darkaqua" onClick={handleOpen} />
+            <Image src="/default_profile.png" alt="default profile" width={32} height={32} className="rounded-full border-2 border-darkaqua" />
             <div
               id="userDropdown"
               className="bg-white rounded-lg shadow w-fit absolute right-0 mt-3 top-8 transform translate-y-[-10px] opacity-0 duration-300 ease-in-out group-hover:translate-y-0 group-hover:opacity-100"
