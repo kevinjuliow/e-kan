@@ -1,26 +1,60 @@
 import { Item } from "app/interfaces/Item/types";
 // import Image from "next/image";
 import React from "react";
+import { CartAddIcon } from "../icon";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link"
+import { Toast, useToast } from "../toast/Toast";
 
 interface Props {
   data: Item;
 }
 
 const EachItem: React.FC<Props> = ({ data }) => {
+  const { data: session } = useSession()
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [error, setError] = useState<Error>()
+  const { message, showToast } = useToast()
+
+  const handleAddToCart = async () => {
+    console.log(process.env.API_BASEURL)
+    // setLoading(true)
+    try {
+      const response = await axios.post(`${process.env.API_BASEURL}/api/cart/add/${data.id_item}`, {
+        jumlah_item: 1
+      }, {
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+      });
+
+      if (response.status === 409) {
+        throw new Error("Failed to add item into cart, already added!");
+      }
+
+    } catch (error) {
+      if (error instanceof Error) {
+        showToast("Error ketika ingin menambahkan item ke cart, coba lagi!")
+      }
+    } finally {
+      // setLoading(false);
+      showToast("Berhasil menambahkan " + data.nama + " ke dalam keranjang!")
+    }
+  }
+
   return (
       <div className="flex items-center justify-center">
         <div className="w-full">
           <div className="bg-white shadow-xl rounded-lg overflow-hidden">
-          <div className="bg-cover bg-center h-48 p-4" style={{ backgroundImage: `url("/pexels-crisdip-35358-128756.jpg")` }}>
-              <div className="flex justify-end">
-                <svg width="24px" height="24px" strokeWidth="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#ffffff">
-                  <path d="M3 6H22L19 16H6L3 6ZM3 6L2.25 3.5" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                  <path d="M9.99219 11H11.9922M13.9922 11H11.9922M11.9922 11V9M11.9922 11V13" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                  <path d="M11 19.5C11 20.3284 10.3284 21 9.5 21C8.67157 21 8 20.3284 8 19.5" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                  <path d="M17 19.5C17 20.3284 16.3284 21 15.5 21C14.6716 21 14 20.3284 14 19.5" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                </svg>
-              </div>
-            </div>
+            {!!session && session?.user?.userType === 'PEMBELI' &&
+            <div className="absolute p-4 z-[40] cursor-pointer" onClick={handleAddToCart}>     
+              <CartAddIcon size={32} hexColor={"#ffffff"} />
+            </div>}
+            <Link href={`/product/item/${data.id_item}`}>
+              <Image src={"/pexels-crisdip-35358-128756.jpg"} width={192} height={192} className="w-full" alt="gambar ikan" />
+            </Link>
             <div className="p-4">
               <p className="uppercase tracking-wider text-sm font-bold text-darkaqua mb-2">{data.nama}</p>
               <p className="text-2xl text-darkaqua">Rp{data.harga}</p>
@@ -42,6 +76,7 @@ const EachItem: React.FC<Props> = ({ data }) => {
                 <p className="font-light ms-1 text-sm">{data.jenis_habitat}</p>
               </div>
             </div>
+            {message && <Toast message={message} onClose={() => {}} />}
           </div>
         </div>
     </div>
