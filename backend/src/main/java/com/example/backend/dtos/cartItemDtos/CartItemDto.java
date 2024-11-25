@@ -2,7 +2,6 @@ package com.example.backend.dtos.cartItemDtos;
 
 import com.example.backend.dtos.itemDtos.ItemDto;
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
-import com.example.backend.dtos.penjualDtos.PenjualDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

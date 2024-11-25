@@ -26,7 +26,7 @@ public class NotaTransaksiService {
         NotaTransaksiModel existNota = repo.findById(notaId)
                 .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Nota does not exist"));
 
-        List<CartItemModel> cartItems = cartItemRepo.findByNota_transaksi(existNota).get();
+        List<CartItemModel> cartItems = cartItemRepo.findByNotaTransaksi(existNota).get();
 
         boolean isOwner = cartItems.stream()
                 .anyMatch(item -> item.getPembeli().getId_pembeli().equals(pembeliId));
@@ -44,7 +44,7 @@ public class NotaTransaksiService {
         List<CartItemModel> cartItems = cartItemRepo.findByPembeli(pembeli).get();
 
         return cartItems.stream()
-                .map(CartItemModel::getNota_transaksi)
+                .map(CartItemModel::getNotaTransaksi)
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
@@ -55,7 +55,7 @@ public class NotaTransaksiService {
         PembeliModel pembeli = pembeliRepo.findById(pembeliId).orElseThrow(
                 ()-> new GlobalExceptionHandler.ResourceNotFoundException("pembeli not found")
         );
-        List<CartItemModel> checkedCartItems = cartItemRepo.findByPembeliAndIs_checkedTrue(pembeli).get();
+        List<CartItemModel> checkedCartItems = cartItemRepo.findByPembeliAndIsCheckedTrue(pembeli).get();
 
         if (checkedCartItems.isEmpty()) {
             throw new GlobalExceptionHandler.BadRequestException("No items selected for nota");
@@ -67,8 +67,8 @@ public class NotaTransaksiService {
         repo.save(newNota);
 
         checkedCartItems.forEach(item -> {
-            item.setNota_transaksi(newNota);
-            item.setIs_checked(false);
+            item.setNotaTransaksi(newNota);
+            item.setIsChecked(false);
         });
 
         cartItemRepo.saveAll(checkedCartItems);

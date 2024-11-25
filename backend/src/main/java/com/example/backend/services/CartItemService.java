@@ -2,7 +2,6 @@ package com.example.backend.services;
 
 import com.example.backend.Exceptions.GlobalExceptionHandler;
 import com.example.backend.models.CartItemModel;
-import com.example.backend.models.ItemModel;
 import com.example.backend.models.PembeliModel;
 import com.example.backend.repositories.CartItemRepo;
 import lombok.AllArgsConstructor;
@@ -37,17 +36,17 @@ public class CartItemService {
     }
 
     public CartItemModel saveCartItem (CartItemModel model) {
-        if (repo.findByItem(model.getItem()).isPresent()){
-            throw new GlobalExceptionHandler.ResourceAlreadyExistsException("Item already exists in cart");
-        }
+//        if (repo.findByItem(model.getItem()).isPresent()){
+//            throw new GlobalExceptionHandler.ResourceAlreadyExistsException("Item already exists in cart");
+//        }
         return repo.save(model);
     }
 
     public CartItemModel update (CartItemModel input , UUID id){
         CartItemModel existItem = repo.findById(id).orElseThrow(
                 () -> new GlobalExceptionHandler.ResourceNotFoundException("Cart Item"));
-        if (existItem.getIs_checked() != input.getIs_checked()) {
-            existItem.setIs_checked(input.getIs_checked());
+        if (existItem.getIsChecked() != input.getIsChecked()) {
+            existItem.setIsChecked(input.getIsChecked());
         }
         if (existItem.getJumlah_item() != input.getJumlah_item()) {
             existItem.setJumlah_item(input.getJumlah_item());

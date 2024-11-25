@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface CartItemRepo extends JpaRepository<CartItemModel , UUID> {
     Optional<List<CartItemModel>> findByPembeli(PembeliModel pembeli);
     Optional<ItemModel> findByItem (ItemModel item);
-    Optional<List<CartItemModel>> findByNota_transaksi (NotaTransaksiModel nota);
+    Optional<List<CartItemModel>> findByNotaTransaksi(NotaTransaksiModel nota);
 
-    Optional<List<CartItemModel>> findByPembeliAndIs_checkedTrue(PembeliModel pembeli);
+    Optional<List<CartItemModel>> findByPembeliAndIsCheckedTrue(PembeliModel pembeli);
 }
