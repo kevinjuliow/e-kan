@@ -50,4 +50,11 @@ public class MedialSosialService {
         return repo.save(model);
     }
 
+    public void delete (UUID id) {
+        MediaSosialModel model =  repo.findById(id).orElseThrow(
+                () -> new GlobalExceptionHandler.ResourceNotFoundException("Media Social ID Not Found")
+        );
+        repo.delete(model);
+    }
+
 }
