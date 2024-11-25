@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pembeli")
+@Tag(name = "Pembeli", description = "Pembeli Management APIs")
 @AllArgsConstructor
 public class PembeliController {
 
@@ -62,6 +65,19 @@ public class PembeliController {
     }
 
     @PutMapping("/profile")
+    @Operation(
+            summary = "update pembeli",
+            description = "Update profile for pembeli"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Profile updated Successfully",
+            content = @Content(schema = @Schema(implementation = PembeliDto.class))
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized - User not authenticated"
+    )
     public ResponseEntity<ApiResp<PembeliDto>> updatePembeli(@RequestBody RegisterPembeliDto input) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -87,6 +103,31 @@ public class PembeliController {
     }
 
     @GetMapping
+    @Operation(
+            summary = "Get all pembeli",
+            description = "Retrieve a list of all pembeli in the system"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully retrieved list of pembeli",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    implementation = ApiResp.class,
+                                    subTypes = {PembeliDto.class}
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "No pembeli found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResp.class)
+                    )
+            )
+    })
     public ResponseEntity<ApiResp<List<PembeliDto>>> listPembeli(){
         List<PembeliModel> pembeliList = pembeliService.get();
         List<PembeliDto> pembeliDtos = pembeliList.stream()
@@ -111,6 +152,25 @@ public class PembeliController {
     }
 
     @GetMapping("/{id}")
+    @Operation(
+            summary = "Get pembeli by ID",
+            description = "Retrieve a specific pembeli by their UUID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully retrieved pembeli",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PembeliDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Pembeli not found",
+                    content = @Content
+            )
+    })
     public ResponseEntity<ApiResp<PembeliDto>> showPembeli(@PathVariable UUID id) {
             System.out.println("ID : " + id);
             PembeliModel pembeli = pembeliService.getById(id);

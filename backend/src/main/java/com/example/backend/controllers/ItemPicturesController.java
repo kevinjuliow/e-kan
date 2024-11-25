@@ -3,11 +3,16 @@ package com.example.backend.controllers;
 import com.example.backend.dtos.ApiResp;
 import com.example.backend.dtos.DtoMapper;
 import com.example.backend.dtos.itemPicturesDtos.ItemPIcturesDto;
+import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import com.example.backend.models.ItemModel;
 import com.example.backend.models.ItemPicturesModel;
 import com.example.backend.models.PenjualModel;
 import com.example.backend.services.ItemPicturesService;
 import com.example.backend.services.ItemService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,6 +39,18 @@ public class ItemPicturesController {
     private DtoMapper mapper ;
 
     @GetMapping("/{itemId}/pictures")
+    @Operation(
+            summary = "Get all item pictures",
+            description = "Retrieves all picture of an item based on it's id"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Successfully retrieved profile"
+    )
+    @ApiResponse(
+            responseCode = "204",
+            description = "No Content"
+    )
     public ResponseEntity<List<Map<String, Object>>> getAllPictForItems(@PathVariable UUID itemId) {
         List<ItemPicturesModel> itemPicts = service.getAllPictures(itemId);
         if (itemPicts.isEmpty()) {
@@ -57,6 +74,17 @@ public class ItemPicturesController {
     }
 
     @GetMapping("/pictures/{pictureId}")
+    @Operation(
+            summary = "Get item picture by id",
+            description = "Retrieves a single picture of an item based on it's id"
+    )
+    @ApiResponse(
+            responseCode = "200"
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized - User not authenticated"
+    )
     public ResponseEntity<byte[]> getPictureById (@PathVariable UUID pictureId) {
        ItemPicturesModel itemPict = service.getPicture(pictureId);
         return ResponseEntity.ok()
