@@ -38,7 +38,8 @@ export const AuthOptions: NextAuthOptions = {
           // id: token
           id: token.sub, // put id from user to property id
           name: token.name,
-          email: token.email
+          email: token.email,
+          userType: token.userType
         },
         accessToken: token.accessToken,
       }
