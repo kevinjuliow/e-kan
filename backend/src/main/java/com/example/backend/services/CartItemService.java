@@ -2,6 +2,7 @@ package com.example.backend.services;
 
 import com.example.backend.Exceptions.GlobalExceptionHandler;
 import com.example.backend.models.CartItemModel;
+import com.example.backend.models.ItemModel;
 import com.example.backend.models.PembeliModel;
 import com.example.backend.repositories.CartItemRepo;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,9 @@ public class CartItemService {
     }
 
     public CartItemModel saveCartItem (CartItemModel model) {
+        if (repo.findByItem(model.getItem()).isPresent()){
+            throw new GlobalExceptionHandler.ResourceAlreadyExistsException("Item already exists in cart");
+        }
         return repo.save(model);
     }
 

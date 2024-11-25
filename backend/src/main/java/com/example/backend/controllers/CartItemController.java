@@ -56,13 +56,13 @@ public class CartItemController {
         );
     }
 
-    @PostMapping("/add/{id}")
-    public ResponseEntity<ApiResp<CartItemDto>> store (@RequestBody CartItemModel input , @PathVariable UUID id ) {
+    @PostMapping("/add/{itemId}")
+    public ResponseEntity<ApiResp<CartItemDto>> store (@RequestBody CartItemModel input , @PathVariable UUID itemId ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() instanceof PembeliModel) {
             input.setPembeli(((PembeliModel) authentication.getPrincipal()));
-            ItemModel foundItem = itemService.getById(id);
+            ItemModel foundItem = itemService.getById(itemId);
             input.setItem(foundItem);
 
             CartItemModel savedCartItem = service.saveCartItem(input);
