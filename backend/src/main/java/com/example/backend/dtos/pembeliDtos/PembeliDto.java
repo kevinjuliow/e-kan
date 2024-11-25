@@ -4,6 +4,7 @@ import com.example.backend.dtos.itemDtos.ItemDto;
 import com.example.backend.models.ItemModel;
 import com.example.backend.models.PembeliModel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class PembeliDto {
     private UUID id_pembeli ;
     private String nama ;

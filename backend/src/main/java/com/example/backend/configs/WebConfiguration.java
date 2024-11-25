@@ -8,6 +8,9 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.addPathPrefix("/api" , c-> true);
+        configurer.addPathPrefix("/api", clazz ->
+                !clazz.getPackageName().startsWith("org.springdoc") // Exclude Swagger controllers
+        );
     }
+
 }

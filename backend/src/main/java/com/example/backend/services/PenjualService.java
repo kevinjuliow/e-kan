@@ -1,5 +1,6 @@
 package com.example.backend.services;
 
+import com.example.backend.Exceptions.GlobalExceptionHandler;
 import com.example.backend.dtos.pembeliDtos.RegisterPembeliDto;
 import com.example.backend.dtos.penjualDtos.RegisterPenjualDto;
 import com.example.backend.models.PembeliModel;
@@ -28,7 +29,9 @@ public class PenjualService {
     }
 
     public PenjualModel getById(UUID id ) {
-        return repo.findById(id).get();
+        return repo.findById(id).orElseThrow(
+                ()-> new GlobalExceptionHandler.ResourceNotFoundException("Penjual Not Found")
+        );
     }
 
     public PenjualModel update (RegisterPenjualDto body , UUID id ) {

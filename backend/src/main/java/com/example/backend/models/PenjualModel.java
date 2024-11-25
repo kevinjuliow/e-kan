@@ -47,6 +47,9 @@ public class PenjualModel implements UserDetails {
 
     private String alamat ;
 
+    @OneToOne(mappedBy = "penjual", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProfilePictureModel profilePicture;
+
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Date createdAt;

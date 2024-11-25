@@ -3,9 +3,7 @@ package com.example.backend.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-import lombok.Generated;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
@@ -23,6 +21,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @Table(name = "pembeli")
+@Builder
+@AllArgsConstructor
 public class PembeliModel implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -54,8 +54,8 @@ public class PembeliModel implements UserDetails {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @Nullable
-    private String profile_picture ;
+    @OneToOne(mappedBy = "pembeli", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProfilePictureModel profilePicture;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

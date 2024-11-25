@@ -1,6 +1,6 @@
 package com.example.backend.controllers;
 
-import com.example.backend.dtos.ApiResponse;
+import com.example.backend.dtos.ApiResp;
 import com.example.backend.dtos.itemDtos.ItemDto;
 import com.example.backend.dtos.DtoMapper;
 import com.example.backend.models.ItemModel;
@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/item")
+@RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
     private final DtoMapper itemMapper;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ItemDto>>> index() {
+    public ResponseEntity<ApiResp<List<ItemDto>>> index() {
         List<ItemModel> itemList = itemService.getAllItems();
 
         List<ItemDto> itemDtoList = itemList.stream()
@@ -36,14 +36,39 @@ public class ItemController {
         if (itemDtoList.isEmpty()) {
             return ResponseEntity
                     .status(HttpStatus.NO_CONTENT)
-                    .body(new ApiResponse<>(
+                    .body(new ApiResp<>(
                             HttpStatus.NO_CONTENT.value(),
                             "No items found",
                             itemDtoList
                     ));
         }
 
-        return ResponseEntity.ok(new ApiResponse<>(
+        return ResponseEntity.ok(new ApiResp<>(
+                HttpStatus.OK.value(),
+                "Items retrieved successfully",
+                itemDtoList
+        ));
+    }
+
+    @GetMapping("/penjual/{id}")
+    public ResponseEntity<ApiResp<List<ItemDto>>> indexByPenjual(@PathVariable UUID id ) {
+        List<ItemModel> itemList = itemService.getAllItemsByPenjual(id);
+
+        List<ItemDto> itemDtoList = itemList.stream()
+                .map(itemMapper::toItemDto)
+                .collect(Collectors.toList());
+
+        if (itemDtoList.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .body(new ApiResp<>(
+                            HttpStatus.NO_CONTENT.value(),
+                            "No items found",
+                            itemDtoList
+                    ));
+        }
+
+        return ResponseEntity.ok(new ApiResp<>(
                 HttpStatus.OK.value(),
                 "Items retrieved successfully",
                 itemDtoList
@@ -51,14 +76,14 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ItemDto>> store(@RequestBody @Valid ItemModel input) {
+    public ResponseEntity<ApiResp<ItemDto>> store(@RequestBody @Valid ItemModel input) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
 
         if (!(principal instanceof PenjualModel)) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
-                    .body(new ApiResponse<>(
+                    .body(new ApiResp<>(
                             HttpStatus.UNAUTHORIZED.value(),
                             "Unauthorized",
                             null
@@ -73,7 +98,7 @@ public class ItemController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(
+                .body(new ApiResp<>(
                         HttpStatus.CREATED.value(),
                         "Item created successfully",
                         itemDto
@@ -81,10 +106,10 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ItemDto>> showItem(@PathVariable UUID id) {
+    public ResponseEntity<ApiResp<ItemDto>> showItem(@PathVariable UUID id) {
         ItemModel item = itemService.getById(id);
         ItemDto itemDto = itemMapper.toItemDto(item);
-        return ResponseEntity.ok(new ApiResponse<>(
+        return ResponseEntity.ok(new ApiResp<>(
                 HttpStatus.OK.value(),
                 "Success Retrieve Item ID " + item.getId_item(),
                 itemDto
@@ -93,13 +118,13 @@ public class ItemController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ItemDto>> updateItem (@PathVariable UUID id, @RequestBody ItemModel input) {
+    public ResponseEntity<ApiResp<ItemDto>> updateItem (@PathVariable UUID id, @RequestBody ItemModel input) {
         // Get current authenticated user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication.getPrincipal() instanceof PenjualModel)) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
-                    .body(new ApiResponse<>(
+                    .body(new ApiResp<>(
                             HttpStatus.UNAUTHORIZED.value(),
                             "Unauthorized",
                             null
@@ -112,12 +137,35 @@ public class ItemController {
 
             ItemModel updatedItem = itemService.updateItem(input, id);
             ItemDto itemDto = itemMapper.toItemDto(updatedItem);
-            return ResponseEntity.ok(new ApiResponse<>(
+            return ResponseEntity.ok(new ApiResp<>(
                     HttpStatus.OK.value(),
                     "Success Update Item ID " + updatedItem.getId_item(),
                     itemDto
             ));
 
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResp<Void>> deleteItem(@PathVariable UUID id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication.getPrincipal() instanceof PenjualModel)) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResp<>(
+                            HttpStatus.UNAUTHORIZED.value(),
+                            "Unauthorized",
+                            null
+                    ));
+        }
+
+        PenjualModel penjual = (PenjualModel) authentication.getPrincipal();
+
+        itemService.deleteItem(id, penjual);
+
+        return ResponseEntity.ok(new ApiResp<>(
+                HttpStatus.OK.value(),
+                "Item deleted successfully",
+                null
+        ));
     }
 
 }

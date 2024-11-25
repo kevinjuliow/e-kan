@@ -7,7 +7,7 @@ const Dashboard = () => {
   return (
     <div className="w-full flex items-center justify-center mt-24">
       <div className={`bgdashboard-wave`}></div>
-      <div className="max-w-screen-xl w-full h-full p-8 lg:px-0 flex flex-col items-center justify-center">
+      <div className="max-w-screen-xl w-full h-full p-8 xl:px-0 flex flex-col items-center justify-center">
         <div className="relative w-full md:w-[50%] flex items-center justify-center text-white border-none">
           <div className="absolute inset-y-0 start-0 flex items-center px-4">
             <svg width="20px" height="20px" viewBox="0 0 24 24" strokeWidth="1.5" fill="none" xmlns="http://www.w3.org/2000/svg" color="#ffffff">

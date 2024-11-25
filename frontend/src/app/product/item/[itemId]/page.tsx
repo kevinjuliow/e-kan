@@ -13,13 +13,12 @@ interface ParameterId {
 }
 
 const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
-  console.log(params.itemId)
   const [itemData, setItemData] = useState<Item | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${process.env.API_BASEURL}/api/item/${params.itemId}`)
+        const response = await axios.get(`${process.env.API_BASEURL}/api/items/${params.itemId}`)
 
         if (!response) {
           throw new Error('Some error occurred!')
@@ -33,7 +32,7 @@ const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
     }
 
     fetchData()
-  }, [])
+  }, [params.itemId])
 
   // Check data from API
   useEffect(() => {
