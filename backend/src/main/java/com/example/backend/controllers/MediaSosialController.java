@@ -1,10 +1,12 @@
-package com.example.backend.services;
+package com.example.backend.controllers;
 
 import com.example.backend.dtos.ApiResp;
 import com.example.backend.dtos.DtoMapper;
 import com.example.backend.dtos.mediaSosialDtos.MediaSosialDto;
 import com.example.backend.models.MediaSosialModel;
 import com.example.backend.models.PenjualModel;
+import com.example.backend.services.MedialSosialService;
+import com.example.backend.services.PenjualService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -81,4 +83,43 @@ public class MediaSosialController {
                 );
 
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResp<MediaSosialDto>> update(@RequestBody @Valid MediaSosialModel input, @PathVariable UUID id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+
+        if (!(principal instanceof PenjualModel)) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResp<>(
+                            HttpStatus.UNAUTHORIZED.value(),
+                            "Unauthorized",
+                            null
+                    ));
+        }
+
+        PenjualModel penjual = (PenjualModel) principal;
+
+        MediaSosialModel existingMediaSosial = service.getById(id);
+        if (!existingMediaSosial.getPenjual().getId_penjual().equals(penjual.getId_penjual())) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResp<>(
+                            HttpStatus.FORBIDDEN.value(),
+                            "You are not the owner of this Media Sosial",
+                            null
+                    ));
+        }
+
+        MediaSosialModel updatedMediaSosial = service.update(input, id);
+
+        return ResponseEntity
+                .ok(new ApiResp<>(
+                        HttpStatus.OK.value(),
+                        "Media Sosial Updated Successfully",
+                        mapper.toMediaSosialDto(updatedMediaSosial)
+                ));
+    }
+
 }
