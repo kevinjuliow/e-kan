@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class MediaSosialController {
 
-    private MedialSosialService service ;
-    private DtoMapper mapper ;
-    private PenjualService servicePenjual ;
+    private final MedialSosialService service ;
+    private final DtoMapper mapper ;
+    private final PenjualService servicePenjual ;
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResp<List<MediaSosialDto>>> index (@PathVariable UUID id ) {

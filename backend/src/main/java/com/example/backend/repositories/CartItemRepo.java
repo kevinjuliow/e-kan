@@ -2,6 +2,7 @@ package com.example.backend.repositories;
 
 import com.example.backend.models.CartItemModel;
 import com.example.backend.models.ItemModel;
+import com.example.backend.models.NotaTransaksiModel;
 import com.example.backend.models.PembeliModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,4 +14,7 @@ import java.util.UUID;
 public interface CartItemRepo extends JpaRepository<CartItemModel , UUID> {
     Optional<List<CartItemModel>> findByPembeli(PembeliModel pembeli);
     Optional<ItemModel> findByItem (ItemModel item);
+    Optional<List<CartItemModel>> findByNota_transaksi (NotaTransaksiModel nota);
+
+    Optional<List<CartItemModel>> findByPembeliAndIs_checkedTrue(PembeliModel pembeli);
 }

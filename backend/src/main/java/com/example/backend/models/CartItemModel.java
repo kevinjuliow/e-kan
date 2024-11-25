@@ -18,7 +18,7 @@ public class CartItemModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(unique = true)
-    private UUID id_cart ;
+    private UUID id_cart_item;
 
     @Column
     private int jumlah_item = 1;
@@ -33,5 +33,10 @@ public class CartItemModel {
     @ManyToOne
     @JoinColumn(name = "pembeli_id")
     private PembeliModel pembeli ;
+
+
+    @ManyToOne
+    @JoinColumn(name = "nota_transkasi_id")
+    private NotaTransaksiModel nota_transaksi ;
 
 }
