@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -66,5 +67,81 @@ public class AlamatPembeliController {
                        mapper.toAlamatDto(input)
                 ));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResp<AlamatPembeliDto>> update(
+            @PathVariable UUID id,
+            @RequestBody AlamatPembeliModel input
+    ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+
+        if (!(principal instanceof PembeliModel pembeli)) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResp<>(
+                            HttpStatus.UNAUTHORIZED.value(),
+                            "Unauthorized",
+                            null
+                    ));
+        }
+
+
+        AlamatPembeliModel existingAlamat = service.getById(id);
+        if (!existingAlamat.getPembeli().getId_pembeli().equals(pembeli.getId_pembeli())) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResp<>(
+                            HttpStatus.FORBIDDEN.value(),
+                            "Forbidden: You do not own this address",
+                            null
+                    ));
+        }
+
+
+        AlamatPembeliModel updatedAlamat = service.update(input, id);
+        return ResponseEntity.ok(new ApiResp<>(
+                HttpStatus.OK.value(),
+                "Alamat updated successfully",
+                mapper.toAlamatDto(updatedAlamat)
+        ));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResp<Void>> delete(@PathVariable UUID id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+
+        if (!(principal instanceof PembeliModel pembeli)) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResp<>(
+                            HttpStatus.UNAUTHORIZED.value(),
+                            "Unauthorized",
+                            null
+                    ));
+        }
+
+
+        AlamatPembeliModel existingAlamat = service.getById(id);
+        if (!existingAlamat.getPembeli().getId_pembeli().equals(pembeli.getId_pembeli())) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResp<>(
+                            HttpStatus.FORBIDDEN.value(),
+                            "Forbidden: You do not own this address",
+                            null
+                    ));
+        }
+
+
+        service.delete(id);
+        return ResponseEntity.ok(new ApiResp<>(
+                HttpStatus.OK.value(),
+                "Alamat deleted successfully",
+                null
+        ));
+    }
+
 
 }

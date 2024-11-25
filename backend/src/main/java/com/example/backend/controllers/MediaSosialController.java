@@ -121,5 +121,43 @@ public class MediaSosialController {
                         mapper.toMediaSosialDto(updatedMediaSosial)
                 ));
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResp<MediaSosialDto>> delete (@PathVariable UUID id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+
+        if (!(principal instanceof PenjualModel)) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResp<>(
+                            HttpStatus.UNAUTHORIZED.value(),
+                            "Unauthorized",
+                            null
+                    ));
+        }
+
+        PenjualModel penjual = (PenjualModel) principal;
+
+        MediaSosialModel existingMediaSosial = service.getById(id);
+        if (!existingMediaSosial.getPenjual().getId_penjual().equals(penjual.getId_penjual())) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResp<>(
+                            HttpStatus.FORBIDDEN.value(),
+                            "You are not the owner of this Media Sosial",
+                            null
+                    ));
+        }
+        service.delete(id);
+
+        return ResponseEntity
+                .ok(new ApiResp<>(
+                        HttpStatus.OK.value(),
+                        "Media sosial delete Successfully",
+                        null
+                ));
+    }
+
+
 
 }
