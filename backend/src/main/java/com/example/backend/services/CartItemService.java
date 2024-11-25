@@ -16,7 +16,7 @@ public class CartItemService {
     private CartItemRepo repo ;
 
     public List<CartItemModel> getAll(PembeliModel model) {
-        return repo.findByPembeli(model)
+        return repo.findByPembeliAndNotaTransaksiIsNull(model)
                 .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Not Found"));
     }
 
@@ -36,18 +36,20 @@ public class CartItemService {
     }
 
     public CartItemModel saveCartItem (CartItemModel model) {
-//        if (repo.findByItem(model.getItem()).isPresent()){
-//            throw new GlobalExceptionHandler.ResourceAlreadyExistsException("Item already exists in cart");
-//        }
+        repo.findByItemAndNotaTransaksiIsNull(model.getItem()).ifPresent(existingItem -> {
+            throw new GlobalExceptionHandler.ResourceAlreadyExistsException("Item already exists in cart");
+        });
         return repo.save(model);
     }
 
     public CartItemModel update (CartItemModel input , UUID id){
         CartItemModel existItem = repo.findById(id).orElseThrow(
                 () -> new GlobalExceptionHandler.ResourceNotFoundException("Cart Item"));
+
         if (existItem.getIsChecked() != input.getIsChecked()) {
             existItem.setIsChecked(input.getIsChecked());
         }
+
         if (existItem.getJumlah_item() != input.getJumlah_item()) {
             existItem.setJumlah_item(input.getJumlah_item());
         }

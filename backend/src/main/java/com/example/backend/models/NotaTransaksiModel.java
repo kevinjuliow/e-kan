@@ -15,6 +15,7 @@ import java.util.UUID;
 @Entity
 @Builder
 @NoArgsConstructor
+@Table(name = "nota_transaksi")
 public class NotaTransaksiModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

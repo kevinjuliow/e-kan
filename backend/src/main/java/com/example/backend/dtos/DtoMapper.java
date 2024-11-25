@@ -100,10 +100,11 @@ public class DtoMapper {
         }
         CartItemDto dto = CartItemDto.builder()
                 .id_cart(model.getId_cart())
-                .is_checked(model.getIsChecked())
+                .isChecked(model.getIsChecked())
                 .jumlah_item(model.getJumlah_item())
                 .pembeli(toPembeliDto(model.getPembeli()))
-                .item(toItemDto(model.getItem())).build();
+                .item(toItemDto(model.getItem()))
+                .notaTransaksi(model.getNotaTransaksi()).build();
 
         return dto ;
     }

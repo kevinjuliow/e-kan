@@ -2,6 +2,7 @@ package com.example.backend.dtos.cartItemDtos;
 
 import com.example.backend.dtos.itemDtos.ItemDto;
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
+import com.example.backend.models.NotaTransaksiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +15,8 @@ import java.util.UUID;
 public class CartItemDto {
     private UUID id_cart;
     private int jumlah_item;
-    private Boolean is_checked ;
+    private Boolean isChecked;
     private ItemDto item ;
     private PembeliDto pembeli ;
+    private NotaTransaksiModel notaTransaksi;
 }
