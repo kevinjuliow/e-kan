@@ -16,13 +16,13 @@ const EachItem: React.FC<Props> = ({ data }) => {
   const { data: session } = useSession()
   // const [loading, setLoading] = useState<boolean>(false);
   // const [error, setError] = useState<Error>()
-  const { message, showToast } = useToast()
+  const { message, toastType, showToast } = useToast()
 
   const handleAddToCart = async () => {
     console.log(process.env.API_BASEURL)
     // setLoading(true)
     try {
-      const response = await axios.post(`${process.env.API_BASEURL}/api/cart/add/${data.id_item}`, {
+      await axios.post(`${process.env.API_BASEURL}/api/cart/add/${data.id_item}`, {
         jumlah_item: 1
       }, {
         headers: {
@@ -30,17 +30,15 @@ const EachItem: React.FC<Props> = ({ data }) => {
         },
       });
 
-      if (response.status === 409) {
-        throw new Error("Failed to add item into cart, already added!");
-      }
-
+      showToast("Berhasil menambahkan " + data.nama + " ke dalam keranjang!", "SUCCESS")
     } catch (error) {
-      if (error instanceof Error) {
-        showToast("Error ketika ingin menambahkan item ke cart, coba lagi!")
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        showToast("Gagal menambahkan item ke keranjang, item sudah ditambahkan!", "WARNING");
+      } else if (error instanceof Error) {
+        showToast(error.message ?? "Error ketika ingin menambahkan item ke keranjang, coba lagi!", "WARNING");
       }
     } finally {
       // setLoading(false);
-      showToast("Berhasil menambahkan " + data.nama + " ke dalam keranjang!")
     }
   }
 
@@ -76,7 +74,7 @@ const EachItem: React.FC<Props> = ({ data }) => {
                 <p className="font-light ms-1 text-sm">{data.jenis_habitat}</p>
               </div>
             </div>
-            {message && <Toast message={message} onClose={() => {}} />}
+            {message && <Toast message={message} toastType={toastType ?? "SUCCESS"} onClose={() => {}} />}
           </div>
         </div>
     </div>
