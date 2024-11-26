@@ -30,6 +30,7 @@ public class DtoMapper {
                 .stock(model.getStock())
                 .description(model.getDescription())
                 .tipe_penjualan(model.getTipe_penjualan())
+                .ukuran_ikan(model.getUkuran_ikan())
                 .penjual(toPenjualDto(model.getPenjual())).build();
 
 

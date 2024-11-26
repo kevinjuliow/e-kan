@@ -26,6 +26,8 @@ public class ItemDto {
     private int stock ;
     private String tipe_penjualan ;
 
+    private String ukuran_ikan ;
+
     private String description ;
 
     private PenjualDto penjual ;
