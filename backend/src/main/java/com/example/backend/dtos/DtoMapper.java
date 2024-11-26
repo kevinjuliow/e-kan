@@ -5,8 +5,8 @@ import com.example.backend.dtos.cartItemDtos.CartItemDto;
 import com.example.backend.dtos.itemDtos.ItemDto;
 import com.example.backend.dtos.itemPicturesDtos.ItemPIcturesDto;
 import com.example.backend.dtos.mediaSosialDtos.MediaSosialDto;
-import com.example.backend.dtos.notaTransaksiDtos.NotaDetailTransaksiDto;
-import com.example.backend.dtos.notaTransaksiDtos.NotaTransaksiDto;
+import com.example.backend.dtos.InvoiceDtos.InvoiceDetailDto;
+import com.example.backend.dtos.InvoiceDtos.InvoiceDto;
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import com.example.backend.dtos.penjualDtos.PenjualDto;
 import com.example.backend.dtos.profilePictureDtos.ProfilePictureDto;
@@ -164,34 +164,35 @@ public class DtoMapper {
         return dto ;
     }
 
-    public NotaTransaksiDto toNotaTransaksiDto(NotaTransaksiModel model) {
+    public InvoiceDto toInvoiceDto(InvoiceModel model) {
         if (model == null) {
             return null;
         }
 
         // Map notaDetails to their respective DTOs
-        List<NotaDetailTransaksiDto> notaDetailsDto = model.getNotaDetails().stream()
-                .map(this::toNotaDetailDto)
+        List<InvoiceDetailDto> notaDetailsDto = model.getInvoiceDetails().stream()
+                .map(this::toInvoiceDetailsDto)
                 .toList();
 
-        NotaTransaksiDto dto = NotaTransaksiDto.builder()
-                .idNotaTransaksi(model.getId_nota_transaksi())
+        InvoiceDto dto = InvoiceDto.builder()
+                .id_invoice(model.getId_invoice())
                 .pembeli(toPembeliDto(model.getPembeli()))
-                .notaDetails(notaDetailsDto)
+                .invoiceDetails(notaDetailsDto)
                 .totalHarga(model.getTotalHarga())
                 .tanggalPembelian(model.getTanggalPembelian())
+                .paid(model.isPaid())
                 .build();
 
         return dto;
     }
 
-    public NotaDetailTransaksiDto toNotaDetailDto(NotaDetailModel model) {
+    public InvoiceDetailDto toInvoiceDetailsDto(InvoiceDetailModel model) {
         if (model == null) {
             return null;
         }
 
-        NotaDetailTransaksiDto dto = NotaDetailTransaksiDto.builder()
-                .idNotaDetail(model.getId_detail_nota_transaksi())
+        InvoiceDetailDto dto = InvoiceDetailDto.builder()
+                .id_invoice_detail(model.getId_invoice_detail())
                 .item(toItemDto(model.getItem()))
                 .jumlahItem(model.getJumlahItem())
                 .harga(model.getHarga())

@@ -4,7 +4,7 @@ import com.example.backend.Exceptions.GlobalExceptionHandler;
 import com.example.backend.models.*;
 import com.example.backend.repositories.CartItemRepo;
 import com.example.backend.repositories.ItemRepo;
-import com.example.backend.repositories.NotaTransaksiRepo;
+import com.example.backend.repositories.InvoiceRepo;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,24 +14,24 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-public class NotaTransaksiService {
+public class InvoiceService {
 
-    private final NotaTransaksiRepo notaRepository;
+    private final InvoiceRepo invoiceRepo;
 
     private final CartItemRepo cartRepository;
 
     private final ItemRepo itemRepository;
 
     @Transactional
-    public NotaTransaksiModel createTransactionFromCart(PembeliModel pembeli) {
+    public InvoiceModel createTransactionFromCart(PembeliModel pembeli) {
         List<CartItemModel> cartItems = cartRepository.findByPembeliAndIsCheckedTrue(pembeli).get();
 
         if (cartItems.isEmpty()) {
             throw new IllegalArgumentException("Keranjang kosong!");
         }
 
-        NotaTransaksiModel nota = new NotaTransaksiModel();
-        nota.setPembeli(pembeli);
+        InvoiceModel invoice = new InvoiceModel();
+        invoice.setPembeli(pembeli);
 
         double totalHarga = 0.0;
 
@@ -43,28 +43,28 @@ public class NotaTransaksiService {
             itemRepository.save(item);
 
             // Create NotaDetail
-            NotaDetailModel detail = new NotaDetailModel();
-            detail.setNotaTransaksi(nota);
+            InvoiceDetailModel detail = new InvoiceDetailModel();
+            detail.setInvoice(invoice);
             detail.setItem(item);
             detail.setJumlahItem(cartItem.getJumlah_item());
             detail.setHarga(item.getHarga());
 
-            nota.getNotaDetails().add(detail);
+            invoice.getInvoiceDetails().add(detail);
             totalHarga += detail.getJumlahItem() * detail.getHarga();
         }
 
-        nota.setTotalHarga(totalHarga);
-        notaRepository.save(nota);
+        invoice.setTotalHarga(totalHarga);
+        invoiceRepo.save(invoice);
 
-        // Clear the cart after transaction
+
         cartRepository.deleteByPembeli(pembeli);
 
-        return nota;
+        return invoice;
     }
 
 
     @Transactional
-    public NotaTransaksiModel createTransactionDirect(PembeliModel pembeli, UUID itemId, int quantity) {
+    public InvoiceModel createTransactionDirect(PembeliModel pembeli, UUID itemId, int quantity) {
         ItemModel item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Item tidak ditemukan!"));
 
@@ -75,23 +75,23 @@ public class NotaTransaksiService {
         item.reduceStock(quantity);
         itemRepository.save(item);
 
-        NotaTransaksiModel nota = new NotaTransaksiModel();
-        nota.setPembeli(pembeli);
+        InvoiceModel invoice = new InvoiceModel();
+        invoice.setPembeli(pembeli);
 
-        NotaDetailModel detail = new NotaDetailModel();
-        detail.setNotaTransaksi(nota);
+        InvoiceDetailModel detail = new InvoiceDetailModel();
+        detail.setInvoice(invoice);
         detail.setItem(item);
         detail.setJumlahItem(quantity);
         detail.setHarga(item.getHarga());
 
-        nota.getNotaDetails().add(detail);
-        nota.setTotalHarga(detail.getJumlahItem() * detail.getHarga());
-        return notaRepository.save(nota);
+        invoice.getInvoiceDetails().add(detail);
+        invoice.setTotalHarga(detail.getJumlahItem() * detail.getHarga());
+        return invoiceRepo.save(invoice);
     }
 
 
-    public NotaTransaksiModel getTransactionById(UUID id) {
-        return notaRepository.findById(id)
+    public InvoiceModel getTransactionById(UUID id) {
+        return invoiceRepo.findById(id)
                 .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Transaksi tidak ditemukan!"));
     }
 }

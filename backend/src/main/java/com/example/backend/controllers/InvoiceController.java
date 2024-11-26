@@ -2,10 +2,10 @@ package com.example.backend.controllers;
 
 import com.example.backend.dtos.ApiResp;
 import com.example.backend.dtos.DtoMapper;
-import com.example.backend.dtos.notaTransaksiDtos.NotaTransaksiDto;
-import com.example.backend.models.NotaTransaksiModel;
+import com.example.backend.dtos.InvoiceDtos.InvoiceDto;
+import com.example.backend.models.InvoiceModel;
 import com.example.backend.models.PembeliModel;
-import com.example.backend.services.NotaTransaksiService;
+import com.example.backend.services.InvoiceService;
 import com.example.backend.services.PembeliService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,25 +19,25 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/transactions")
 @AllArgsConstructor
-public class NotaTransaksiController {
+public class InvoiceController {
 
 
-    private final NotaTransaksiService notaService;
+    private final InvoiceService invoiceService;
     private final PembeliService pembeliService ;
     private final DtoMapper mapper ;
 
     @PostMapping("/cart")
-    public ResponseEntity<ApiResp<NotaTransaksiModel>> checkoutFromCart() {
+    public ResponseEntity<ApiResp<InvoiceModel>> checkoutFromCart() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
                 PembeliModel pembeli = pembeliService.getById(currentUser.getId_pembeli());
-                NotaTransaksiModel nota = notaService.createTransactionFromCart(pembeli);
+                InvoiceModel nota = invoiceService.createTransactionFromCart(pembeli);
 
                 return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResp<>(
                         HttpStatus.CREATED.value(),
-                        "Created Nota" ,
+                        "Created Invoice" ,
                         nota
                 ));
             }
@@ -50,7 +50,7 @@ public class NotaTransaksiController {
     }
 
     @PostMapping("/direct")
-    public ResponseEntity<ApiResp<NotaTransaksiDto>> directPurchase(
+    public ResponseEntity<ApiResp<InvoiceDto>> directPurchase(
             @RequestParam UUID itemId,
             @RequestParam int quantity
     ) {
@@ -59,12 +59,12 @@ public class NotaTransaksiController {
 
             if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
                 PembeliModel pembeli = pembeliService.getById(currentUser.getId_pembeli());
-                NotaTransaksiModel nota = notaService.createTransactionDirect(pembeli, itemId, quantity);
+                InvoiceModel nota = invoiceService.createTransactionDirect(pembeli, itemId, quantity);
                 return ResponseEntity.status(HttpStatus.CREATED).body(
                         new ApiResp<>(
                                 HttpStatus.CREATED.value(),
-                                "Created Nota" ,
-                                mapper.toNotaTransaksiDto(nota)
+                                "Created Invoice" ,
+                                mapper.toInvoiceDto(nota)
                         )
                 );
             }
@@ -75,14 +75,14 @@ public class NotaTransaksiController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResp<NotaTransaksiDto>> getTransaction(@PathVariable UUID id) {
+    @GetMapping("/{invoiceId}")
+    public ResponseEntity<ApiResp<InvoiceDto>> getTransaction(@PathVariable UUID invoiceId) {
         try {
-            NotaTransaksiModel nota = notaService.getTransactionById(id);
+            InvoiceModel nota = invoiceService.getTransactionById(invoiceId);
             return ResponseEntity.ok(new ApiResp<>(
                     HttpStatus.OK.value(),
-                    "Success retrieve nota" ,
-                    mapper.toNotaTransaksiDto(nota))
+                    "Success retrieve invoice" ,
+                    mapper.toInvoiceDto(nota))
             );
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();

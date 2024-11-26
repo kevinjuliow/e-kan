@@ -1,8 +1,8 @@
 package com.example.backend.services;
 
 
-import com.example.backend.models.NotaDetailModel;
-import com.example.backend.models.NotaTransaksiModel;
+import com.example.backend.models.InvoiceDetailModel;
+import com.example.backend.models.InvoiceModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,7 +21,7 @@ public class MidtransService {
     private static final String MIDTRANS_SNAP_URL = "https://app.sandbox.midtrans.com/snap/v1/transactions";
     private static final String SERVER_KEY = "SB-Mid-server-a_tg-5l9gBiwD01vrbWC7IjM";
 
-    public String createTransaction(NotaTransaksiModel nota) {
+    public String createTransaction(InvoiceModel nota) {
         RestTemplate restTemplate = new RestTemplate();
 
         // Prepare headers
@@ -35,12 +35,12 @@ public class MidtransService {
 
         // Transaction details
         Map<String, Object> transactionDetails = new HashMap<>();
-        transactionDetails.put("order_id", nota.getId_nota_transaksi().toString());
+        transactionDetails.put("order_id", nota.getId_invoice().toString());
         transactionDetails.put("gross_amount", nota.getTotalHarga().intValue());
 
         //item_details
         Map<String, Object> itemDetails = new HashMap<>();
-        for ( NotaDetailModel object  : nota.getNotaDetails()) {
+        for ( InvoiceDetailModel object  : nota.getInvoiceDetails()) {
             itemDetails.put("id" , object.getItem().getId_item());
             itemDetails.put("price" , object.getItem().getHarga());
             itemDetails.put("quantity" , object.getJumlahItem());

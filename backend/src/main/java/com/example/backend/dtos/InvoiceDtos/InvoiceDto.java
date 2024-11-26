@@ -1,4 +1,4 @@
-package com.example.backend.dtos.notaTransaksiDtos;
+package com.example.backend.dtos.InvoiceDtos;
 
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import lombok.Builder;
@@ -10,10 +10,11 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class NotaTransaksiDto {
-    private UUID idNotaTransaksi;
+public class InvoiceDto {
+    private UUID id_invoice;
     private PembeliDto pembeli;
-    private List<NotaDetailTransaksiDto> notaDetails;
+    private List<InvoiceDetailDto> invoiceDetails;
     private Double totalHarga;
     private Date tanggalPembelian;
+    private boolean paid;
 }

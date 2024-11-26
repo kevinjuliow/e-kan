@@ -1,8 +1,8 @@
 package com.example.backend.controllers;
 
-import com.example.backend.models.NotaTransaksiModel;
+import com.example.backend.models.InvoiceModel;
 import com.example.backend.services.MidtransService;
-import com.example.backend.services.NotaTransaksiService;
+import com.example.backend.services.InvoiceService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +18,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PaymentController {
     private final MidtransService midtransService;
-    private final NotaTransaksiService notaService;
+    private final InvoiceService notaService;
 
     @PostMapping("/create/{notaId}")
     public ResponseEntity<String> createTransaction(@PathVariable UUID notaId) {
         try {
-            NotaTransaksiModel nota = notaService.getTransactionById(notaId);
+            InvoiceModel nota = notaService.getTransactionById(notaId);
 
             String midtransResponse = midtransService.createTransaction(nota);
 

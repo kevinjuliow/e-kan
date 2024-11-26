@@ -16,20 +16,20 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "nota_transaksi")
+@Table(name = "invoice")
 @Data
-public class NotaTransaksiModel {
+public class InvoiceModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(unique = true)
-    private UUID id_nota_transaksi;
+    private UUID id_invoice;
 
     @ManyToOne
     @JoinColumn(name = "pembeli_id", nullable = false)
     private PembeliModel pembeli;
 
-    @OneToMany(mappedBy = "notaTransaksi", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<NotaDetailModel> notaDetails = new ArrayList<>();
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<InvoiceDetailModel> invoiceDetails = new ArrayList<>();
 
     @CreationTimestamp
     @Column(updatable = false, name = "tanggal_pembelian")
@@ -37,8 +37,10 @@ public class NotaTransaksiModel {
 
     private Double totalHarga = 0.0;
 
+    private boolean paid = false;
+
     public void calculateTotalHarga() {
-        totalHarga = notaDetails.stream()
+        totalHarga = invoiceDetails.stream()
                 .mapToDouble(detail -> detail.getHarga() * detail.getJumlahItem())
                 .sum();
     }

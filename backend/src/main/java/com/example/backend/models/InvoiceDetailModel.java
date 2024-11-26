@@ -13,18 +13,18 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "nota_detail_transaksi")
+@Table(name = "invoice_detail")
 @Data
-public class NotaDetailModel {
+public class InvoiceDetailModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(unique = true)
-    private UUID id_detail_nota_transaksi;
+    private UUID id_invoice_detail;
 
     @ManyToOne
-    @JoinColumn(name = "id_nota_transaksi", nullable = false)
+    @JoinColumn(name = "id_invoice", nullable = false)
     @JsonIgnore
-    private NotaTransaksiModel notaTransaksi;
+    private InvoiceModel invoice;
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)

@@ -49,7 +49,7 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers("/api/payment/**")
                         .permitAll()
-                        .requestMatchers("/api/transactions/{id}")
+                        .requestMatchers("/api/transactions/{invoiceId}")
                         .permitAll()
                         .anyRequest()
                         .authenticated()
