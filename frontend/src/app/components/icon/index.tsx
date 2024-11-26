@@ -90,6 +90,12 @@ export const CheckSolidIcon = ({ hexColor, size }: IconProperties) => (
   </svg>
 )
 
+export const XMarkSolidIcon = ({ hexColor, size }: IconProperties) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color={hexColor} strokeWidth="1.5">
+    <path fillRule="evenodd" clipRule="evenodd" d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM9.70164 8.64124C9.40875 8.34835 8.93388 8.34835 8.64098 8.64124C8.34809 8.93414 8.34809 9.40901 8.64098 9.7019L10.9391 12L8.64098 14.2981C8.34809 14.591 8.34809 15.0659 8.64098 15.3588C8.93388 15.6517 9.40875 15.6517 9.70164 15.3588L11.9997 13.0607L14.2978 15.3588C14.5907 15.6517 15.0656 15.6517 15.3585 15.3588C15.6514 15.0659 15.6514 14.591 15.3585 14.2981L13.0604 12L15.3585 9.7019C15.6514 9.40901 15.6514 8.93414 15.3585 8.64124C15.0656 8.34835 14.5907 8.34835 14.2978 8.64124L11.9997 10.9393L9.70164 8.64124Z" fill={hexColor}></path>
+  </svg>
+)
+
 export const LeftArrowIcon = ({ hexColor, size }: IconProperties) => (
   <svg width={size} height={size} viewBox="0 0 24 24" strokeWidth="3" fill="none" xmlns="http://www.w3.org/2000/svg" color={hexColor}>
     <path d="M21 12L3 12M3 12L11.5 3.5M3 12L11.5 20.5" stroke={hexColor} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"></path>
@@ -99,5 +105,12 @@ export const LeftArrowIcon = ({ hexColor, size }: IconProperties) => (
 export const RightArrowIcon = ({ hexColor, size }: IconProperties) => (
   <svg width={size} height={size} viewBox="0 0 24 24" strokeWidth="3" fill="none" xmlns="http://www.w3.org/2000/svg" color={hexColor}>
     <path d="M3 12L21 12M21 12L12.5 3.5M21 12L12.5 20.5" stroke={hexColor} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"></path>
+  </svg>
+)
+
+export const UploadIcon = ({ hexColor, size }: IconProperties) => (
+  <svg width={size} height={size} strokeWidth="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color={hexColor}>
+    <path d="M12 22V13M12 13L15.5 16.5M12 13L8.5 16.5" stroke={hexColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+    <path d="M20 17.6073C21.4937 17.0221 23 15.6889 23 13C23 9 19.6667 8 18 8C18 6 18 2 12 2C6 2 6 6 6 8C4.33333 8 1 9 1 13C1 15.6889 2.50628 17.0221 4 17.6073" stroke={hexColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
   </svg>
 )
