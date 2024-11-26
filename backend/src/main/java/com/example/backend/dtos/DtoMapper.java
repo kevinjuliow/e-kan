@@ -5,11 +5,15 @@ import com.example.backend.dtos.cartItemDtos.CartItemDto;
 import com.example.backend.dtos.itemDtos.ItemDto;
 import com.example.backend.dtos.itemPicturesDtos.ItemPIcturesDto;
 import com.example.backend.dtos.mediaSosialDtos.MediaSosialDto;
+import com.example.backend.dtos.InvoiceDtos.InvoiceDetailDto;
+import com.example.backend.dtos.InvoiceDtos.InvoiceDto;
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import com.example.backend.dtos.penjualDtos.PenjualDto;
 import com.example.backend.dtos.profilePictureDtos.ProfilePictureDto;
 import com.example.backend.models.*;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class DtoMapper {
@@ -25,6 +29,7 @@ public class DtoMapper {
                 .harga(model.getHarga())
                 .stock(model.getStock())
                 .description(model.getDescription())
+                .tipe_penjualan(model.getTipe_penjualan())
                 .penjual(toPenjualDto(model.getPenjual())).build();
 
 
@@ -103,8 +108,7 @@ public class DtoMapper {
                 .isChecked(model.getIsChecked())
                 .jumlah_item(model.getJumlah_item())
                 .pembeli(toPembeliDto(model.getPembeli()))
-                .item(toItemDto(model.getItem()))
-                .notaTransaksi(model.getNotaTransaksi()).build();
+                .item(toItemDto(model.getItem())).build();
 
         return dto ;
     }
@@ -160,4 +164,44 @@ public class DtoMapper {
 
         return dto ;
     }
+
+    public InvoiceDto toInvoiceDto(InvoiceModel model) {
+        if (model == null) {
+            return null;
+        }
+
+        // Map notaDetails to their respective DTOs
+        List<InvoiceDetailDto> notaDetailsDto = model.getInvoiceDetails().stream()
+                .map(this::toInvoiceDetailsDto)
+                .toList();
+
+        InvoiceDto dto = InvoiceDto.builder()
+                .id_invoice(model.getId_invoice())
+                .pembeli(toPembeliDto(model.getPembeli()))
+                .invoiceDetails(notaDetailsDto)
+                .totalHarga(model.getTotalHarga())
+                .tanggalPembelian(model.getTanggalPembelian())
+                .paid(model.isPaid())
+                .build();
+
+        return dto;
+    }
+
+    public InvoiceDetailDto toInvoiceDetailsDto(InvoiceDetailModel model) {
+        if (model == null) {
+            return null;
+        }
+
+        InvoiceDetailDto dto = InvoiceDetailDto.builder()
+                .id_invoice_detail(model.getId_invoice_detail())
+                .item(toItemDto(model.getItem()))
+                .jumlahItem(model.getJumlahItem())
+                .harga(model.getHarga())
+                .build();
+
+        return dto;
+    }
+
+
+
 }

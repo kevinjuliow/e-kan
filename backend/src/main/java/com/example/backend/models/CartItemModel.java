@@ -34,10 +34,4 @@ public class CartItemModel {
     @ManyToOne
     @JoinColumn(name = "pembeli_id")
     private PembeliModel pembeli ;
-
-
-    @ManyToOne
-    @JoinColumn(name = "nota_transkasi_id")
-    private NotaTransaksiModel notaTransaksi;
-
 }

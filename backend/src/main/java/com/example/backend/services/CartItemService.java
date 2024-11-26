@@ -16,7 +16,7 @@ public class CartItemService {
     private CartItemRepo repo ;
 
     public List<CartItemModel> getAll(PembeliModel model) {
-        return repo.findByPembeliAndNotaTransaksiIsNull(model)
+        return repo.findByPembeli(model)
                 .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Not Found"));
     }
 
@@ -36,7 +36,7 @@ public class CartItemService {
     }
 
     public CartItemModel saveCartItem (CartItemModel model) {
-        repo.findByItemAndNotaTransaksiIsNull(model.getItem()).ifPresent(existingItem -> {
+        repo.findByItem(model.getItem()).ifPresent(existingItem -> {
             throw new GlobalExceptionHandler.ResourceAlreadyExistsException("Item already exists in cart");
         });
         return repo.save(model);
