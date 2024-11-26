@@ -68,6 +68,9 @@ public class ItemService {
         if(input.getHarga() != null) {
             existingItem.setHarga(input.getHarga());
         }
+        if(input.getTipe_penjualan() != null && !input.getTipe_penjualan().equals(existingItem.getTipe_penjualan())) {
+            existingItem.setTipe_penjualan(input.getTipe_penjualan());
+        }
         return repo.save(existingItem);
     }
 

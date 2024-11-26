@@ -4,6 +4,7 @@ import com.example.backend.Exceptions.GlobalExceptionHandler;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Data
 @Table(name = "item")
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
 public class ItemModel {
     @Id
@@ -32,6 +34,10 @@ public class ItemModel {
     private String jenis_bibit ;
     @NotNull
     private Double harga ;
+    @NotNull
+    private String tipe_penjualan;
+
+    private String ukuran_ikan;
 
     private int stock = 0;
 
