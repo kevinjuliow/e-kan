@@ -5,11 +5,15 @@ import com.example.backend.dtos.cartItemDtos.CartItemDto;
 import com.example.backend.dtos.itemDtos.ItemDto;
 import com.example.backend.dtos.itemPicturesDtos.ItemPIcturesDto;
 import com.example.backend.dtos.mediaSosialDtos.MediaSosialDto;
+import com.example.backend.dtos.notaTransaksiDtos.NotaDetailTransaksiDto;
+import com.example.backend.dtos.notaTransaksiDtos.NotaTransaksiDto;
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import com.example.backend.dtos.penjualDtos.PenjualDto;
 import com.example.backend.dtos.profilePictureDtos.ProfilePictureDto;
 import com.example.backend.models.*;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class DtoMapper {
@@ -159,4 +163,43 @@ public class DtoMapper {
 
         return dto ;
     }
+
+    public NotaTransaksiDto toNotaTransaksiDto(NotaTransaksiModel model) {
+        if (model == null) {
+            return null;
+        }
+
+        // Map notaDetails to their respective DTOs
+        List<NotaDetailTransaksiDto> notaDetailsDto = model.getNotaDetails().stream()
+                .map(this::toNotaDetailDto)
+                .toList();
+
+        NotaTransaksiDto dto = NotaTransaksiDto.builder()
+                .idNotaTransaksi(model.getId_nota_transaksi())
+                .pembeli(toPembeliDto(model.getPembeli()))
+                .notaDetails(notaDetailsDto)
+                .totalHarga(model.getTotalHarga())
+                .tanggalPembelian(model.getTanggalPembelian())
+                .build();
+
+        return dto;
+    }
+
+    public NotaDetailTransaksiDto toNotaDetailDto(NotaDetailModel model) {
+        if (model == null) {
+            return null;
+        }
+
+        NotaDetailTransaksiDto dto = NotaDetailTransaksiDto.builder()
+                .idNotaDetail(model.getId_detail_nota_transaksi())
+                .item(toItemDto(model.getItem()))
+                .jumlahItem(model.getJumlahItem())
+                .harga(model.getHarga())
+                .build();
+
+        return dto;
+    }
+
+
+
 }

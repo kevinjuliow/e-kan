@@ -1,5 +1,6 @@
 package com.example.backend.services;
 
+import com.example.backend.Exceptions.GlobalExceptionHandler;
 import com.example.backend.models.*;
 import com.example.backend.repositories.CartItemRepo;
 import com.example.backend.repositories.ItemRepo;
@@ -65,7 +66,7 @@ public class NotaTransaksiService {
     @Transactional
     public NotaTransaksiModel createTransactionDirect(PembeliModel pembeli, UUID itemId, int quantity) {
         ItemModel item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("Item tidak ditemukan!"));
+                .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Item tidak ditemukan!"));
 
         if (item.getStock() < quantity) {
             throw new IllegalArgumentException("Stok tidak cukup untuk item: " + item.getNama());
@@ -91,6 +92,6 @@ public class NotaTransaksiService {
 
     public NotaTransaksiModel getTransactionById(UUID id) {
         return notaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Transaksi tidak ditemukan!"));
+                .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Transaksi tidak ditemukan!"));
     }
 }
