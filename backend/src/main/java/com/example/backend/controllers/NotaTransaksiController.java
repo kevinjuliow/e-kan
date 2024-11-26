@@ -1,13 +1,9 @@
 package com.example.backend.controllers;
 
-import com.example.backend.dtos.ApiResp;
-import com.example.backend.dtos.DtoMapper;
-import com.example.backend.dtos.cartItemDtos.CartItemDto;
-import com.example.backend.models.CartItemModel;
 import com.example.backend.models.NotaTransaksiModel;
 import com.example.backend.models.PembeliModel;
-import com.example.backend.models.PenjualModel;
 import com.example.backend.services.NotaTransaksiService;
+import com.example.backend.services.PembeliService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,93 +11,62 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("nota")
+@RequestMapping("/transactions")
 @AllArgsConstructor
 public class NotaTransaksiController {
 
-    private final NotaTransaksiService service;
 
-    private final DtoMapper mapper ;
-    @GetMapping("/{notaId}")
-    public ResponseEntity<ApiResp<List<CartItemDto>>> showNota (@PathVariable  UUID notaId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    private final NotaTransaksiService notaService;
+    private final PembeliService pembeliService ;
 
-        if (authentication.getPrincipal() instanceof PembeliModel pembeli) {
-            List<CartItemModel> list = service.getByID(notaId , pembeli.getId_pembeli());
+    @PostMapping("/cart")
+    public ResponseEntity<NotaTransaksiModel> checkoutFromCart() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            return ResponseEntity.ok(
-                    new ApiResp<>(
-                            HttpStatus.OK.value(),
-                            "Success Retrieve Nota",
-                            list.stream().map(mapper::toCartItemDto).collect(Collectors.toList())
-                    )
-            );
+            if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
+                PembeliModel pembeli = pembeliService.getById(currentUser.getId_pembeli());
+                NotaTransaksiModel nota = notaService.createTransactionFromCart(pembeli);
+                return ResponseEntity.ok(nota);
+            }
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
         }
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                new ApiResp<>(
-                        HttpStatus.UNAUTHORIZED.value(),
-                        "Unauthorized",
-                        null
-                )
-        );
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResp<List<NotaTransaksiModel>>> indexNota () {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    @PostMapping("/direct")
+    public ResponseEntity<?> directPurchase(
+            @RequestParam UUID itemId,
+            @RequestParam int quantity
+    ) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication.getPrincipal() instanceof PembeliModel pembeli) {
+            if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
+                PembeliModel pembeli = pembeliService.getById(currentUser.getId_pembeli());
+                NotaTransaksiModel nota = notaService.createTransactionDirect(pembeli, itemId, quantity);
+                return ResponseEntity.ok(nota);
+            }
 
-            List<NotaTransaksiModel> listNota = service.getAll(pembeli.getId_pembeli());
-
-            return ResponseEntity.ok(
-                    new ApiResp<>(
-                            HttpStatus.OK.value(),
-                            "Success Retrieve Nota",
-                            listNota
-                    )
-            );
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                new ApiResp<>(
-                        HttpStatus.UNAUTHORIZED.value(),
-                        "Unauthorized",
-                        null
-                )
-        );
     }
 
-
-    @PostMapping
-    public ResponseEntity<ApiResp<NotaTransaksiModel>> store () {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication.getPrincipal() instanceof PembeliModel pembeli) {
-            NotaTransaksiModel nota = service.createNota(pembeli.getId_pembeli());
-
-            return ResponseEntity.ok(
-                    new ApiResp<>(
-                            HttpStatus.OK.value(),
-                            "Success Create nota",
-                            nota
-                    )
-            );
+    @GetMapping("/{id}")
+    public ResponseEntity<NotaTransaksiModel> getTransaction(@PathVariable UUID id) {
+        try {
+            NotaTransaksiModel nota = notaService.getTransactionById(id);
+            return ResponseEntity.ok(nota);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                new ApiResp<>(
-                        HttpStatus.UNAUTHORIZED.value(),
-                        "Unauthorized",
-                        null
-                )
-        );
     }
-
 }

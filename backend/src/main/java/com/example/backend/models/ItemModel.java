@@ -1,5 +1,6 @@
 package com.example.backend.models;
 
+import com.example.backend.Exceptions.GlobalExceptionHandler;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -41,7 +42,6 @@ public class ItemModel {
     @JoinColumn(name = "penjual_id")
     private PenjualModel penjual ;
 
-
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Date createdAt;
@@ -49,4 +49,11 @@ public class ItemModel {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
+
+    public void reduceStock(int quantity) {
+        if (stock < quantity) {
+            throw new GlobalExceptionHandler.InvalidDataException("Stock tidak mencukupi");
+        }
+        stock -= quantity;
+    }
 }

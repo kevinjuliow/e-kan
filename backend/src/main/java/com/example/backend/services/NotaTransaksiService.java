@@ -1,78 +1,96 @@
 package com.example.backend.services;
 
-import com.example.backend.Exceptions.GlobalExceptionHandler;
-import com.example.backend.models.CartItemModel;
-import com.example.backend.models.NotaTransaksiModel;
-import com.example.backend.models.PembeliModel;
+import com.example.backend.models.*;
 import com.example.backend.repositories.CartItemRepo;
+import com.example.backend.repositories.ItemRepo;
 import com.example.backend.repositories.NotaTransaksiRepo;
-import com.example.backend.repositories.PembeliRepo;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class NotaTransaksiService {
-    private final NotaTransaksiRepo repo ;
-    private final CartItemRepo cartItemRepo ;
-    private final PembeliRepo pembeliRepo ;
 
-    public List<CartItemModel> getByID(UUID notaId, UUID pembeliId) {
-        NotaTransaksiModel existNota = repo.findById(notaId)
-                .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Nota does not exist"));
+    private final NotaTransaksiRepo notaRepository;
 
-        List<CartItemModel> cartItems = cartItemRepo.findByNotaTransaksi(existNota).get();
+    private final CartItemRepo cartRepository;
 
-        boolean isOwner = cartItems.stream()
-                .anyMatch(item -> item.getPembeli().getId_pembeli().equals(pembeliId));
+    private final ItemRepo itemRepository;
 
-        if (!isOwner) {
-            throw new GlobalExceptionHandler.UnauthorizedException("You are not authorized to access this nota");
-        }
-        return cartItems;
-    }
+    @Transactional
+    public NotaTransaksiModel createTransactionFromCart(PembeliModel pembeli) {
+        List<CartItemModel> cartItems = cartRepository.findByPembeliAndIsCheckedTrue(pembeli).get();
 
-    public List<NotaTransaksiModel> getAll (UUID pembeliId) {
-        PembeliModel pembeli = pembeliRepo.findById(pembeliId).orElseThrow(
-                ()-> new GlobalExceptionHandler.ResourceNotFoundException("pembeli not found")
-        );
-        List<CartItemModel> cartItems = cartItemRepo.findByPembeli(pembeli).get();
-
-        return cartItems.stream()
-                .map(CartItemModel::getNotaTransaksi)
-                .filter(Objects::nonNull)
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
-
-    public NotaTransaksiModel createNota (UUID pembeliId) {
-        PembeliModel pembeli = pembeliRepo.findById(pembeliId).orElseThrow(
-                ()-> new GlobalExceptionHandler.ResourceNotFoundException("pembeli not found")
-        );
-        List<CartItemModel> checkedCartItems = cartItemRepo.findByPembeliAndIsCheckedTrue(pembeli).get();
-
-        if (checkedCartItems.isEmpty()) {
-            throw new GlobalExceptionHandler.BadRequestException("No items selected for nota");
+        if (cartItems.isEmpty()) {
+            throw new IllegalArgumentException("Keranjang kosong!");
         }
 
-        NotaTransaksiModel newNota = NotaTransaksiModel.builder()
-                .build();
+        NotaTransaksiModel nota = new NotaTransaksiModel();
+        nota.setPembeli(pembeli);
 
-        repo.save(newNota);
+        double totalHarga = 0.0;
 
-        checkedCartItems.forEach(item -> {
-            item.setNotaTransaksi(newNota);
-            item.setIsChecked(false);
-        });
+        for (CartItemModel cartItem : cartItems) {
+            ItemModel item = cartItem.getItem();
 
-        cartItemRepo.saveAll(checkedCartItems);
-        return newNota;
+            // Update item stock
+            item.reduceStock(cartItem.getJumlah_item());
+            itemRepository.save(item);
+
+            // Create NotaDetail
+            NotaDetailModel detail = new NotaDetailModel();
+            detail.setNotaTransaksi(nota);
+            detail.setItem(item);
+            detail.setJumlahItem(cartItem.getJumlah_item());
+            detail.setHarga(item.getHarga());
+
+            nota.getNotaDetails().add(detail);
+            totalHarga += detail.getJumlahItem() * detail.getHarga();
+        }
+
+        nota.setTotalHarga(totalHarga);
+        notaRepository.save(nota);
+
+        // Clear the cart after transaction
+        cartRepository.deleteByPembeli(pembeli);
+
+        return nota;
     }
 
+
+    @Transactional
+    public NotaTransaksiModel createTransactionDirect(PembeliModel pembeli, UUID itemId, int quantity) {
+        ItemModel item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("Item tidak ditemukan!"));
+
+        if (item.getStock() < quantity) {
+            throw new IllegalArgumentException("Stok tidak cukup untuk item: " + item.getNama());
+        }
+
+        item.reduceStock(quantity);
+        itemRepository.save(item);
+
+        NotaTransaksiModel nota = new NotaTransaksiModel();
+        nota.setPembeli(pembeli);
+
+        NotaDetailModel detail = new NotaDetailModel();
+        detail.setNotaTransaksi(nota);
+        detail.setItem(item);
+        detail.setJumlahItem(quantity);
+        detail.setHarga(item.getHarga());
+
+        nota.getNotaDetails().add(detail);
+        nota.setTotalHarga(detail.getJumlahItem() * detail.getHarga());
+        return notaRepository.save(nota);
+    }
+
+
+    public NotaTransaksiModel getTransactionById(UUID id) {
+        return notaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Transaksi tidak ditemukan!"));
+    }
 }

@@ -103,8 +103,7 @@ public class DtoMapper {
                 .isChecked(model.getIsChecked())
                 .jumlah_item(model.getJumlah_item())
                 .pembeli(toPembeliDto(model.getPembeli()))
-                .item(toItemDto(model.getItem()))
-                .notaTransaksi(model.getNotaTransaksi()).build();
+                .item(toItemDto(model.getItem())).build();
 
         return dto ;
     }
