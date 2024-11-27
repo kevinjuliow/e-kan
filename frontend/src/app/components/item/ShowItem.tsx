@@ -40,7 +40,7 @@ const ShowItem: React.FC<ShowItemProps> = ({ searchQuery }) => {
   )
 
   return (
-    <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 items-center justify-center w-full mt-12 ${!itemData && 'h-full mt-56 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1'}`}>
+    <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 items-center justify-center w-full mt-12 ${!itemData && 'h-full mt-56 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1'} mb-16 md:mb-0`}>
       {filteredItems.length > 0 && filteredItems.map((item, index) => {
         return(
           <EachItem key={index} data={item} />
