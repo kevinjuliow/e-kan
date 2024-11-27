@@ -54,7 +54,7 @@ const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
       <div className={`bgdetailitem-wave`}></div>
         <div className="max-w-screen-xl w-full h-full relative p-8 lg:px-0 flex flex-col items-center justify-center">
           <BackButton />
-          <div className="flex flex-col lg:flex-row items-start justify-center mb-10">
+          <div className="flex flex-col lg:flex-row items-start justify-center mb-20">
             <div className="grid grid-rows-[auto,auto] grid-cols-4 gap-3 items-center justify-center w-full max-w-[400px] md:max-w-full lg:max-w-[400px]">
               <div className="col-span-4">
                 <h1 className="lg:hidden font-black tracking-wide text-4xl mb-4">{itemData?.nama}</h1>
@@ -73,7 +73,7 @@ const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
                 <span className="font-black text-4xl ms-1">
                   {itemData?.harga ? new Intl.NumberFormat('id-ID').format(itemData?.harga) : '-'}
                 </span>
-                <span className="text-darkaqua font-bold ms-1 relative top-1">/pack</span>
+                <span className="text-darkaqua font-bold ms-1 relative top-1">/{itemData?.tipe_penjualan}</span>
               </p>
               <div className="w-52 flex items-center justify-start mt-12 lg:mt-6">
                 <button disabled={quantityToBuy === 0 ? true : false} onClick={() => handleQuantityToBuy('subtract')} className={`w-10 border py-1 rounded-md font-medium ${quantityToBuy === 0 ? 'cursor-not-allowed bg-gray-500' : 'cursor-pointer bg-darkaqua hover:bg-mediumaqua'} text-white border-none`}>-</button>
