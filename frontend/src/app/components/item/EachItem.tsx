@@ -56,7 +56,7 @@ const EachItem: React.FC<Props> = ({ data }) => {
             <div className="p-4">
               <p className="uppercase tracking-wider text-sm font-bold text-darkaqua mb-2">{data.nama}</p>
               <p className="text-2xl text-darkaqua">Rp{data.harga}</p>
-              <p className="text-mediumaqua text-xs">*Harga per paket</p>
+              <p className="text-mediumaqua text-xs">*Harga per {data.tipe_penjualan}</p>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-t border-gray-300 text-darkaqua">
               <div className="flex items-center">
