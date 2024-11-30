@@ -3,6 +3,7 @@ package com.example.backend.services;
 import com.example.backend.models.PembeliModel;
 import com.example.backend.models.PenjualModel;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -106,5 +107,18 @@ public class JwtService {
         String tokenUserType = extractUserType(token);
         String actualUserType = getUserType(userDetails);
         return tokenUserType.equals(actualUserType);
+    }
+
+    public String extractUsernameFromExpiredToken(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSignInKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getSubject();
+        }
     }
 }
