@@ -3,6 +3,7 @@ package com.example.backend.services;
 
 import com.example.backend.models.InvoiceDetailModel;
 import com.example.backend.models.InvoiceModel;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,8 +19,11 @@ import java.util.Map;
 
 @Service
 public class MidtransService {
-    private static final String MIDTRANS_SNAP_URL = "https://app.sandbox.midtrans.com/snap/v1/transactions";
-    private static final String SERVER_KEY = "SB-Mid-server-a_tg-5l9gBiwD01vrbWC7IjM";
+    @Value("${midtrans.snap.url}")
+    private String MIDTRANS_SNAP_URL;
+
+    @Value("${midtrans.server.key}")
+    private String SERVER_KEY;
 
     public String createTransaction(InvoiceModel nota) {
         RestTemplate restTemplate = new RestTemplate();
@@ -67,7 +71,7 @@ public class MidtransService {
         // Make API call
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(MIDTRANS_SNAP_URL, request, String.class);
-            return response.getBody(); // JSON response from Midtrans
+            return response.getBody();
         } catch (Exception e) {
             throw new RuntimeException("Midtrans transaction creation failed", e);
         }
