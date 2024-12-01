@@ -81,10 +81,6 @@ public class ItemPicturesController {
     @ApiResponse(
             responseCode = "200"
     )
-    @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized - User not authenticated"
-    )
     public ResponseEntity<byte[]> getPictureById (@PathVariable UUID pictureId) {
        ItemPicturesModel itemPict = service.getPicture(pictureId);
         return ResponseEntity.ok()
@@ -101,7 +97,7 @@ public class ItemPicturesController {
 
             if (authentication.getPrincipal() instanceof PenjualModel currentPenjual) {
                 ItemModel item = itemService.getById(itemId);
-
+    
                 if (!(item.getPenjual().getId_penjual().equals(currentPenjual.getId_penjual()))){
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                             new ApiResp<>(
