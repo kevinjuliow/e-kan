@@ -56,7 +56,7 @@ const Navbar = () => {
     };
   }, [isLanding]);
 
-  const changeTextColor = (isLanding || isDashboard) && isScrolled ? 'text-gray-800' : (isLanding || isDashboard) && !isScrolled ? 'text-white' : (isLoginPage || isSignupPage) || ((!isLanding && !isDashboard && !isLoginPage && !isSignupPage) && isScrolled) ? 'text-gray-800' :  'text-white'
+  const changeTextColor = (isLanding || isDashboard) && isScrolled ? 'text-gray-800' : (isLanding || isDashboard) && !isScrolled ? 'text-white' : (isLoginPage || isSignupPage) || ((!isLanding && !isDashboard && !isLoginPage && !isSignupPage) && isScrolled) ? 'text-gray-800' : 'text-gray-800' // changed from text-white temporarily
   const changeIconColor = (isLanding || isDashboard) && isScrolled ? '#1f2937' : (isLanding || isDashboard) && !isScrolled ? '#ffffff' : (isLoginPage || isSignupPage) || ((!isLanding && !isDashboard && !isLoginPage && !isSignupPage) && isScrolled) ? '#1f2937' :  '#ffffff'
 
   return (
