@@ -8,33 +8,35 @@ import axios from 'axios'
 import { useSession } from 'next-auth/react';
 import { CartData } from 'app/interfaces/Item/types';
 import ArrowBackButton from 'app/components/button/ArrowBackButton';
+import { Toast, useToast } from 'app/components/toast/Toast';
 
 const Cart = () => {
   const { data: session } = useSession()
+  const { message, toastType, showToast } = useToast()
   const [cartData, setCartData] = useState<CartData[]>([])
   const [selectedId, setSelectedId] = useState<string[]>([])
   const [totalPrice, setTotalPrice] = useState<number>(0)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${process.env.API_BASEURL}/api/cart`, {
-          headers: {
-            Authorization: `Bearer ${session?.accessToken}`,
-          },
-        })
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${process.env.API_BASEURL}/api/cart`, {
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+      })
 
-        if (!response) {
-          throw new Error('Some error occurred!')
-        }
-
-        const data: CartData[] = response.data.data
-        setCartData(data)
-      } catch (error) {
-        console.log(error)
+      if (!response) {
+        throw new Error('Some error occurred!')
       }
-    }
 
+      const data: CartData[] = response.data.data
+      setCartData(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
     fetchData()
   }, [])
 
@@ -101,6 +103,14 @@ const Cart = () => {
   const handleBuy = () => {
 
   }
+
+  const handleToast = (toastType: string, namaItem: string) => {
+    if (toastType === 'SUCCESS') {
+      showToast("Berhasil menghapus " + namaItem + " dari keranjang!", "SUCCESS")
+    } else {
+      showToast("Gagal menghapus item dari keranjang, coba lagi!", "WARNING");
+    }
+  }
   
   return (
     <div className="w-full flex items-center justify-center mt-24">
@@ -127,7 +137,7 @@ const Cart = () => {
                 </div>
                 {cartData.map((eachCartData, index) => {
                   return (
-                    <CartItem key={index} data={eachCartData} isChecked={selectedId.includes(eachCartData.item.id_item)} onChangePassed={handleCheckboxChange} />
+                    <CartItem key={index} data={eachCartData} idCart={eachCartData.id_cart} isChecked={selectedId.includes(eachCartData.item.id_item)} onChangePassed={handleCheckboxChange} onItemRemoved={fetchData} handleToast={handleToast} />
                   )
                 })}
               </div>
@@ -146,6 +156,7 @@ const Cart = () => {
             <MobileCart totalPrice={totalPrice} />
           </div>
         </div> : <h1 className="font-medium text-xl mt-48 text-center">Belum ada ikan yang ditambahkan ke dalam keranjang!</h1> }
+        {message && <Toast message={message} toastType={toastType ?? "SUCCESS"} onClose={() => {}} />}
       </div>
     </div>
   )
