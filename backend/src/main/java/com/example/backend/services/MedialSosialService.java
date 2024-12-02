@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class MedialSosialService {
 
-    private MediaSosialRepo repo ;
+    private final MediaSosialRepo repo ;
 
     public List<MediaSosialModel> getAll (PenjualModel id) {
         return repo.findByPenjual(id).orElseThrow(

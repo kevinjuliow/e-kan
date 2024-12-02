@@ -24,6 +24,9 @@ public class ItemDto {
     private Double harga ;
 
     private int stock ;
+    private String tipe_penjualan ;
+
+    private String ukuran_ikan ;
 
     private String description ;
 

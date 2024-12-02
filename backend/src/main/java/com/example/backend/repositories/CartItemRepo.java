@@ -12,5 +12,10 @@ import java.util.UUID;
 @Repository
 public interface CartItemRepo extends JpaRepository<CartItemModel , UUID> {
     Optional<List<CartItemModel>> findByPembeli(PembeliModel pembeli);
-    Optional<ItemModel> findByItem (ItemModel item);
+    Optional<CartItemModel> findByItem(ItemModel item);
+
+    Optional<List<CartItemModel>> findByPembeliAndIsCheckedTrue(PembeliModel pembeli);
+
+    void deleteByPembeli (PembeliModel pembeli);
+
 }

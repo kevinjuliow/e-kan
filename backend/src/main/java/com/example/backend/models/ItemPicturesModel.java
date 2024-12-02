@@ -15,6 +15,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "item_pictures")
 @Data
 public class ItemPicturesModel {
     @Id

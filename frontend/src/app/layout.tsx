@@ -4,7 +4,6 @@ import { League_Spartan } from "next/font/google";
 import "./globals.css";
 import { Provider } from "./providers";
 import Navbar from "./components/navbar/Navbar";
-import { UserProvider } from "./userprovider";
 import MobileNavbar from "./components/mobile/MobileNavbar";
 import { getServerSession } from "next-auth";
 import { AuthOptions } from "./libs/auth/auth";
@@ -39,7 +38,6 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <Provider session={session}>
-        <UserProvider>
           <body className={`${leagueSpartan.className} bg-[#D4EBEF]`}>
             <Navbar />
             <main className="flex flex-wrap flex-col items-center justify-between mx-auto w-full text-gray-800">
@@ -47,7 +45,6 @@ export default async function RootLayout({
             </main>
             <MobileNavbar />
           </body>
-        </UserProvider>
       </Provider>
     </html>
   );

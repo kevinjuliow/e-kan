@@ -15,16 +15,17 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "cart_item")
 public class CartItemModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(unique = true)
-    private UUID id_cart ;
+    private UUID id_cart;
 
     @Column
     private int jumlah_item = 1;
 
     @Column
-    private Boolean is_checked = false ;
+    private Boolean isChecked = false ;
 
     @ManyToOne
     @JoinColumn(name = "item_id")
@@ -33,5 +34,4 @@ public class CartItemModel {
     @ManyToOne
     @JoinColumn(name = "pembeli_id")
     private PembeliModel pembeli ;
-
 }

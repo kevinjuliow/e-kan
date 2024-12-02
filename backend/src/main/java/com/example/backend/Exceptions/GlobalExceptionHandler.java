@@ -118,6 +118,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    //Handle Resource already exists
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ApiResp<Object>> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex) {
+        ApiResp<Object> response = new ApiResp<>(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
     // Handle HTTP method not supported
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ApiResp<Object>> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
@@ -211,6 +222,13 @@ public class GlobalExceptionHandler {
         public InvalidDataException(String message) {
             super(message);
         }
+    }
+
+    public static class BadRequestException extends RuntimeException {
+        public BadRequestException(String message){super(message);}
+    }
+    public static class UnauthorizedException extends RuntimeException {
+        public UnauthorizedException(String message){super(message);}
     }
 
 }
