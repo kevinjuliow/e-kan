@@ -150,3 +150,32 @@ export const PencilEditIcon = ({ hexColor, size }: IconProperties) => (
     <path d="M14.3632 5.65156L15.8431 4.17157C16.6242 3.39052 17.8905 3.39052 18.6716 4.17157L20.0858 5.58579C20.8668 6.36683 20.8668 7.63316 20.0858 8.41421L18.6058 9.8942M14.3632 5.65156L4.74749 15.2672C4.41542 15.5993 4.21079 16.0376 4.16947 16.5054L3.92738 19.2459C3.87261 19.8659 4.39148 20.3848 5.0115 20.33L7.75191 20.0879C8.21972 20.0466 8.65806 19.8419 8.99013 19.5099L18.6058 9.8942M14.3632 5.65156L18.6058 9.8942" stroke={hexColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
   </svg>
 )
+
+export const HomeIcon = ({ hexColor, size }: IconProperties) => (
+  <svg width={size} height={size} strokeWidth="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color={hexColor}>
+    <path d="M17 21H7C4.79086 21 3 19.2091 3 17V10.7076C3 9.30887 3.73061 8.01175 4.92679 7.28679L9.92679 4.25649C11.2011 3.48421 12.7989 3.48421 14.0732 4.25649L19.0732 7.28679C20.2694 8.01175 21 9.30887 21 10.7076V17C21 19.2091 19.2091 21 17 21Z" stroke={hexColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+    <path d="M9 17H15" stroke={hexColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+  </svg>
+)
+
+export const SearchIcon = ({ hexColor, size }: IconProperties) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" strokeWidth="1.5" fill="none" xmlns="http://www.w3.org/2000/svg" color={hexColor}>
+    <path d="M17 17L21 21" stroke={hexColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+    <path d="M3 11C3 15.4183 6.58172 19 11 19C13.213 19 15.2161 18.1015 16.6644 16.6493C18.1077 15.2022 19 13.2053 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11Z" stroke={hexColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+  </svg>
+)
+
+export const ChatIcon = ({ hexColor, size }: IconProperties) => (
+  <svg width={size} height={size} strokeWidth="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color={hexColor}>
+    <path d="M8 10L12 10L16 10" stroke={hexColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+    <path d="M8 14L10 14L12 14" stroke={hexColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.8214 2.48697 15.5291 3.33782 17L2.5 21.5L7 20.6622C8.47087 21.513 10.1786 22 12 22Z" stroke={hexColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+  </svg>
+)
+
+export const ChatBubbleIcon = ({ hexColor, size }: IconProperties) => (
+  <svg width={size} height={size} strokeWidth="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color={hexColor}>
+    <path d="M7.5 22C10.5376 22 13 19.5376 13 16.5C13 13.4624 10.5376 11 7.5 11C4.46243 11 2 13.4624 2 16.5C2 17.5018 2.26783 18.441 2.7358 19.25L2.275 21.725L4.75 21.2642C5.55898 21.7322 6.49821 22 7.5 22Z" stroke={hexColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+    <path d="M15.2824 17.8978C16.2587 17.7405 17.1758 17.4065 18 16.9297L21.6 17.6L20.9297 14C21.6104 12.8233 22 11.4571 22 10C22 5.58172 18.4183 2 14 2C9.97262 2 6.64032 4.97598 6.08221 8.84884" stroke={hexColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+  </svg>
+)
