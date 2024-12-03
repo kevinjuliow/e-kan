@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
@@ -43,16 +41,17 @@ public class MidtransService {
         transactionDetails.put("gross_amount", nota.getTotalHarga().intValue());
 
         //item_details
-        Map<String, Object> itemDetails = new HashMap<>();
-        for ( InvoiceDetailModel object  : nota.getInvoiceDetails()) {
-            itemDetails.put("id" , object.getItem().getId_item());
-            itemDetails.put("price" , object.getItem().getHarga());
-            itemDetails.put("quantity" , object.getJumlahItem());
-            itemDetails.put("name" , object.getItem().getNama());
-            itemDetails.put("category" , object.getItem().getJenis_bibit());
-            itemDetails.put("merchant_name" , object.getItem().getPenjual().getNama());
+        List<Map<String, Object>> itemDetailsList = new ArrayList<>();
+        for (InvoiceDetailModel object : nota.getInvoiceDetails()) {
+            Map<String, Object> itemDetail = new HashMap<>();
+            itemDetail.put("id", object.getItem().getId_item());
+            itemDetail.put("price", object.getItem().getHarga());
+            itemDetail.put("quantity", object.getJumlahItem());
+            itemDetail.put("name", object.getItem().getNama());
+            itemDetail.put("category", object.getItem().getJenis_bibit());
+            itemDetail.put("merchant_name", object.getItem().getPenjual().getNama());
+            itemDetailsList.add(itemDetail);
         }
-
         //customer details
         Map<String, Object> customerDetails = new HashMap<>();
         customerDetails.put("first_name" , nota.getPembeli().getNama());
@@ -62,7 +61,7 @@ public class MidtransService {
         // Request body
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("transaction_details", transactionDetails);
-        requestBody.put("item_details", itemDetails);
+        requestBody.put("item_details", itemDetailsList);
         requestBody.put("customer_details", customerDetails);
 
         // HTTP Entity
