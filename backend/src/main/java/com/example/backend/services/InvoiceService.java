@@ -22,6 +22,13 @@ public class InvoiceService {
 
     private final ItemRepo itemRepository;
 
+
+    public List<InvoiceModel> getAllInvoice (PembeliModel model) {
+        return invoiceRepo.findByPembeli(model).orElseThrow(
+                ()-> new GlobalExceptionHandler.ResourceNotFoundException("Invoice not found with pembeli with id : " + model.getId_pembeli())
+        );
+    }
+
     @Transactional
     public InvoiceModel createTransactionFromCart(PembeliModel pembeli) {
         List<CartItemModel> cartItems = cartRepository.findByPembeliAndIsCheckedTrue(pembeli).get();

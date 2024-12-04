@@ -8,13 +8,16 @@ import com.example.backend.models.PembeliModel;
 import com.example.backend.services.InvoiceService;
 import com.example.backend.services.PembeliService;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/transactions")
@@ -87,5 +90,28 @@ public class InvoiceController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+
+    @GetMapping
+    public ResponseEntity<ApiResp<List<InvoiceDto>>> getAllInvoices () {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
+            List<InvoiceModel> invoiceList = invoiceService.getAllInvoice(currentUser);
+
+            if (invoiceList.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+
+            return ResponseEntity.ok(
+                    new ApiResp<>(
+                            HttpStatus.OK.value() ,
+                            "Success retrieve all invoices" ,
+                            invoiceList.stream().map(mapper :: toInvoiceDto).collect(Collectors.toList())
+                    )
+            );
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
