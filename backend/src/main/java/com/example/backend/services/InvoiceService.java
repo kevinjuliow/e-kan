@@ -101,4 +101,10 @@ public class InvoiceService {
         return invoiceRepo.findById(id)
                 .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Transaksi tidak ditemukan!"));
     }
+
+    @Transactional
+    public void deleteInvoice (UUID id) {
+        //Notes : Only paid=false invoices are able to be deleted
+//        invoiceRepo.deleteByIdInvoiceAndPaidFalse(id);
+    }
 }
