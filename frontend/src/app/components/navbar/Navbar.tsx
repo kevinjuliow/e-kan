@@ -17,6 +17,7 @@ const Navbar = () => {
   const isSignupOrLoginPage = pathname === '/auth/signup' || pathname === '/auth/login'
   const isLanding = pathname === '/'
   const isDashboard = pathname === '/dashboard'
+  const isAddProductPage = pathname === '/product/add'
 
   const handleLogin = () => signIn();
   const handleLogout = () => signOut({ callbackUrl: "/", redirect: true });
@@ -101,10 +102,10 @@ const Navbar = () => {
             ? <Link href={"/cart"} className="me-4">
                 <CartIcon size={24} hexColor={changeIconColor} />
               </Link>
-            : <Link href={"/product/add"} className={`flex items-end justify-center rounded-lg border-2 px-2 py-1 me-4`} style={{ borderColor: changeIconColor }}>
+            : (!isAddProductPage && <Link href={"/product/add"} className={`flex items-end justify-center rounded-lg border-2 px-2 py-1 me-4`} style={{ borderColor: changeIconColor }}>
                 <PlusNonSolid size={24} hexColor={changeIconColor} />
                 <p className={`${changeTextColor} ms-1 font-medium text-sm`}>Tambah Produk</p>
-              </Link>}
+              </Link>)}
           <Link href={"/chat"} className="me-4">
             <ChatIcon size={24} hexColor={changeIconColor} />
           </Link>
