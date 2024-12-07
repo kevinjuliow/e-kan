@@ -14,6 +14,7 @@ interface ParameterId {
 
 const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
   const [itemData, setItemData] = useState<Item | null>(null)
+  const [image, setImage] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,6 +27,18 @@ const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
 
         const data: Item = await response.data.data
         setItemData(data)
+
+        const imageResponse = await axios.get(`${process.env.API_BASEURL}/api/items/${data.id_item}/pictures`)
+
+        if (!imageResponse) {
+          throw new Error('Some error occured when fetching an image!')
+        }
+
+        const { fileType, data: imageData } = imageResponse.data[0];
+
+        // creates image url from base64 response
+        const imageUrl = `data:${fileType};base64,${imageData}`;
+        setImage(imageUrl);
       } catch (error) {
         console.log(error)
       }
@@ -58,7 +71,7 @@ const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
             <div className="grid grid-rows-[auto,auto] grid-cols-4 gap-3 items-center justify-center w-full max-w-[400px] md:max-w-full lg:max-w-[400px]">
               <div className="col-span-4">
                 <h1 className="lg:hidden font-black tracking-wide text-4xl mb-4">{itemData?.nama}</h1>
-                <Image src={'/pexels-crisdip-35358-128756.jpg'} alt={`gambar-${itemData?.nama}`} height={400} width={400} className="w-full" />
+                <Image src={image ?? '/pexels-crisdip-35358-128756.jpg'} alt={`gambar-${itemData?.nama}`} height={400} width={400} className="w-full rounded-lg" />
               </div>
               {/* <Image src={'/pexels-crisdip-35358-128756.jpg'} alt={`gambar-${itemData?.nama}`} height={90} width={90} />
               <Image src={'/pexels-crisdip-35358-128756.jpg'} alt={`gambar-${itemData?.nama}`} height={90} width={90} />

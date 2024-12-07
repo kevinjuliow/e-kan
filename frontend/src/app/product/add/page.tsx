@@ -1,14 +1,15 @@
 "use client"
 
 import ArrowBackButton from 'app/components/button/ArrowBackButton'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from 'axios';
-import { SaveIcon } from 'app/components/icon';
+import { PencilEditIcon, PlusNonSolid, SaveIcon } from 'app/components/icon';
 import { useSession } from 'next-auth/react';
 import { Toast, useToast } from 'app/components/toast/Toast';
+import ImageCropper from 'app/components/cropper/ImageCropper';
 
 const ZodAddProductFormSchema = z.object({
   namaIkan: z.string().min(3, "Minimum name is 3 characters"),
@@ -34,6 +35,17 @@ type AddProductFormSchema = z.infer<typeof ZodAddProductFormSchema>;
 const AddProduct = () => {
   const { data: session } = useSession()
 
+  const [openAddImage, setOpenAddImage] = useState<boolean>(false);
+  
+  const selectedProductImageRef = useRef<string | null>(null);
+  const updateProductImage = (imageSource: string | undefined) => {
+    selectedProductImageRef.current = imageSource ?? null;
+  };  
+  
+  const handleOpenAddImageForm = () => {
+    setOpenAddImage(!openAddImage)
+  }
+
   const { register, handleSubmit, watch, reset, formState } = useForm<AddProductFormSchema>({
     resolver: zodResolver(ZodAddProductFormSchema),
   });
@@ -49,7 +61,7 @@ const AddProduct = () => {
     console.log(process.env.API_BASEURL)
     setLoading(true)
     try {
-      const response = await axios.post(`${process.env.API_BASEURL}/api/items`, {
+      const response = await axios.post(`${process.env.API_BASEURL}/ap/items`, {
         nama: values.namaIkan,
         jenis_habitat: values.jenisHabitat,
         jenis_bibit: values.jenisBibit,
@@ -68,6 +80,38 @@ const AddProduct = () => {
         throw new Error("Gagal menambahkan produk, coba lagi!")
       }
 
+      const { id_item: itemId } = response.data.data
+
+      if (itemId) {
+        console.log("MASUK IF BUAT POST IMAGE")
+        
+        const imageWantToPost = selectedProductImageRef.current
+        if (imageWantToPost) {
+
+          // takes image from URL then convert it into Blob then File
+          const imageFile = await fetch(imageWantToPost)
+            .then(res => res.blob())
+            .then(blob => new File([blob], `gambar-produk-${itemId}.jpg`, { type: blob.type }))
+
+          // Append the file (blob) to FormData
+          const formDataImage = new FormData();
+          formDataImage.append('file', imageFile)
+  
+          const responsePostImage = await axios.post(`${process.env.API_BASEURL}/ap/items/${itemId}/pictures`, formDataImage, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${session?.accessToken}`,
+            },
+          });
+  
+          if (responsePostImage.status === 500) {
+            throw new Error("Gagal menambahkan gambar produk, coba lagi!")
+          }
+        }
+      } else {
+        console.log("MASUK ELSE GAGAL POST IMAGE")
+      }
+
       showToast("Berhasil menambahkan " + values.namaIkan + " ke daftar produk!", "SUCCESS")
       reset()
     } catch (error) {
@@ -81,35 +125,46 @@ const AddProduct = () => {
     }
   })
 
-  const [image, setImage] = useState<string | null>(null);
-
-  // CANNOT ADD PRODUCT IMAGE YET 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]; // Optional chaining to safely access the file
-    if (file) {
-      setImage(URL.createObjectURL(file)); // Save the image URL
-    } else {
-      console.error('No file selected');
-    }
-  };
-
-  // const handleImageReset = () => {
-  //   setImage(null);
-  // };
-
   return (
+    <>
     <div className="w-full flex items-center justify-center mt-24">
       <div className={`bgdashboard-wave`}></div>
-      <div className="max-w-screen-xl w-full h-full relative p-8 xl:px-0 flex flex-col items-center justify-center">
+      <div className="max-w-screen-md w-full h-full relative p-8 xl:px-0 flex flex-col items-center justify-center">
         <div className="flex items-center mb-4 w-full">
           <ArrowBackButton url={"/dashboard"} size={20} hexColor={"#1f2937"} />
           <h1 className="text-2xl font-bold text-left w-full ms-2">Tambah Produk</h1>
         </div>
 
-        <form className="w-full grid grid-cols-2 md:grid-cols-3 grid-rows-auto gap-0" onSubmit={handleForm}>
+        <form className="w-full grid grid-cols-2 grid-rows-auto gap-0" onSubmit={handleForm}>
+          {/* Add Image & Image Preview */}
+          <div className={`col-span-2 flex flex-col h-full w-auto max-h-full md:max-h-full my-auto mx-auto text-center mt-4`}>
+            <label htmlFor="addImage" className="font-medium mb-1">Gambar Produk</label>
+            <div className="h-full flex flex-col bg-white bg-opacity-75 rounded-lg p-2">
+              {/* <input onChange={handleImageUpload} accept={"image/png, image/jpeg"} className="block w-full text-sm text-gray-900 rounded-lg cursor-pointer bg-white border-2 border-lightaqua focus:outline-none p-2" aria-describedby="file_input_help" id="file_input" type="file" />
+              <p className="mt-1 text-xs text-gray-500 mb-2" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p> */}
+              <div className="flex flex-col w-auto h-full">
+                {selectedProductImageRef.current ? 
+                  <div className="flex flex-col items-center w-full h-full relative">
+                    <img src={selectedProductImageRef.current ?? ''} alt={"gambar ikan"} className="w-auto max-w-[200px] h-full min-h-[150px]" /> 
+                    <div onClick={handleOpenAddImageForm} className="flex items-center justify-center border border-white px-2 py-1 rounded-lg cursor-pointer absolute bottom-6">
+                      <PencilEditIcon size={18} hexColor={"#ffffff"} />
+                      <p className="ms-1 relative mt-1 text-white">Ubah Gambar</p>
+                    </div>
+                  </div>
+                : <div className="flex flex-col w-full min-w-[200px] h-full min-h-[150px] items-center justify-center">
+                  {/* <p className="text-sm flex items-center justify-center">Belum ada gambar ditambahkan</p> */}
+                  <div onClick={handleOpenAddImageForm} className="flex items-center justify-center relative border border-gray-300 px-2 py-1 rounded-lg mt-2 cursor-pointer">
+                    <PlusNonSolid size={18} hexColor={"#1f2937"} />
+                    <p className="ms-1 relative mt-1">Tambah</p>
+                  </div>
+                </div>}
+              </div>
+            </div>
+            {errors?.namaIkan && <p className="text-sm my-1 text-red-500">{errors.namaIkan?.message}</p>}
+          </div>
 
           {/* Nama */}
-          <div className="col-span-2 flex flex-col">
+          <div className="col-span-2 row-start-2 flex flex-col mt-2">
             <label htmlFor="nama" className="font-medium mb-1">Nama Ikan</label>
             <input
               type="text"
@@ -123,7 +178,7 @@ const AddProduct = () => {
           </div>
 
           {/* Jenis Bibit */}
-          <div className="md:col-start-1 row-start-2 flex flex-col mt-2">
+          <div className="row-start-3 flex flex-col mt-2">
             <label htmlFor="jenisBibit" className="font-medium mb-1">Jenis Bibit</label>
             <select
               id="jenisBibit"
@@ -139,7 +194,7 @@ const AddProduct = () => {
           </div>
 
           {/* Jenis Habitat */}
-          <div className="md:col-start-2 row-start-2 flex flex-col mt-2 ms-2">
+          <div className="row-start-3 flex flex-col mt-2 ms-2">
             <label htmlFor="jenisHabitat" className="font-medium mb-1">Jenis Habitat</label>
             <select
               id="jenisHabitat"
@@ -155,7 +210,7 @@ const AddProduct = () => {
           </div>
 
           {/* Harga */}
-          <div className="md:col-start-1 md:row-start-3 relative flex flex-col mt-2 ms-2 md:ms-0">
+          <div className="row-start-4 col-start-2 relative flex flex-col mt-2 ms-2 md:ms-2">
             <label htmlFor="harga" className="font-medium mb-1">Harga</label>
             <div className="w-full relative">
               <p className="absolute bottom-2 left-2 font-medium text-sm">Rp</p>
@@ -171,7 +226,7 @@ const AddProduct = () => {
           </div>
 
           {/* Stock */}
-          <div className="md:col-start-2 row-start-3 flex flex-col mt-2 md:ms-2">
+          <div className="row-start-4 flex flex-col mt-2 md:ms-0">
             <label htmlFor="stock" className="font-medium mb-1">Stock</label>
             <input
               type="number"
@@ -184,7 +239,7 @@ const AddProduct = () => {
           </div>
 
           {/* Tipe Penjualan (ekor, PO, paket) */}
-          <div className="md:col-start-1 row-start-4 relative flex flex-col mt-2">
+          <div className="row-start-5 col-start-1 relative flex flex-col mt-2">
             <label htmlFor="tipePenjualan" className="font-medium mb-1">Tipe Penjualan</label>
             <select
               id="tipePenjualan"
@@ -200,7 +255,7 @@ const AddProduct = () => {
           </div>
 
           {/* Ukuran Ikan (opsional) */}
-          <div className={`md:col-start-2 md:row-start-4 flex flex-col mt-2 ms-2 ${isTipePenjualan !== 'Ekor' && 'text-gray-400 cursor-not-allowed'}`}>
+          <div className={`row-start-5 col-start-2 flex flex-col mt-2 ms-2 ${isTipePenjualan !== 'Ekor' && 'text-gray-400 cursor-not-allowed'}`}>
             <label htmlFor="ukuranIkan" className={`font-medium mb-1 ${isTipePenjualan !== 'Ekor' && 'text-gray-400'}`}>Ukuran Ikan</label>
             <div className="w-full relative">
               <input
@@ -217,7 +272,7 @@ const AddProduct = () => {
           </div>
 
           {/* Deskripsi */}
-          <div className="col-span-2 md:col-start-1 md:row-start-5 flex flex-col relative mt-2">
+          <div className="row-start-6 col-span-2 flex flex-col relative mt-2">
             <label htmlFor="description" className="font-medium mb-1">Deskripsi Produk</label>
             <textarea
               typeof="text"
@@ -230,21 +285,8 @@ const AddProduct = () => {
             {errors?.description && <p className="absolute top-32 text-sm my-1 text-red-500">{errors.description?.message}</p>}
           </div>
 
-          {/* Add Image & Image Preview */}
-          <div className={`col-span-2 md:col-span-2 md:row-span-5 md:col-start-3 row-start-6 md:row-start-1 flex flex-col h-full max-h-[360px] md:max-h-full ${errors.description ? 'mt-8 md:mt-0' : 'mt-2 md:mt-0'} mb-80 md:mb-0 md:ms-2`}>
-            <label htmlFor="addImage" className="font-medium mb-1">Gambar Produk</label>
-            <div className="h-full flex flex-col bg-white bg-opacity-75 rounded-lg p-2">
-              <input onChange={handleImageUpload} accept={"image/png, image/jpeg"} className="block w-full text-sm text-gray-900 rounded-lg cursor-pointer bg-white border-2 border-lightaqua focus:outline-none p-2" aria-describedby="file_input_help" id="file_input" type="file" />
-              <p className="mt-1 text-xs text-gray-500 mb-2" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
-              <div className="flex flex-col w-full h-full">
-                {image ? <img src={image ?? ''} alt={"gambar ikan"} className="w-full min-w-full h-[240px]" /> : <p className="text-sm flex items-center justify-center h-full">Belum ada gambar ditambahkan</p> }
-              </div>
-            </div>
-            {errors?.namaIkan && <p className="text-sm my-1 text-red-500">{errors.namaIkan?.message}</p>}
-          </div>
-
-          {error?.message && <p className="w-full text-center md:text-right absolute bottom-9 md:bottom-[-48px] right-0 text-sm mb-4 p-8 xl:p-0 text-red-500">{error?.message}</p>}
-          <div className="col-span-2 row-start-7 md:col-span-3 md:row-start-6 text-right mt-0 md:mt-6 w-full relative md:static bottom-20">
+          {error?.message && <p className="w-full text-center md:text-right absolute bottom-20 md:bottom-[-48px] right-0 text-sm mb-4 p-8 xl:p-0 text-red-500">{error?.message}</p>}
+          <div className="col-span-2 row-start-7 text-right mt-32 mb-12 md:mb-0 md:mt-6 w-full relative md:static bottom-20">
             {/* <button type={"submit"} className="w-52 border py-1 custom-hover-button cursor-pointer rounded-md font-medium bg-darkaqua text-white border-none">Tambah</button> */}
             <button type="submit"
               className="w-full md:w-52 border px-5 py-2.5 custom-hover-button cursor-pointer rounded-md bg-darkaqua text-white border-none text-sm">
@@ -270,6 +312,8 @@ const AddProduct = () => {
       </div>
       {message && <Toast message={message} toastType={toastType ?? "SUCCESS"} onClose={() => {}} />}
     </div>
+    {openAddImage && <ImageCropper updateProductImage={updateProductImage} closeCropperWindow={handleOpenAddImageForm} />}
+    </>
   )
 }
 
