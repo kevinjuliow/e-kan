@@ -21,6 +21,14 @@ public class MidtransService {
     @Value("${midtrans.server.key}")
     private String SERVER_KEY;
 
+    @Value("${midtrans.callback.success.url}")
+    private String CALLBACK_SUCCESS_URL;
+
+    @Value("${midtrans.callback.error.url}")
+    private String CALLBACK_ERROR_URL;
+
+
+
     public Object createTransaction(InvoiceModel nota) {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -56,11 +64,20 @@ public class MidtransService {
         customerDetails.put("email" , nota.getPembeli().getEmail());
         customerDetails.put("phone" , nota.getPembeli().getNo_telp());
 
+        // Callbacks
+        Map<String, String> callbacks = new HashMap<>();
+        callbacks.put("finish", CALLBACK_SUCCESS_URL);
+        callbacks.put("error", CALLBACK_ERROR_URL);
+
+
         // Request body
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("transaction_details", transactionDetails);
         requestBody.put("item_details", itemDetailsList);
         requestBody.put("customer_details", customerDetails);
+        requestBody.put("callbacks", callbacks);
+
+
 
         // HTTP Entity
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);

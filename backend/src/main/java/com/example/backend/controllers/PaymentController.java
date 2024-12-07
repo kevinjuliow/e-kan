@@ -1,14 +1,22 @@
 package com.example.backend.controllers;
 
 import com.example.backend.dtos.ApiResp;
+import com.example.backend.dtos.DtoMapper;
+import com.example.backend.dtos.InvoiceDtos.InvoiceDto;
+import com.example.backend.dtos.midtransDtos.PaymentResultDto;
 import com.example.backend.models.InvoiceModel;
+import com.example.backend.models.PembeliModel;
 import com.example.backend.services.MidtransService;
 import com.example.backend.services.InvoiceService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -16,12 +24,13 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PaymentController {
     private final MidtransService midtransService;
-    private final InvoiceService notaService;
+    private final InvoiceService invoiceService;
+    private final DtoMapper mapper ;
 
     @PostMapping("/create/{invoiceId}")
     public ResponseEntity<ApiResp<Object>> createTransaction(@PathVariable UUID invoiceId) {
         try {
-            InvoiceModel nota = notaService.getTransactionById(invoiceId);
+            InvoiceModel nota = invoiceService.getTransactionById(invoiceId);
 
             Object midtransResponse = midtransService.createTransaction(nota);
 
@@ -57,6 +66,33 @@ public class PaymentController {
                             "Failed to see status Pembayaran : " + e.getMessage()  ,
                             null
                     ));
+        }
+    }
+
+
+    @PostMapping("/verify")
+    public ResponseEntity<ApiResp<InvoiceDto>> verifyAndUpdatePayment(@RequestBody @Valid PaymentResultDto paymentResult) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
+                if (paymentResult.getTransaction_status().equals("settlement") && paymentResult.getStatus_code() == 200) {
+                    InvoiceModel invoice = invoiceService.markInvoiceAsPaid(paymentResult.getOrder_id() , currentUser.getId_pembeli());
+                    return ResponseEntity.ok(new ApiResp<>(
+                            HttpStatus.OK.value(),
+                            "Payment Success and invoice is updated" ,
+                            mapper.toInvoiceDto(invoice)
+                    ));
+                } else {
+                    return ResponseEntity.badRequest().body(new ApiResp<>(
+                            HttpStatus.BAD_REQUEST.value(),
+                            "Payment not successfull",
+                            null
+                    ));
+                }
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }
