@@ -14,7 +14,7 @@ import java.util.*;
 
 
 @Service
-public class MidtransService {
+public class PaymentService {
     @Value("${midtrans.snap.url}")
     private String MIDTRANS_SNAP_URL;
 

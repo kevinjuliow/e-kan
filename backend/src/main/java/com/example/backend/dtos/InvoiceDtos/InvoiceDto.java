@@ -1,6 +1,7 @@
 package com.example.backend.dtos.InvoiceDtos;
 
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
+import jakarta.annotation.Nullable;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,5 +17,11 @@ public class InvoiceDto {
     private List<InvoiceDetailDto> invoiceDetails;
     private Double totalHarga;
     private Date tanggalPembelian;
-    private boolean paid;
+
+    @Nullable
+    private String paymentUrl ;
+    @Nullable
+    private String paymentToken ;
+
+    private String status;
 }

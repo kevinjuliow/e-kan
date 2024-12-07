@@ -35,9 +35,16 @@ public class InvoiceModel {
     @Column(updatable = false, name = "tanggal_pembelian")
     private Date tanggalPembelian;
 
+    @Column
     private Double totalHarga = 0.0;
 
-    private boolean paid = false;
+    @Column
+    private String status = "pending";
+
+    @Column
+    private String paymentUrl ;
+    @Column
+    private String paymentToken ;
 
     public void calculateTotalHarga() {
         totalHarga = invoiceDetails.stream()

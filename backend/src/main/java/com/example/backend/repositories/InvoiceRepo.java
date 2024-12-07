@@ -13,6 +13,5 @@ import java.util.UUID;
 @Repository
 public interface InvoiceRepo extends JpaRepository<InvoiceModel, UUID> {
     Optional<List<InvoiceModel>> findByPembeli (PembeliModel model);
-
-    int deleteByIdInvoiceAndPaidIsFalse(UUID idInvoice);
+    Optional<InvoiceModel> findByIdInvoiceAndStatus(UUID idInvoice, String status);
 }

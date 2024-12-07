@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -104,7 +105,31 @@ public class InvoiceService {
 
     @Transactional
     public void deleteInvoice (UUID id) {
-        //Notes : Only paid=false invoices are able to be deleted
-        invoiceRepo.deleteByIdInvoiceAndPaidIsFalse(id);
+        InvoiceModel invoice = invoiceRepo.findByIdInvoiceAndStatus(id , "pending").orElseThrow(
+                ()-> new GlobalExceptionHandler.BadRequestException("Id not found / invoice already been paid")
+        );
+        invoiceRepo.delete(invoice);
+    }
+
+
+    @Transactional
+    public void updatePaymentUrlAndToken (InvoiceModel model , String url , String token) {
+        if(!url.equals("") && !token.equals("")){
+            model.setPaymentUrl(url);
+            model.setPaymentToken(token);
+            invoiceRepo.save(model);
+        }
+    }
+
+    @Transactional
+    public InvoiceModel markInvoiceAsPaid (UUID id_invoice , UUID id_pembeli) {
+        InvoiceModel invoice = invoiceRepo.findById(id_invoice).orElseThrow(
+                ()-> new GlobalExceptionHandler.ResourceNotFoundException("Invoice not found")
+        );
+        if (!invoice.getPembeli().getId_pembeli().equals(id_pembeli)) {
+            new GlobalExceptionHandler.UnauthorizedAccessException("Unauthorized pembeli , only owner can verify");
+        }
+        invoice.setStatus("paid");
+        return invoice;
     }
 }

@@ -182,7 +182,9 @@ public class DtoMapper {
                 .invoiceDetails(notaDetailsDto)
                 .totalHarga(model.getTotalHarga())
                 .tanggalPembelian(model.getTanggalPembelian())
-                .paid(model.isPaid())
+                .status(model.getStatus())
+                .paymentUrl(model.getPaymentUrl())
+                .paymentToken(model.getPaymentToken())
                 .build();
 
         return dto;

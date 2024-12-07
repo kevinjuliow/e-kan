@@ -184,6 +184,17 @@ public class GlobalExceptionHandler {
 
     }
 
+    // Handle BadRequestException
+    @ExceptionHandler(GlobalExceptionHandler.BadRequestException.class)
+    public ResponseEntity<ApiResp<Object>> handleBadRequestException(GlobalExceptionHandler.BadRequestException ex) {
+        ApiResp<Object> response = new ApiResp<>(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
     // Handle all other exceptions
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResp<Object>> handleAllOtherExceptions(Exception ex) {

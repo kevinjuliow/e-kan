@@ -6,7 +6,7 @@ import com.example.backend.dtos.InvoiceDtos.InvoiceDto;
 import com.example.backend.dtos.midtransDtos.PaymentResultDto;
 import com.example.backend.models.InvoiceModel;
 import com.example.backend.models.PembeliModel;
-import com.example.backend.services.MidtransService;
+import com.example.backend.services.PaymentService;
 import com.example.backend.services.InvoiceService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @RequestMapping("/payment")
 @AllArgsConstructor
 public class PaymentController {
-    private final MidtransService midtransService;
+    private final PaymentService paymentService;
     private final InvoiceService invoiceService;
     private final DtoMapper mapper ;
 
@@ -32,7 +32,11 @@ public class PaymentController {
         try {
             InvoiceModel nota = invoiceService.getTransactionById(invoiceId);
 
-            Object midtransResponse = midtransService.createTransaction(nota);
+            Object midtransResponse = paymentService.createTransaction(nota);
+            Map<String, Object> responseMap = (Map<String, Object>) midtransResponse;
+            String url = (String) responseMap.get("redirect_url");
+            String token = (String) responseMap.get("token");
+            invoiceService.updatePaymentUrlAndToken(nota , url , token);
 
             return ResponseEntity.ok(new ApiResp<>(
                     HttpStatus.OK.value() ,
@@ -53,7 +57,7 @@ public class PaymentController {
     @GetMapping("/{invoiceId}/status")
     public ResponseEntity<ApiResp<Object>> getPaymentStatus (@PathVariable UUID invoiceId) {
         try {
-            Object midtransResponse = midtransService.getPaymentStatus(invoiceId);
+            Object midtransResponse = paymentService.getPaymentStatus(invoiceId);
             return ResponseEntity.ok(new ApiResp<>(
              HttpStatus.OK.value() ,
              "Success retrieve payment status" ,
