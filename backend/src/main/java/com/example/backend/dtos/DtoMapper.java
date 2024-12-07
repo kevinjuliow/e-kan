@@ -177,7 +177,7 @@ public class DtoMapper {
                 .toList();
 
         InvoiceDto dto = InvoiceDto.builder()
-                .id_invoice(model.getId_invoice())
+                .id_invoice(model.getIdInvoice())
                 .pembeli(toPembeliDto(model.getPembeli()))
                 .invoiceDetails(notaDetailsDto)
                 .totalHarga(model.getTotalHarga())

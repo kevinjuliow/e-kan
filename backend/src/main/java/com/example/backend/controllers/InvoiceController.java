@@ -115,25 +115,26 @@ public class InvoiceController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-//    @DeleteMapping("/{invoiceId}")
-//    public ResponseEntity<ApiResp<Object>> destroyInvoice(@PathVariable UUID invoiceId) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
-//           InvoiceModel invoice = invoiceService.getTransactionById(invoiceId);
-//
-//            // Check if the invoice belongs to the current user
-//            if (!invoice.getPembeli().getId_pembeli().equals(currentUser.getId_pembeli())) {
-//                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-//                        .body(new ApiResp<>(HttpStatus.FORBIDDEN.value(), "only owner can delete the invoice", null));
-//            }
-//
-//            invoiceService.deleteInvoice(invoiceId);
-//            return ResponseEntity.ok(new ApiResp<>(HttpStatus.OK.value(), "Invoice deleted successfully", null));
-//        }
-//        // Unauthorized access
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                .body(new ApiResp<>(HttpStatus.UNAUTHORIZED.value(), "User not authenticated", null));
-//    }
+    @DeleteMapping("/{invoiceId}")
+    public ResponseEntity<ApiResp<Object>> destroyInvoice(@PathVariable UUID invoiceId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
+           InvoiceModel invoice = invoiceService.getTransactionById(invoiceId);
+
+            // Check if the invoice belongs to the current user
+            if (!invoice.getPembeli().getId_pembeli().equals(currentUser.getId_pembeli())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResp<>(HttpStatus.FORBIDDEN.value(),
+                                "only owner can delete the invoice", null));
+            }
+
+            invoiceService.deleteInvoice(invoiceId);
+            return ResponseEntity.ok(new ApiResp<>(HttpStatus.OK.value(), "Invoice deleted successfully", null));
+        }
+        // Unauthorized access
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiResp<>(HttpStatus.UNAUTHORIZED.value(), "User not authenticated", null));
+    }
 
 }

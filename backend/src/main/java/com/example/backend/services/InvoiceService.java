@@ -105,6 +105,6 @@ public class InvoiceService {
     @Transactional
     public void deleteInvoice (UUID id) {
         //Notes : Only paid=false invoices are able to be deleted
-//        invoiceRepo.deleteByIdInvoiceAndPaidFalse(id);
+        invoiceRepo.deleteByIdInvoiceAndPaidIsFalse(id);
     }
 }

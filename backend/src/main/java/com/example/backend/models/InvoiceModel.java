@@ -22,7 +22,7 @@ public class InvoiceModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(unique = true)
-    private UUID id_invoice;
+    private UUID idInvoice;
 
     @ManyToOne
     @JoinColumn(name = "pembeli_id", nullable = false)

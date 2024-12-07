@@ -35,7 +35,7 @@ public class MidtransService {
 
         // Transaction details
         Map<String, Object> transactionDetails = new HashMap<>();
-        transactionDetails.put("order_id", nota.getId_invoice().toString());
+        transactionDetails.put("order_id", nota.getIdInvoice().toString());
         transactionDetails.put("gross_amount", nota.getTotalHarga().intValue());
 
         //item_details
