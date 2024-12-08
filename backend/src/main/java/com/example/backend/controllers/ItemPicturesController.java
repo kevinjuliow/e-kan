@@ -143,7 +143,7 @@ public class ItemPicturesController {
         if (authentication.getPrincipal() instanceof PenjualModel currentPenjual) {
             ItemPicturesModel picture = service.getPicture(idPicture);
 
-            if (picture.getItem().getPenjual().getId_penjual().equals(currentPenjual.getId_penjual())){
+            if (!picture.getItem().getPenjual().getId_penjual().equals(currentPenjual.getId_penjual())){
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                         new ApiResp<>(
                                 HttpStatus.FORBIDDEN.value() ,
@@ -152,7 +152,6 @@ public class ItemPicturesController {
                         )
                 );
             }
-
             service.deletePicture(idPicture);
             return ResponseEntity.ok(  new ApiResp<>(
                     HttpStatus.UNAUTHORIZED.value() ,
