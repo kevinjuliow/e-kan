@@ -27,7 +27,8 @@ const ZodAddProductFormSchema = z.object({
   tipePenjualan: z.string().refine((value) => value !== "", {
     message: "Tipe penjualan harus dipilih",
   }),
-  description: z.string().min(25, "Minimum description is 25 characters")
+  description: z.string().min(25, "Minimum description is 25 characters"),
+  gambarProduk: z.string().min(1, "Gambar produk harus ada"), // image validator
 });
 
 type AddProductFormSchema = z.infer<typeof ZodAddProductFormSchema>;
@@ -35,20 +36,27 @@ type AddProductFormSchema = z.infer<typeof ZodAddProductFormSchema>;
 const AddProduct = () => {
   const { data: session } = useSession()
 
+  const { register, handleSubmit, watch, reset, setValue, clearErrors, formState } = useForm<AddProductFormSchema>({
+    resolver: zodResolver(ZodAddProductFormSchema),
+    defaultValues: {
+      gambarProduk: "", // default value
+    },
+  });
+  
   const [openAddImage, setOpenAddImage] = useState<boolean>(false);
   
   const selectedProductImageRef = useRef<string | null>(null);
   const updateProductImage = (imageSource: string | undefined) => {
     selectedProductImageRef.current = imageSource ?? null;
+    if (imageSource) {
+      setValue("gambarProduk", imageSource) // set value manually to useForm
+      clearErrors("gambarProduk"); // clear the error from gambarProduk
+    }
   };  
   
   const handleOpenAddImageForm = () => {
     setOpenAddImage(!openAddImage)
   }
-
-  const { register, handleSubmit, watch, reset, formState } = useForm<AddProductFormSchema>({
-    resolver: zodResolver(ZodAddProductFormSchema),
-  });
 
   const { errors } = formState;
   const [loading, setLoading] = useState<boolean>(false);
@@ -82,7 +90,7 @@ const AddProduct = () => {
 
       const { id_item: itemId } = response.data.data
 
-      if (itemId) {
+      if (itemId && values.gambarProduk) {
         console.log("MASUK IF BUAT POST IMAGE")
         
         const imageWantToPost = selectedProductImageRef.current
@@ -114,6 +122,7 @@ const AddProduct = () => {
 
       showToast("Berhasil menambahkan " + values.namaIkan + " ke daftar produk!", "SUCCESS")
       reset()
+      selectedProductImageRef.current = null // remove image data after posting an item
     } catch (error) {
       if (error instanceof Error) {
         console.log("ERROR BOS")
@@ -160,7 +169,7 @@ const AddProduct = () => {
                 </div>}
               </div>
             </div>
-            {errors?.namaIkan && <p className="text-sm my-1 text-red-500">{errors.namaIkan?.message}</p>}
+            {errors?.gambarProduk && <p className="text-sm mt-2 mb-1 text-red-500">{errors.gambarProduk?.message}</p>}
           </div>
 
           {/* Nama */}
