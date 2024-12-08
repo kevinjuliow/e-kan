@@ -68,7 +68,8 @@ const EachItem: React.FC<Props> = ({ data }) => {
   }
 
   return (
-      <div className="flex items-center justify-center">
+    <>
+      {image && <div className="flex items-center justify-center">
         <div className="w-full">
           <div className="bg-white shadow-xl rounded-lg overflow-hidden">
             {!!session && session?.user?.userType === 'PEMBELI' &&
@@ -76,7 +77,7 @@ const EachItem: React.FC<Props> = ({ data }) => {
               <CartAddIcon size={32} hexColor={"#ffffff"} />
             </div>}
             <Link href={`/product/item/${data.id_item}`}>
-              <Image src={image ?? "/pexels-crisdip-35358-128756.jpg"} width={200} height={150} className="w-full" alt="gambar ikan" />
+              <Image src={image} width={200} height={150} className="w-full" alt="gambar ikan" />
             </Link>
             <div className="p-4">
               <p className="uppercase tracking-wider text-sm font-bold text-darkaqua mb-2">{data.nama}</p>
@@ -102,7 +103,8 @@ const EachItem: React.FC<Props> = ({ data }) => {
             {message && <Toast message={message} toastType={toastType ?? "SUCCESS"} onClose={() => {}} />}
           </div>
         </div>
-    </div>
+      </div>}
+    </>  
   );
 };
 
