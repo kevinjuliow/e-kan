@@ -61,7 +61,7 @@ const AddProduct = () => {
     console.log(process.env.API_BASEURL)
     setLoading(true)
     try {
-      const response = await axios.post(`${process.env.API_BASEURL}/ap/items`, {
+      const response = await axios.post(`${process.env.API_BASEURL}/api/items`, {
         nama: values.namaIkan,
         jenis_habitat: values.jenisHabitat,
         jenis_bibit: values.jenisBibit,
@@ -97,7 +97,7 @@ const AddProduct = () => {
           const formDataImage = new FormData();
           formDataImage.append('file', imageFile)
   
-          const responsePostImage = await axios.post(`${process.env.API_BASEURL}/ap/items/${itemId}/pictures`, formDataImage, {
+          const responsePostImage = await axios.post(`${process.env.API_BASEURL}/api/items/${itemId}/pictures`, formDataImage, {
             headers: {
               "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${session?.accessToken}`,
