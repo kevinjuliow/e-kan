@@ -28,6 +28,10 @@ public class InvoiceModel {
     @JoinColumn(name = "pembeli_id", nullable = false)
     private PembeliModel pembeli;
 
+    @ManyToOne
+    @JoinColumn(name = "alamat_id")
+    private AlamatPembeliModel alamat ;
+
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<InvoiceDetailModel> invoiceDetails = new ArrayList<>();
 

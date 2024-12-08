@@ -1,6 +1,7 @@
 package com.example.backend.dtos.InvoiceDtos;
 
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
+import com.example.backend.models.AlamatPembeliModel;
 import jakarta.annotation.Nullable;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.util.UUID;
 public class InvoiceDto {
     private UUID id_invoice;
     private PembeliDto pembeli;
+    private AlamatPembeliModel alamat ;
     private List<InvoiceDetailDto> invoiceDetails;
     private Double totalHarga;
     private Date tanggalPembelian;
