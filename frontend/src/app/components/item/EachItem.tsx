@@ -3,7 +3,7 @@
 import { Item } from "app/interfaces/Item/types";
 // import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { CartAddIcon } from "../icon";
+import { CartAddIcon, FishIcon } from "../icon";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -86,11 +86,7 @@ const EachItem: React.FC<Props> = ({ data }) => {
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-t border-gray-300 text-darkaqua">
               <div className="flex items-center relative">
-                <svg width="18px" height="18px" viewBox="0 0 24 24" strokeWidth="1.5" fill="none" xmlns="http://www.w3.org/2000/svg" color="#007575">
-                  <path d="M10.5 9C10.5 9 10.5 7 9.5 5C13.5 5 16 7.49997 16 7.49997C16 7.49997 19.5 7 22 12C21 17.5 16 18 16 18L12 20.5C12 20.5 12 19.5 12 17.5C9.5 16.5 6.99998 14 7 12.5C7.00001 11 10.5 9 10.5 9ZM10.5 9C10.5 9 11.5 8.5 12.5 8.5" stroke="#007575" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                  <path d="M2 9.5L3 12.5L2 15.5C2 15.5 7 15.5 7 12.5C7 9.5 2 9.5 2 9.5Z" stroke="#007575" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                  <path d="M17 12.01L17.01 11.9989" stroke="#007575" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                </svg>
+                <FishIcon size={18} hexColor={"#007575"} />
                 <p className="font-light ms-1 text-sm relative top-0.5">{data.jenis_bibit}</p>
               </div>
               <div className="flex items-center mt-1 sm:mt-0 relative">
