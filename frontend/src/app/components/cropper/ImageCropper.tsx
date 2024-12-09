@@ -86,7 +86,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ updateProductImage, closeCr
 
   return (
     <div className="fixed w-[85%] h-[85%] mt-[5%] rounded-lg flex flex-col items-center justify-start backdrop-blur-md bg-opacity-75 bg-white z-[60]">
-      <h1 className="text-2xl font-bold mt-12">Pilih Gambar untuk Produk Anda!</h1>
+      <h1 className="text-2xl font-bold mt-20 md:mt-12 text-center">Pilih Gambar untuk Produk Anda!</h1>
       
       <div className="mt-4">
         <div className="flex flex-col items-center justify-center">
