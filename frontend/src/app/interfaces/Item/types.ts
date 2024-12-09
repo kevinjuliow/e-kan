@@ -5,6 +5,8 @@ export interface Item {
   jenis_bibit: string
   harga: number
   stock: number
+  tipe_penjualan: string,
+  ukuran_ikan?: string,
   description: string
   penjual: PenjualData
 }
