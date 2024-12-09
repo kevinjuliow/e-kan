@@ -8,7 +8,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { navbarMenuList } from "app/constant";
 import { Link as ReactScroll } from 'react-scroll'
-import { CartIcon, ChatIcon, PlusNonSolid, SearchIcon } from "../icon";
+import { BoxIcon, CartIcon, ChatIcon, PlusNonSolid, SearchIcon } from "../icon";
 
 const Navbar = () => {
   const pathname = usePathname()
@@ -102,10 +102,17 @@ const Navbar = () => {
             ? <Link href={"/cart"} className="me-4">
                 <CartIcon size={24} hexColor={changeIconColor} />
               </Link>
-            : (!isAddProductPage && <Link href={"/product/add"} className={`flex items-end justify-center rounded-lg border-2 px-2 py-1 me-4`} style={{ borderColor: changeIconColor }}>
-                <PlusNonSolid size={24} hexColor={changeIconColor} />
-                <p className={`${changeTextColor} ms-1 font-medium text-sm`}>Tambah Produk</p>
-              </Link>)}
+            : !isAddProductPage && (
+              <>
+                <Link href={"/product/add"} className={`flex items-end justify-center rounded-lg border-2 px-2 py-1 me-4`} style={{ borderColor: changeIconColor }}>
+                  <PlusNonSolid size={24} hexColor={changeIconColor} />
+                  <p className={`${changeTextColor} ms-1 font-medium text-sm`}>Tambah Produk</p>
+                </Link>
+                <Link href={"/product/myproduct"} className="me-4">
+                  <BoxIcon size={24} hexColor={changeIconColor} />
+                </Link>
+              </>
+            )}
           <Link href={"/chat"} className="me-4">
             <ChatIcon size={24} hexColor={changeIconColor} />
           </Link>
