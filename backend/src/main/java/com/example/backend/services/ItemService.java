@@ -5,6 +5,7 @@ import com.example.backend.models.InvoiceModel;
 import com.example.backend.models.ItemModel;
 import com.example.backend.models.PenjualModel;
 import com.example.backend.repositories.InvoiceRepo;
+import com.example.backend.repositories.ItemPicturesRepo;
 import com.example.backend.repositories.ItemRepo;
 import com.example.backend.repositories.PenjualRepo;
 import jakarta.transaction.Transactional;
@@ -20,6 +21,7 @@ public class ItemService {
     private final ItemRepo repo ;
     private final PenjualRepo repoPenjual ;
     private final InvoiceRepo invoiceRepo ;
+    private final ItemPicturesRepo itemPicturesRepo ;
 
 
     public List<ItemModel> getAllItems() {
@@ -87,6 +89,8 @@ public class ItemService {
         }
 
         invoiceRepo.deleteInvoiceDetailsByItemId(id);
+        itemPicturesRepo.deleteByItemId(id);
+
         repo.deleteById(id);
     }
 }
