@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
@@ -35,6 +37,7 @@ public class ItemPicturesModel {
 
     @ManyToOne
     @JoinColumn(name = "item_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private ItemModel item;
 
     @CreationTimestamp

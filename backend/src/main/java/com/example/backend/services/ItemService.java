@@ -1,18 +1,17 @@
 package com.example.backend.services;
 
 import com.example.backend.Exceptions.GlobalExceptionHandler;
+import com.example.backend.models.InvoiceModel;
 import com.example.backend.models.ItemModel;
-import com.example.backend.models.PembeliModel;
 import com.example.backend.models.PenjualModel;
+import com.example.backend.repositories.InvoiceRepo;
 import com.example.backend.repositories.ItemRepo;
 import com.example.backend.repositories.PenjualRepo;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,6 +19,7 @@ import java.util.UUID;
 public class ItemService {
     private final ItemRepo repo ;
     private final PenjualRepo repoPenjual ;
+    private final InvoiceRepo invoiceRepo ;
 
 
     public List<ItemModel> getAllItems() {
@@ -43,6 +43,7 @@ public class ItemService {
                 .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Item not found with id: " + id));
     }
 
+    @Transactional
     public ItemModel updateItem(ItemModel input , UUID id) {
         ItemModel existingItem = repo.findById(id).orElseThrow(
                 ()-> new GlobalExceptionHandler.ResourceNotFoundException("Item not found with id: " + id)
@@ -74,6 +75,7 @@ public class ItemService {
         return repo.save(existingItem);
     }
 
+    @Transactional
     public void deleteItem(UUID id, PenjualModel penjual) {
         ItemModel existingItem = repo.findById(id).orElseThrow(
                 () -> new GlobalExceptionHandler.ResourceNotFoundException("Item not found with id: " + id)
@@ -83,6 +85,8 @@ public class ItemService {
                 !existingItem.getPenjual().getId_penjual().equals(penjual.getId_penjual())) {
             throw new GlobalExceptionHandler.UnauthorizedAccessException("Unauthorized - Only the owner can delete this item");
         }
+
+        invoiceRepo.deleteInvoiceDetailsByItemId(id);
         repo.deleteById(id);
     }
 }

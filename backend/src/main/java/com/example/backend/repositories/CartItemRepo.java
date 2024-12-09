@@ -19,4 +19,5 @@ public interface CartItemRepo extends JpaRepository<CartItemModel , UUID> {
     void deleteByPembeli (PembeliModel pembeli);
 
     void deleteByPembeliAndIsCheckedTrue(PembeliModel pembeli);
+
 }
