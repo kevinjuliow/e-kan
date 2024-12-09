@@ -179,7 +179,7 @@ public class DtoMapper {
         InvoiceDto dto = InvoiceDto.builder()
                 .id_invoice(model.getIdInvoice())
                 .pembeli(toPembeliDto(model.getPembeli()))
-                .alamat(model.getAlamat())
+                .alamat(toAlamatDto(model.getAlamat()))
                 .invoiceDetails(notaDetailsDto)
                 .totalHarga(model.getTotalHarga())
                 .tanggalPembelian(model.getTanggalPembelian())

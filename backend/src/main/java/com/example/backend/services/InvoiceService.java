@@ -31,7 +31,7 @@ public class InvoiceService {
     }
 
     @Transactional
-    public InvoiceModel createTransactionFromCart(PembeliModel pembeli) {
+    public InvoiceModel createTransactionFromCart(PembeliModel pembeli , AlamatPembeliModel alamat) {
         List<CartItemModel> cartItems = cartRepository.findByPembeliAndIsCheckedTrue(pembeli).get();
 
         if (cartItems.isEmpty()) {
@@ -62,6 +62,8 @@ public class InvoiceService {
         }
 
         invoice.setTotalHarga(totalHarga);
+        invoice.setAlamat(alamat);
+
         invoiceRepo.save(invoice);
 
 
@@ -72,7 +74,7 @@ public class InvoiceService {
 
 
     @Transactional
-    public InvoiceModel createTransactionDirect(PembeliModel pembeli, UUID itemId, int quantity) {
+    public InvoiceModel createTransactionDirect(PembeliModel pembeli, UUID itemId, int quantity , AlamatPembeliModel alamat) {
         ItemModel item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Item tidak ditemukan!"));
 
@@ -85,6 +87,7 @@ public class InvoiceService {
 
         InvoiceModel invoice = new InvoiceModel();
         invoice.setPembeli(pembeli);
+        invoice.setAlamat(alamat);
 
         InvoiceDetailModel detail = new InvoiceDetailModel();
         detail.setInvoice(invoice);
