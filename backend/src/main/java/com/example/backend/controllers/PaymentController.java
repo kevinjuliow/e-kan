@@ -80,7 +80,7 @@ public class PaymentController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
                 if (paymentResult.getTransaction_status().equals("settlement") && paymentResult.getStatus_code() == 200) {
-                    InvoiceModel invoice = invoiceService.markInvoiceAsPaid(paymentResult.getOrder_id() , currentUser.getId_pembeli());
+                    InvoiceModel invoice = invoiceService.markInvoiceAsPaid(paymentResult.getOrder_id() , currentUser);
                     return ResponseEntity.ok(new ApiResp<>(
                             HttpStatus.OK.value(),
                             "Payment Success and invoice is updated" ,

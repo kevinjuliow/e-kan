@@ -3,6 +3,8 @@ package com.example.backend.services;
 
 import com.example.backend.models.InvoiceDetailModel;
 import com.example.backend.models.InvoiceModel;
+import com.example.backend.repositories.CartItemRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class PaymentService {
 
     @Value("${midtrans.callback.error.url}")
     private String CALLBACK_ERROR_URL;
+
 
 
 
@@ -69,6 +72,24 @@ public class PaymentService {
         callbacks.put("finish", CALLBACK_SUCCESS_URL);
         callbacks.put("error", CALLBACK_ERROR_URL);
 
+        //Shipping address
+        Map<String, String> shippingAddress = new HashMap<>();
+        shippingAddress.put("first_name", nota.getPembeli().getNama());
+        shippingAddress.put("email", nota.getPembeli().getEmail());
+        shippingAddress.put("phone", nota.getPembeli().getNo_telp());
+        shippingAddress.put("address", nota.getAlamat().getAlamat_lengkap());
+        shippingAddress.put("city", nota.getAlamat().getKota());
+        shippingAddress.put("postal_code", nota.getAlamat().getKode_pos());
+
+
+        //Billing address
+        Map<String, String> billingAddress = new HashMap<>();
+        shippingAddress.put("first_name", nota.getInvoiceDetails().get(0).getItem().getPenjual().getNama());
+        shippingAddress.put("email",  nota.getInvoiceDetails().get(0).getItem().getPenjual().getEmail());
+        shippingAddress.put("phone",  nota.getInvoiceDetails().get(0).getItem().getPenjual().getNo_telp());
+        shippingAddress.put("address",  nota.getInvoiceDetails().get(0).getItem().getPenjual().getAlamat());
+
+
 
         // Request body
         Map<String, Object> requestBody = new HashMap<>();
@@ -76,6 +97,8 @@ public class PaymentService {
         requestBody.put("item_details", itemDetailsList);
         requestBody.put("customer_details", customerDetails);
         requestBody.put("callbacks", callbacks);
+        requestBody.put("shipping_address", shippingAddress);
+        requestBody.put("billing_address", billingAddress);
 
 
 
@@ -110,7 +133,7 @@ public class PaymentService {
                     request,
                     Object.class
             );
-            return response.getBody(); // Return only the response body
+            return response.getBody();
         } catch (RestClientException e) {
             throw new RuntimeException("Midtrans failed to get status with id " + invoiceId, e);
         }

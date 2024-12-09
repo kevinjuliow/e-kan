@@ -7,11 +7,11 @@ import com.example.backend.repositories.ItemRepo;
 import com.example.backend.repositories.InvoiceRepo;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -22,6 +22,7 @@ public class InvoiceService {
     private final CartItemRepo cartRepository;
 
     private final ItemRepo itemRepository;
+
 
 
     public List<InvoiceModel> getAllInvoice (PembeliModel model) {
@@ -65,9 +66,6 @@ public class InvoiceService {
         invoice.setAlamat(alamat);
 
         invoiceRepo.save(invoice);
-
-
-        cartRepository.deleteByPembeli(pembeli);
 
         return invoice;
     }
@@ -125,14 +123,35 @@ public class InvoiceService {
     }
 
     @Transactional
-    public InvoiceModel markInvoiceAsPaid (UUID id_invoice , UUID id_pembeli) {
+    public InvoiceModel markInvoiceAsPaid (UUID id_invoice , PembeliModel pembeli) {
         InvoiceModel invoice = invoiceRepo.findById(id_invoice).orElseThrow(
                 ()-> new GlobalExceptionHandler.ResourceNotFoundException("Invoice not found")
         );
-        if (!invoice.getPembeli().getId_pembeli().equals(id_pembeli)) {
+        if (!invoice.getPembeli().getId_pembeli().equals(pembeli.getId_pembeli())) {
             new GlobalExceptionHandler.UnauthorizedAccessException("Unauthorized pembeli , only owner can verify");
         }
         invoice.setStatus("paid");
+
+        cartRepository.deleteByPembeliAndIsCheckedTrue(pembeli);
         return invoice;
+    }
+
+
+    //auto deletion if status == pending for 24 hours
+    @Scheduled(fixedRate = 3600000) // Run every hour
+    @Transactional
+    public void deleteStaleInvoices() {
+        // Calculate the cutoff time (24 hours ago)
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR_OF_DAY, -24);
+        Date cutoffDate = calendar.getTime();
+
+        // Find and delete pending invoices older than 24 hours
+        List<InvoiceModel> staleInvoices = invoiceRepo
+                .findByStatusAndTanggalPembelianBefore("pending", cutoffDate);
+
+        if (!staleInvoices.isEmpty()) {
+            invoiceRepo.deleteAll(staleInvoices);
+        }
     }
 }

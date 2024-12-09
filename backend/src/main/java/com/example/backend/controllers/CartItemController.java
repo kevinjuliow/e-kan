@@ -124,7 +124,7 @@ public class CartItemController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResp<CartItemDto>> update (@PathVariable UUID id , @RequestBody CartItemModel input) {
+    public ResponseEntity<ApiResp<CartItemDto>> update (@PathVariable UUID id , @RequestBody CartItemDto input) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
