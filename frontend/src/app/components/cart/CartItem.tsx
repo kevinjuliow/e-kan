@@ -2,25 +2,73 @@
 
 import { Item } from 'app/interfaces/Item/types';
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Minus, Plus, Trash } from '../icon';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
 
 interface Props {
   data: {
     item: Item
   };
+  idCart: string;
   isChecked: boolean;
   onChangePassed: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onItemRemoved: () => void; // refetch after succesfully delete an item
+  handleToast: (toastType: string, namaItem: string) => void;
 }
 
-const CartItem: React.FC<Props> = ({ data, isChecked, onChangePassed }) => {
+const CartItem: React.FC<Props> = ({ data, idCart, isChecked, onChangePassed, onItemRemoved, handleToast }) => {
+  const { data: session } = useSession()
   const [quantityToBuy, setQuantityToBuy] = useState<number>(1);
+  const [image, setImage] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const imageResponse = await axios.get(`${process.env.API_BASEURL}/api/items/${data.item.id_item}/pictures`)
+
+        if (!imageResponse) {
+          throw new Error('Some error occured when fetching an image!')
+        }
+
+        const imageData = imageResponse.data[0];
+
+        // creates image url from base64 response
+        const imageUrl = `data:${imageData.fileType};base64,${imageData.data}`;
+        setImage(imageUrl);
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    fetchData()
+  }, [data.item.id_item])
+
   const handleQuantityToBuy = (action: string) => {
     setQuantityToBuy(action === 'add' ? quantityToBuy + 1 : quantityToBuy === 1 ? quantityToBuy : quantityToBuy - 1)
   }
 
-  const handleRemoveFromCart = () => {
-    console.log("CLICKED")
+  const handleRemoveFromCart = async () => {
+    try {
+      const response = await axios.delete(`${process.env.API_BASEURL}/api/cart/${idCart}`, {
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`
+        }
+      })
+
+      if (response.status !== 200) {
+        throw new Error('Something went wrong when deleting an item!')
+      }
+
+      handleToast("SUCCESS", data.item.nama)
+      onItemRemoved()
+    } catch (error) {
+      if (error instanceof Error) {
+        handleToast("WARNING", data.item.nama)
+        console.log(error.message)
+      }
+    }
   }
 
   return (
@@ -30,7 +78,7 @@ const CartItem: React.FC<Props> = ({ data, isChecked, onChangePassed }) => {
         <input type="checkbox" className="row-span-2 self-start accent-mediumaqua w-4 h-4" value={data.item.id_item} checked={isChecked} onChange={(e) => onChangePassed(e)} />
 
         {/* Item Image */}
-        <Image className="row-span-2 ms-2 rounded-md" src={"/pexels-crisdip-35358-128756.jpg"} alt="cart-gambar-Ikan Anonim" width={140} height={140} />
+        <Image className="row-span-2 ms-2 rounded-md" src={image ?? "/pexels-crisdip-35358-128756.jpg"} alt="cart-gambar-Ikan Anonim" width={140} height={140} />
         
         {/* Item Title */}
         <div className="row-span-2 ms-4">
