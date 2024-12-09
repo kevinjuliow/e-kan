@@ -4,10 +4,7 @@ import com.example.backend.Exceptions.GlobalExceptionHandler;
 import com.example.backend.models.InvoiceModel;
 import com.example.backend.models.ItemModel;
 import com.example.backend.models.PenjualModel;
-import com.example.backend.repositories.InvoiceRepo;
-import com.example.backend.repositories.ItemPicturesRepo;
-import com.example.backend.repositories.ItemRepo;
-import com.example.backend.repositories.PenjualRepo;
+import com.example.backend.repositories.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +19,7 @@ public class ItemService {
     private final PenjualRepo repoPenjual ;
     private final InvoiceRepo invoiceRepo ;
     private final ItemPicturesRepo itemPicturesRepo ;
+    private final CartItemRepo cartItemRepo ;
 
 
     public List<ItemModel> getAllItems() {
@@ -90,6 +88,7 @@ public class ItemService {
 
         invoiceRepo.deleteInvoiceDetailsByItemId(id);
         itemPicturesRepo.deleteByItemId(id);
+        cartItemRepo.deleteCartItemModelByItemId(id);
 
         repo.deleteById(id);
     }
