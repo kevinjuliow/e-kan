@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,6 +22,13 @@ public class InvoiceService {
     private final CartItemRepo cartRepository;
 
     private final ItemRepo itemRepository;
+
+
+    public List<InvoiceModel> getAllInvoice (PembeliModel model) {
+        return invoiceRepo.findByPembeli(model).orElseThrow(
+                ()-> new GlobalExceptionHandler.ResourceNotFoundException("Invoice not found with pembeli with id : " + model.getId_pembeli())
+        );
+    }
 
     @Transactional
     public InvoiceModel createTransactionFromCart(PembeliModel pembeli) {
@@ -93,5 +101,35 @@ public class InvoiceService {
     public InvoiceModel getTransactionById(UUID id) {
         return invoiceRepo.findById(id)
                 .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Transaksi tidak ditemukan!"));
+    }
+
+    @Transactional
+    public void deleteInvoice (UUID id) {
+        InvoiceModel invoice = invoiceRepo.findByIdInvoiceAndStatus(id , "pending").orElseThrow(
+                ()-> new GlobalExceptionHandler.BadRequestException("Id not found / invoice already been paid")
+        );
+        invoiceRepo.delete(invoice);
+    }
+
+
+    @Transactional
+    public void updatePaymentUrlAndToken (InvoiceModel model , String url , String token) {
+        if(!url.equals("") && !token.equals("")){
+            model.setPaymentUrl(url);
+            model.setPaymentToken(token);
+            invoiceRepo.save(model);
+        }
+    }
+
+    @Transactional
+    public InvoiceModel markInvoiceAsPaid (UUID id_invoice , UUID id_pembeli) {
+        InvoiceModel invoice = invoiceRepo.findById(id_invoice).orElseThrow(
+                ()-> new GlobalExceptionHandler.ResourceNotFoundException("Invoice not found")
+        );
+        if (!invoice.getPembeli().getId_pembeli().equals(id_pembeli)) {
+            new GlobalExceptionHandler.UnauthorizedAccessException("Unauthorized pembeli , only owner can verify");
+        }
+        invoice.setStatus("paid");
+        return invoice;
     }
 }

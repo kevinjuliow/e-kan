@@ -5,6 +5,7 @@ import com.example.backend.models.ItemModel;
 import com.example.backend.models.ItemPicturesModel;
 import com.example.backend.repositories.ItemPicturesRepo;
 import com.example.backend.repositories.ItemRepo;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,6 +74,13 @@ public class ItemPicturesService {
     public ItemPicturesModel getPicture(UUID pictureId) {
         return repo.findById(pictureId)
                 .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Picture not found"));
+    }
+
+    @Transactional
+    public void deletePicture (UUID pictureId) {
+        ItemPicturesModel pict = repo.findById(pictureId)
+                .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Picture not found"));
+        repo.delete(pict);
     }
 
 

@@ -177,12 +177,14 @@ public class DtoMapper {
                 .toList();
 
         InvoiceDto dto = InvoiceDto.builder()
-                .id_invoice(model.getId_invoice())
+                .id_invoice(model.getIdInvoice())
                 .pembeli(toPembeliDto(model.getPembeli()))
                 .invoiceDetails(notaDetailsDto)
                 .totalHarga(model.getTotalHarga())
                 .tanggalPembelian(model.getTanggalPembelian())
-                .paid(model.isPaid())
+                .status(model.getStatus())
+                .paymentUrl(model.getPaymentUrl())
+                .paymentToken(model.getPaymentToken())
                 .build();
 
         return dto;

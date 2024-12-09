@@ -1,6 +1,7 @@
 package com.example.backend.configs;
 
 import com.example.backend.services.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -60,6 +61,7 @@ public class  JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+
         try {
             final String jwt = authHeader.substring(7);
             final String userEmail = jwtService.extractUsername(jwt);
@@ -69,6 +71,15 @@ public class  JwtAuthenticationFilter extends OncePerRequestFilter {
             if (userEmail != null && authentication == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
+                if (request.getRequestURI().contains("/refresh-token")){
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
                 if (jwtService.isTokenValid(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
@@ -82,7 +93,27 @@ public class  JwtAuthenticationFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
-            handlerExceptionResolver.resolveException(request, response, null, exception);
+            if (request.getRequestURI().contains("/refresh-token")) {
+                try {
+                    String jwt = authHeader.substring(7);
+                    String userEmail = jwtService.extractUsernameFromExpiredToken(jwt);
+                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                    filterChain.doFilter(request, response);
+                } catch (Exception e) {
+                    handlerExceptionResolver.resolveException(request, response, null, exception);
+                }
+            } else {
+                handlerExceptionResolver.resolveException(request, response, null, exception);
+            }
         }
     }
 }
