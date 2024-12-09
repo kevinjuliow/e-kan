@@ -13,6 +13,7 @@ interface ImageCropperProps {
 const ASPECT_RATIO = 4/3;
 const MIN_WIDTH_DIMENSION = 200;
 const MIN_HEIGHT_DIMENSION = 150;
+const MAX_FILE_SIZE = 1.5 * 1024 * 1024 // 1.5 MB in bytes
 
 const ImageCropper: React.FC<ImageCropperProps> = ({ updateProductImage, closeCropperWindow }) => {
   const imageRef = useRef<HTMLImageElement | null>(null)
@@ -25,6 +26,14 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ updateProductImage, closeCr
   const handleOnSelectedFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] // Takes the image from input
     if (!file) { // Check if theres any file inputted
+      return
+    }
+
+    // Validate the size of the file
+    if (file.size > MAX_FILE_SIZE) {
+      setError("Ukuran file tidak boleh lebih dari 2 MB")
+      setImageSource("")
+      e.target.value = ""
       return
     }
 
@@ -89,7 +98,8 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ updateProductImage, closeCr
             accept="image/png, image/gif, image/jpeg"
             onChange={handleOnSelectedFile}  
           />
-          <p className="mt-1 text-sm" id="file_input_help">{`Minimal ukuran gambar adalah ${MIN_WIDTH_DIMENSION}x${MIN_HEIGHT_DIMENSION} pixels`}</p>
+          <p className="mt-2 text-sm" id="file_input_help">{`Minimal ukuran gambar adalah ${MIN_WIDTH_DIMENSION}x${MIN_HEIGHT_DIMENSION} pixels`}</p>
+          <p className="mt-0 text-sm" id="file_input_help">{`Maksimal ukuran file gambar adalah ${MAX_FILE_SIZE / 1024 / 1024} MB`}</p>
         </div>
       </div>
 
