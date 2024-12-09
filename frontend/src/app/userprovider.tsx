@@ -5,11 +5,9 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
 interface User {
-  data: {
-    id: number;
-    nama: string;
-    email: string;
-  }
+  nama: string;
+  email: string;
+  userType: string;
 }
 
 interface UserContextProps {
@@ -30,9 +28,11 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
     const fetchUser = async () => {
       if (session?.accessToken) {
         try {
+          let userType = 'pembeli'
           let response = await getUser(session?.accessToken, 'pembeli')
     
           if (!response) {
+            userType = 'penjual'
             response = await getUser(session?.accessToken, 'penjual')
           }
 
@@ -40,6 +40,7 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
             throw new Error()
           }
 
+          response.userType = userType
           setUser(response);
         } catch (error) {
           console.error("Failed to fetch user data:", error);
@@ -66,7 +67,7 @@ const getUser = async (accessToken: string, userType: string) => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    return response.data
+    return response.data.data
   } catch (error) {
     if (error instanceof AxiosError) {
       if (error?.response?.status === 401) {
