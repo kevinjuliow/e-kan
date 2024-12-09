@@ -8,7 +8,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { navbarMenuList } from "app/constant";
 import { Link as ReactScroll } from 'react-scroll'
-import { CartIcon, PlusNonSolid } from "../icon";
+import { BoxIcon, CartIcon, ChatIcon, PlusNonSolid, SearchIcon } from "../icon";
 
 const Navbar = () => {
   const pathname = usePathname()
@@ -17,6 +17,7 @@ const Navbar = () => {
   const isSignupOrLoginPage = pathname === '/auth/signup' || pathname === '/auth/login'
   const isLanding = pathname === '/'
   const isDashboard = pathname === '/dashboard'
+  const isAddProductPage = pathname === '/product/add'
 
   const handleLogin = () => signIn();
   const handleLogout = () => signOut({ callbackUrl: "/", redirect: true });
@@ -56,7 +57,7 @@ const Navbar = () => {
     };
   }, [isLanding]);
 
-  const changeTextColor = (isLanding || isDashboard) && isScrolled ? 'text-gray-800' : (isLanding || isDashboard) && !isScrolled ? 'text-white' : (isLoginPage || isSignupPage) || ((!isLanding && !isDashboard && !isLoginPage && !isSignupPage) && isScrolled) ? 'text-gray-800' :  'text-white'
+  const changeTextColor = (isLanding || isDashboard) && isScrolled ? 'text-gray-800' : (isLanding || isDashboard) && !isScrolled ? 'text-white' : (isLoginPage || isSignupPage) || ((!isLanding && !isDashboard && !isLoginPage && !isSignupPage) && isScrolled) ? 'text-gray-800' : 'text-gray-800' // changed from text-white temporarily
   const changeIconColor = (isLanding || isDashboard) && isScrolled ? '#1f2937' : (isLanding || isDashboard) && !isScrolled ? '#ffffff' : (isLoginPage || isSignupPage) || ((!isLanding && !isDashboard && !isLoginPage && !isSignupPage) && isScrolled) ? '#1f2937' :  '#ffffff'
 
   return (
@@ -79,10 +80,7 @@ const Navbar = () => {
 
           <div className="relative max-w-96 md:w-[50%] hidden lg:flex items-center justify-center text-white border-none">
             <div className="absolute inset-y-0 start-0 flex items-center px-4">
-              <svg width="20px" height="20px" viewBox="0 0 24 24" strokeWidth="1.5" fill="none" xmlns="http://www.w3.org/2000/svg" color="#ffffff">
-                <path d="M17 17L21 21" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                <path d="M3 11C3 15.4183 6.58172 19 11 19C13.213 19 15.2161 18.1015 16.6644 16.6493C18.1077 15.2022 19 13.2053 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-              </svg>
+              <SearchIcon size={20} hexColor={"#ffffff"} />
             </div>
             <input className="w-full px-2 py-2 ps-12 text-base rounded-lg bg-darkaqua focus:outline-none" placeholder="Cari ikan di sini..." required />
             <button type="submit" className="text-white absolute end-2 bg-mediumaqua font-medium rounded-lg text-sm px-3 py-1">Search</button>
@@ -104,10 +102,20 @@ const Navbar = () => {
             ? <Link href={"/cart"} className="me-4">
                 <CartIcon size={24} hexColor={changeIconColor} />
               </Link>
-            : <Link href={"/product/add"} className={`flex items-end justify-center rounded-lg border px-2 py-1 me-4`} style={{ borderColor: changeIconColor }}>
-                <PlusNonSolid size={24} hexColor={changeIconColor} />
-                <p className={`${changeTextColor} ms-1 font-medium text-sm`}>Tambah Produk</p>
-              </Link>}
+            : !isAddProductPage && (
+              <>
+                <Link href={"/product/add"} className={`flex items-end justify-center rounded-lg border-2 px-2 py-1 me-4`} style={{ borderColor: changeIconColor }}>
+                  <PlusNonSolid size={24} hexColor={changeIconColor} />
+                  <p className={`${changeTextColor} ms-1 font-medium text-sm`}>Tambah Produk</p>
+                </Link>
+                <Link href={"/product/myproduct"} className="me-4">
+                  <BoxIcon size={24} hexColor={changeIconColor} />
+                </Link>
+              </>
+            )}
+          <Link href={"/chat"} className="me-4">
+            <ChatIcon size={24} hexColor={changeIconColor} />
+          </Link>
           <div className="flex text-center items-center group relative">
             <Image src="/default_profile.png" alt="default profile" width={32} height={32} className="rounded-full border-2 border-darkaqua" />
             <div
@@ -119,7 +127,7 @@ const Navbar = () => {
                 <div className="font-medium truncate">{session?.user?.email}</div>
               </div>
               <div className="py-1 cursor-pointer">
-                <Link href="/applicants/profile" className="block px-4 py-2 text-sm text-black hover:bg-gray-100 cursor-pointer">
+                <Link href="/profile" className="block px-4 py-2 text-sm text-black hover:bg-gray-100 cursor-pointer">
                   Profile
                 </Link>
               </div>

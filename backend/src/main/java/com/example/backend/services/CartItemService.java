@@ -1,9 +1,11 @@
 package com.example.backend.services;
 
 import com.example.backend.Exceptions.GlobalExceptionHandler;
+import com.example.backend.dtos.cartItemDtos.CartItemDto;
 import com.example.backend.models.CartItemModel;
 import com.example.backend.models.PembeliModel;
 import com.example.backend.repositories.CartItemRepo;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +44,8 @@ public class CartItemService {
         return repo.save(model);
     }
 
-    public CartItemModel update (CartItemModel input , UUID id){
+    @Transactional
+    public CartItemModel update (CartItemDto input , UUID id){
         CartItemModel existItem = repo.findById(id).orElseThrow(
                 () -> new GlobalExceptionHandler.ResourceNotFoundException("Cart Item"));
 
@@ -50,10 +53,10 @@ public class CartItemService {
             existItem.setIsChecked(input.getIsChecked());
         }
 
-        if (existItem.getJumlah_item() != input.getJumlah_item()) {
+        if ((existItem.getJumlah_item() != input.getJumlah_item()) && (input.getJumlah_item() != 0) ) {
             existItem.setJumlah_item(input.getJumlah_item());
         }
-        return repo.save(existItem);
+        return existItem;
     }
 
 
