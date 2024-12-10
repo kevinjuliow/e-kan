@@ -16,9 +16,14 @@ export const AuthOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, trigger, session, user }) {
+      // Check if session triggered with update method from client
+      if (trigger === 'update') {
+        token.name = session.user.name
+      }
+
       if (!user) {
-        return token
+        return token;
       }
 
       return {

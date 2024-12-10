@@ -173,7 +173,7 @@ const AddProduct = () => {
           </div>
 
           {/* Nama */}
-          <div className="col-span-2 row-start-2 flex flex-col mt-2">
+          <div className="col-span-2 row-start-2 flex flex-col mt-6">
             <label htmlFor="nama" className="font-medium mb-1">Nama Ikan</label>
             <input
               type="text"
