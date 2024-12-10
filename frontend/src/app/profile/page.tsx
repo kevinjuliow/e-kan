@@ -1,29 +1,37 @@
 "use client"
 
 import React, { useState } from 'react'
-import Image from 'next/image'
-import { ReceiptIcon, UserIcon } from 'app/components/icon'
+import { PencilEditIcon, ReceiptIcon, UserIcon } from 'app/components/icon'
 import PembeliProfile from 'app/components/profile/PembeliProfile'
 import PenjualProfile from 'app/components/profile/PenjualProfile'
 import { Toast, useToast } from 'app/components/toast/Toast'
 import ArrowBackButton from 'app/components/button/ArrowBackButton'
 import { useSession } from 'next-auth/react'
 import StatusTransaksi from 'app/components/profile/StatusTransaksi'
+import ProfileImageCropper from 'app/components/cropper/ProfileImageCropper'
+import { useUser } from 'app/userprovider'
 
 const Profile = () => {
   const { data: session } = useSession()
   const [activeTab, setActiveTab] = useState<string | 'account' | 'riwayat'>('account')
   const { message, toastType, showToast } = useToast()
+  const [openAddImage, setOpenAddImage] = useState<boolean>(false);
+  const { userImage, fetchUserImage } = useUser()
 
   const handleToast = (toastType: string) => {
     if (toastType === 'SUCCESS') {
-      showToast("Berhasil melakukan update profil!", "SUCCESS")
+      showToast("Berhasil melakukan update gambar profil!", "SUCCESS")
     } else {
-      showToast("Gagal melakukan update profil, coba lagi!", "WARNING");
+      showToast("Gagal melakukan update gambar profil, coba lagi!", "WARNING");
     }
   }
 
+  const handleOpenUpdateProfilePictureForm = () => {
+    setOpenAddImage(!openAddImage)
+  }
+
   return (
+    <>
     <div className="w-full flex items-center justify-center mt-24">
       <div className={`bgdashboard-wave`}></div>
       <div className="max-w-screen-md w-full h-full relative p-8 xl:px-0 flex flex-col items-center justify-center">
@@ -33,7 +41,14 @@ const Profile = () => {
         </div>
 
         <div className="w-full flex items-start mt-4">
-          <Image src={'/default_profile.png'} width={120} height={120} alt="profile image" className="rounded-full border-2 border-darkaqua" />
+          <div className="relative">
+            <button onClick={handleOpenUpdateProfilePictureForm}>
+              <img src={userImage ?? '/default_profile.png'} alt="profile image" className="rounded-full border-2 border-darkaqua w-full max-w-40 h-auto" />
+              <div className="absolute bottom-2 right-2 bg-darkaqua rounded-full p-1.5 z-20">
+                <PencilEditIcon size={18} hexColor={"#ffffff"} />
+              </div>
+            </button>
+          </div>
           <div className="ms-4 mt-2 w-full flex flex-col">
             <div className="w-full flex flex-col bg-transparent rounded-lg">
               <h1 className="font-bold text-xl md:text-3xl">{session?.user.name}</h1>
@@ -69,6 +84,8 @@ const Profile = () => {
         {message && <Toast message={message} toastType={toastType ?? "SUCCESS"} onClose={() => {}} />}
       </div>
     </div>
+    {openAddImage && <ProfileImageCropper handleToast={handleToast} closeCropperWindow={handleOpenUpdateProfilePictureForm} onRefetch={fetchUserImage} />}
+    </>
   )
 }
 

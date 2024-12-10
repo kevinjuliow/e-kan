@@ -9,6 +9,7 @@ import Image from "next/image";
 import { navbarMenuList } from "app/constant";
 import { Link as ReactScroll } from 'react-scroll'
 import { BoxIcon, CartIcon, ChatIcon, PlusNonSolid, SearchIcon } from "../icon";
+import { useUser } from "app/userprovider";
 
 const Navbar = () => {
   const pathname = usePathname()
@@ -24,6 +25,8 @@ const Navbar = () => {
 
   const { data: session } = useSession();
   const isLoggedIn = !!session
+
+  const { userImage } = useUser()
 
   const [isScrolled, setIsScrolled] = useState(false);
   useEffect(() => {
@@ -117,7 +120,7 @@ const Navbar = () => {
             <ChatIcon size={24} hexColor={changeIconColor} />
           </Link>
           <div className="flex text-center items-center group relative">
-            <Image src="/default_profile.png" alt="default profile" width={32} height={32} className="rounded-full border-2 border-darkaqua" />
+            <Image src={userImage ?? "/default_profile.png"} alt="default profile" width={32} height={32} className="rounded-full border-2 border-darkaqua" />
             <div
               id="userDropdown"
               className="bg-white rounded-lg shadow w-fit absolute right-0 mt-3 top-8 transform translate-y-[-10px] opacity-0 duration-300 ease-in-out group-hover:translate-y-0 group-hover:opacity-100"
