@@ -3,19 +3,24 @@ import { XMarkNonSolidIcon } from '../icon';
 import "react-image-crop/dist/ReactCrop.css" 
 import ReactCrop, { centerCrop, convertToPixelCrop, makeAspectCrop, PercentCrop } from 'react-image-crop';
 import setCanvasImage from './SetCanvasImage';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
 
-interface ImageCropperProps {
-  updateProductImage: (imageSource: string | undefined) => void;
+interface ProfileImageCropperProps {
+  // updateProductImage: (imageSource: string | undefined) => void;
+  handleToast: (toastType: string) => void;
   closeCropperWindow: () => void;
+  onRefetch: () => void;
 }
 
 // Constant value for ReactCrop property value
-const ASPECT_RATIO = 4/3;
-const MIN_WIDTH_DIMENSION = 200;
-const MIN_HEIGHT_DIMENSION = 150;
+const ASPECT_RATIO = 1/1;
+const MIN_WIDTH_DIMENSION = 100;
+const MIN_HEIGHT_DIMENSION = 100;
 const MAX_FILE_SIZE = 1.5 * 1024 * 1024 // 1.5 MB in bytes
 
-const ImageCropper: React.FC<ImageCropperProps> = ({ updateProductImage, closeCropperWindow }) => {
+const ProfileImageCropper: React.FC<ProfileImageCropperProps> = ({ handleToast, closeCropperWindow, onRefetch }) => {
+  const { data: session } = useSession()
   const imageRef = useRef<HTMLImageElement | null>(null)
   const previewCanvasRef = useRef<HTMLCanvasElement | null>(null)
 
@@ -84,9 +89,44 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ updateProductImage, closeCr
     setCrop(centeredCrop)
   }
 
+  const handleUpdateImage = async (onSuccess: () => void) => {
+    if (!previewCanvasRef.current) {
+      console.error("Canvas is empty!");
+      return;
+    }
+  
+    // Konversi hasil crop pada canvas ke Blob
+    previewCanvasRef.current.toBlob(async (blob) => {
+      if (!blob) {
+        return
+      }
+  
+      // Make file from blob
+      const imageFile = new File([blob], "cropped-image.jpg", { type: "image/jpeg" });
+      const formDataImage = new FormData();
+      formDataImage.append("file", imageFile);
+  
+      try {
+        await axios.post(`${process.env.API_BASEURL}/api/profile-picture`, formDataImage, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${session?.accessToken}`,
+          },
+        });
+  
+        handleToast("SUCCESS")
+        onSuccess() // Close the update image form
+        onRefetch()
+      } catch (error) {
+        console.error("Failed to upload image:", error)
+        handleToast("WARNING")
+      }
+    }, "image/jpeg")
+  }
+
   return (
-    <div className="fixed w-[85%] h-[85%] mt-[5%] rounded-lg flex flex-col items-center justify-start backdrop-blur-md bg-opacity-75 bg-white z-[60]">
-      <h1 className="text-2xl font-bold mt-20 md:mt-12 text-center">Pilih Gambar untuk Produk Anda!</h1>
+    <div className="fixed w-[85%] h-[85%] mt-[5%] p-4 rounded-lg flex flex-col items-center justify-start backdrop-blur-md bg-opacity-75 bg-white z-[60]">
+      <h1 className="text-2xl font-bold mt-20 md:mt-12 text-center">Pilih Gambar untuk Profil Anda!</h1>
       
       <div className="mt-4">
         <div className="flex flex-col items-center justify-center">
@@ -110,6 +150,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ updateProductImage, closeCr
           keepSelection={true}
           aspect={ASPECT_RATIO}
           minWidth={MIN_WIDTH_DIMENSION}
+          circularCrop
           onChange={
             (_, percentCrop) => setCrop(percentCrop)
           }
@@ -128,19 +169,23 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ updateProductImage, closeCr
         <button
           onClick={() => {
             if (crop && imageRef.current && previewCanvasRef.current) {
+              // Set hasil cropping pada canvas
               setCanvasImage(
-                imageRef.current, // current property will actually be the element that its attached to
+                imageRef.current,
                 previewCanvasRef.current,
                 convertToPixelCrop(
                   crop,
                   imageRef.current.width,
                   imageRef.current.height
                 )
-              )
+              );
+        
+              handleUpdateImage(() => {
+                closeCropperWindow();
+              });
+            } else {
+              console.error("Image cropping is not set or canvas is unavailable");
             }
-            const imageDataURL = previewCanvasRef.current?.toDataURL()
-            updateProductImage(imageDataURL)
-            closeCropperWindow()
           }}
           className="w-full md:w-24 border mt-4 px-5 py-2.5 custom-hover-button cursor-pointer rounded-md bg-darkaqua text-white border-none text-sm">
           OK
@@ -159,4 +204,4 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ updateProductImage, closeCr
   )
 }
 
-export default ImageCropper
+export default ProfileImageCropper
