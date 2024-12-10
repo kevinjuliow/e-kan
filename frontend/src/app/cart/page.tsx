@@ -46,14 +46,31 @@ const Cart = () => {
   }, [cartData]);
 
   
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = async (e: React.ChangeEvent<HTMLInputElement>, idCart: string) => {
     const checkedId = e.target.value;
-    setSelectedId(e.target.checked ? [...selectedId, checkedId] : selectedId.filter((id) => id !== checkedId))
-  }
+    const isChecked = e.target.checked; // takes boolean value of checked checkbox
 
-  const handleMultipleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const itemDataArray = cartData.map((eachCartData) => eachCartData.item.id_item);
-    setSelectedId(e.target.checked ? itemDataArray : [])
+    setSelectedId(e.target.checked ? [...selectedId, checkedId] : selectedId.filter((id) => id !== checkedId))
+  
+    try {
+      const response = await axios.put(`${process.env.API_BASEURL}/api/cart/${idCart}`, {
+        isChecked
+      }, {
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+      });
+  
+      if (response.status !== 200) {
+        throw new Error("Failed to update item status");
+      }
+  
+      console.log(`Item with ID ${checkedId} updated successfully.`);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error)
+      }
+    }
   }
 
   // Update total price of selected item
@@ -122,13 +139,6 @@ const Cart = () => {
         </div>
         {isCartDataItemExist ? <div className="flex flex-col md:flex-row justify-center w-full">
           <div className="w-full mb-56">
-            <div className="w-full flex items-center justify-start bg-white rounded-md p-4 mb-2">
-
-              {/* CHECKBOX */}
-              <input type="checkbox" className="accent-mediumaqua w-4 h-4" onChange={(e) => {handleMultipleCheckboxChange(e)}} />
-
-              <h2 className="font-medium ms-2">Pilih semua</h2>
-            </div>
             {Object.entries(groupedItems).map(([penjual, cartData], index) => (
               <div key={index} className="rounded-md mb-4 p-2 bg-white">
                 <div className="flex items-center justify-start p-2">

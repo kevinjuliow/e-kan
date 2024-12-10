@@ -13,7 +13,7 @@ interface Props {
   };
   idCart: string;
   isChecked: boolean;
-  onChangePassed: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangePassed: (e: React.ChangeEvent<HTMLInputElement>, idCart: string) => void;
   onItemRemoved: () => void; // refetch after succesfully delete an item
   handleToast: (toastType: string, namaItem: string) => void;
 }
@@ -75,7 +75,7 @@ const CartItem: React.FC<Props> = ({ data, idCart, isChecked, onChangePassed, on
     <div className="w-full border border-gray-200 bg-white rounded-md p-4 mt-2">
       <div className="grid md:grid-cols-[auto_auto_auto_1fr] row-auto gap-0">
         {/* Checkbox */}
-        <input type="checkbox" className="row-span-2 self-start accent-mediumaqua w-4 h-4" value={data.item.id_item} checked={isChecked} onChange={(e) => onChangePassed(e)} />
+        <input type="checkbox" className="row-span-2 self-start accent-mediumaqua w-4 h-4" value={data.item.id_item} checked={isChecked} onChange={(e) => onChangePassed(e, idCart)} />
 
         {/* Item Image */}
         <Image className="row-span-2 ms-2 rounded-md" src={image ?? "/pexels-crisdip-35358-128756.jpg"} alt="cart-gambar-Ikan Anonim" width={140} height={140} />
