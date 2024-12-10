@@ -184,8 +184,8 @@ public class DtoMapper {
                 .totalHarga(model.getTotalHarga())
                 .tanggalPembelian(model.getTanggalPembelian())
                 .status(model.getStatus())
-                .paymentUrl(model.getPaymentUrl())
-                .paymentToken(model.getPaymentToken())
+                .paymentType(model.getPaymentType())
+                .vaNumbers(model.getVaNumbers())
                 .build();
 
         return dto;
