@@ -1,4 +1,4 @@
-package com.example.backend.models.chat;
+package com.example.backend.dtos.chat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
