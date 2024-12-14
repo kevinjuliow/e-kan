@@ -18,11 +18,11 @@ const Profile = () => {
   const [openAddImage, setOpenAddImage] = useState<boolean>(false);
   const { userImage, fetchUserImage } = useUser()
 
-  const handleToast = (toastType: string) => {
+  const handleToast = (message: string, toastType: string) => {
     if (toastType === 'SUCCESS') {
-      showToast("Berhasil melakukan update gambar profil!", "SUCCESS")
+      showToast(message, toastType)
     } else {
-      showToast("Gagal melakukan update gambar profil, coba lagi!", "WARNING");
+      showToast(message, toastType)
     }
   }
 

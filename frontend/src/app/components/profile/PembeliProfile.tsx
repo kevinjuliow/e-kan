@@ -28,7 +28,7 @@ const ZodUpdateFormSchema = z.object({
 type ProfileUpdateFormSchema = z.infer<typeof ZodUpdateFormSchema>;
 
 interface PembeliProfileProps {
-  handleToast: (toastType: string) => void;
+  handleToast: (message: string, toastType: string) => void;
 }
 
 const PembeliProfile: React.FC<PembeliProfileProps> = ({ handleToast }) => {
@@ -92,13 +92,13 @@ const PembeliProfile: React.FC<PembeliProfileProps> = ({ handleToast }) => {
         }
       })
 
-      handleToast("SUCCESS")
+      handleToast("Berhasil melakukan update data profil!", "SUCCESS")
       // Refresh the page after successfully updated the profile data so the page display will also updated
       router.refresh()
 
     } catch (error) {
       if (error instanceof Error) {
-        handleToast("WARNING")
+        handleToast("Gagal melakukan update data profil, coba lagi!", "WARNING")
         console.log(error.message)
       }
     } finally {
