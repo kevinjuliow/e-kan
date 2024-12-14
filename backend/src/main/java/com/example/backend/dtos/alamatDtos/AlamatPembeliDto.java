@@ -14,10 +14,12 @@ public class AlamatPembeliDto {
     private UUID id_alamat ;
     private String alamat_lengkap ;
     private String kode_pos ;
-    private String kota ;
+    private String kecamatan ;
     private String provinsi ;
     private String kabupaten ;
     private String keterangan ;
+    private String RT ;
+    private String RW ;
 
     private PembeliDto pembeli ;
 }

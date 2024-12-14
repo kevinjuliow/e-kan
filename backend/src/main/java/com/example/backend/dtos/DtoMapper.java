@@ -62,10 +62,12 @@ public class DtoMapper {
                     .id_alamat(model.getId_alamat())
                     .alamat_lengkap(model.getAlamat_lengkap())
                     .kode_pos(model.getKode_pos())
-                    .kota(model.getKota())
+                    .kecamatan(model.getKecamatan())
                     .provinsi(model.getProvinsi())
                     .kabupaten(model.getKabupaten())
                     .keterangan(model.getKeterangan())
+                    .RT(model.getRT())
+                    .RW(model.getRW())
                     .pembeli(toPembeliDto(model.getPembeli()))
                     .build();
             return dto;
