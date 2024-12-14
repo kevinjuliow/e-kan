@@ -40,3 +40,14 @@ export interface CartData {
   item: Item
   pembeli: PembeliData
 }
+
+export interface Alamat {
+  id_alamat: string
+  alamat_lengkap: string
+  kode_pos: string
+  kota: string
+  provinsi: string
+  kabupaten: string
+  keterangan: string
+  pembeli: PembeliData
+}

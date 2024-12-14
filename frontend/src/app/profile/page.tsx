@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useState } from 'react'
-import { PencilEditIcon, ReceiptIcon, UserIcon } from 'app/components/icon'
+import React, { useEffect, useState } from 'react'
+import { MapIcon, PencilEditIcon, ReceiptIcon, UserIcon } from 'app/components/icon'
 import PembeliProfile from 'app/components/profile/PembeliProfile'
 import PenjualProfile from 'app/components/profile/PenjualProfile'
 import { Toast, useToast } from 'app/components/toast/Toast'
@@ -10,12 +10,15 @@ import { useSession } from 'next-auth/react'
 import StatusTransaksi from 'app/components/profile/StatusTransaksi'
 import ProfileImageCropper from 'app/components/cropper/ProfileImageCropper'
 import { useUser } from 'app/userprovider'
+import Alamat from 'app/components/profile/Alamat'
+import AddAlamat from 'app/components/profile/AddAlamat'
 
 const Profile = () => {
   const { data: session } = useSession()
-  const [activeTab, setActiveTab] = useState<string | 'account' | 'riwayat'>('account')
+  const [activeTab, setActiveTab] = useState<string | 'account' | 'alamat' | 'riwayat'>('account')
   const { message, toastType, showToast } = useToast()
   const [openAddImage, setOpenAddImage] = useState<boolean>(false);
+  const [openAddAlamat, setOpenAddAlamat] = useState<boolean>(false);
   const { userImage, fetchUserImage } = useUser()
 
   const handleToast = (message: string, toastType: string) => {
@@ -29,6 +32,17 @@ const Profile = () => {
   const handleOpenUpdateProfilePictureForm = () => {
     setOpenAddImage(!openAddImage)
   }
+
+  const handleOpenAddAlamatForm = () => {
+    setOpenAddAlamat(!openAddAlamat)
+  }
+
+   // Watch activeTab for changes and reset openAddAlamat
+   useEffect(() => {
+    if (activeTab === 'alamat') {
+      setOpenAddAlamat(false)
+    }
+  }, [activeTab])
 
   return (
     <>
@@ -61,24 +75,36 @@ const Profile = () => {
         {/* Menu tabs */}
         <div className="mt-8 w-full border-b border-gray-400 flex">
           <ul className="flex flex-wrap text-sm font-medium text-center">
-            <li className="w-40">
+            <li className="w-24 sm:w-40">
               <button onClick={() => setActiveTab('account')} className={`relative w-full flex items-center justify-center px-4 py-2 rounded-t-lg group ${activeTab === 'account' ? 'bg-mediumaqua text-white' : 'bg-none text-darkaqua'}`}>
                 <UserIcon size={24} hexColor={`${activeTab === 'account' ? "#ffffff" : "#007575"}`} />
-                <p className="ps-1 relative top-0.5">Akun Saya</p>
+                <p className="ps-1 relative top-0.5 hidden sm:block">Akun Saya</p>
               </button>
             </li>
-            {session?.user.userType === 'PEMBELI' && <li className="w-40">
-              <button onClick={() => setActiveTab('riwayat')} className={`relative w-full flex items-center justify-center px-4 py-2 rounded-t-lg group ${activeTab === 'riwayat' ? 'bg-mediumaqua text-white' : 'bg-none text-darkaqua'}`} aria-current="page">
-                <ReceiptIcon size={24} hexColor={`${activeTab === 'riwayat' ? "#ffffff" : "#007575"}`} />
-                <p className="ps-1 relative top-0.5">Status Transaksi</p>
-              </button>
-            </li>}
+            {session?.user.userType === 'PEMBELI' && (
+            <>
+              <li className="w-24 sm:w-40">
+                <button onClick={() => setActiveTab('alamat')} className={`relative w-full flex items-center justify-center px-4 py-2 rounded-t-lg group ${activeTab === 'alamat' ? 'bg-mediumaqua text-white' : 'bg-none text-darkaqua'}`} aria-current="page">
+                  <MapIcon size={24} hexColor={`${activeTab === 'alamat' ? "#ffffff" : "#007575"}`} />
+                  <p className="ps-1 relative top-0.5 hidden sm:block">Alamat Saya</p>
+                </button>
+              </li>
+              <li className="w-24 sm:w-40">
+                <button onClick={() => setActiveTab('riwayat')} className={`relative w-full flex items-center justify-center px-4 py-2 rounded-t-lg group ${activeTab === 'riwayat' ? 'bg-mediumaqua text-white' : 'bg-none text-darkaqua'}`} aria-current="page">
+                  <ReceiptIcon size={24} hexColor={`${activeTab === 'riwayat' ? "#ffffff" : "#007575"}`} />
+                  <p className="ps-1 relative top-0.5 hidden sm:block">Status Transaksi</p>
+                </button>
+              </li>
+            </>
+            )}
           </ul>
         </div>
 
         {/* Content selected by menu tab */}
         <div className="w-full mt-4">
           {activeTab === 'account' && (session?.user.userType === 'PEMBELI' ? <PembeliProfile handleToast={handleToast} /> : <PenjualProfile handleToast={handleToast} />)}
+          {activeTab === 'alamat' && !openAddAlamat && session?.user.userType === 'PEMBELI' && <Alamat handleToast={handleToast} closeFormWindow={handleOpenAddAlamatForm} />}
+          {activeTab === 'alamat' && openAddAlamat && session?.user.userType === 'PEMBELI' && <AddAlamat handleToast={handleToast} closeFormWindow={handleOpenAddAlamatForm} />}
           {activeTab === 'riwayat' && session?.user.userType === 'PEMBELI' && <StatusTransaksi />}
         </div>
         {message && <Toast message={message} toastType={toastType ?? "SUCCESS"} onClose={() => {}} />}
