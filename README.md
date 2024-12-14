@@ -66,7 +66,7 @@ This project consists of:
 3. Configure the environment variables:
    Create a `.env.local` file and add:
    ```env
-   NEXT_PUBLIC_API_URL=http://localhost:8000/api
+   NEXT_DEV_API_URL=http://localhost:8000/api
    ```
 
 4. Run the development server:
