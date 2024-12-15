@@ -48,6 +48,9 @@ export interface Alamat {
   kota: string
   provinsi: string
   kabupaten: string
+  kecamatan: string,
+  rt: string,
+  rw: string,
   keterangan: string
   pembeli: PembeliData
 }

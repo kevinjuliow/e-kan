@@ -7,11 +7,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SaveIcon, XMarkNonSolidIcon } from '../icon';
 
 const ZodAlamatFormSchema = z.object({
-  alamatLengkap: z.string().min(1, "Minimum alamat is 1 characters"),
-  kodePos: z.string().min(1, "Minimum alamat is 1 characters"),
-  kota: z.string().min(1, "Minimum alamat is 1 characters"),
-  provinsi: z.string().min(1, "Minimum alamat is 1 characters"),
-  kabupaten: z.string().min(1, "Minimum alamat is 1 characters"),
+  provinsi: z.string().min(1, "Minimum provinsi is 1 character"),
+  kabupatenKota: z.string().min(1, "Minimum kabupaten/kota is 1 character"),
+  kecamatan: z.string().min(1, "Minimum kecamatan is 1 character"),
+  rt: z.string().min(1, "Minimum rt is 1 character"),
+  rw: z.string().min(1, "Minimum rw is 1 character"),
+  kodePos: z.string().min(1, "Minimum kode pos is 1 character"),
+  alamatLengkap: z.string().min(1, "Minimum alamat lengkap is 1 character"),
   keterangan: z.string().optional(),
 });
 
@@ -30,7 +32,7 @@ const AddAlamat: React.FC<AddAlamatProps> = ({ handleToast, closeFormWindow }) =
   });
 
   const { errors } = formState;
-  const [error, setError] = useState<Error>();
+  // const [error, setError] = useState<Error>();
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleForm = handleSubmit(async (values) => {
@@ -39,12 +41,14 @@ const AddAlamat: React.FC<AddAlamatProps> = ({ handleToast, closeFormWindow }) =
     setLoading(true)
     try {
       const response = await axios.post(`${process.env.API_BASEURL}/api/alamat`, {
-        alamat_lengkap: values.alamatLengkap,
-        kode_pos: values.kodePos,
-        kota: values.kota,
         provinsi: values.provinsi,
-        kabupaten: values.kabupaten,
-        keterangan: values.keterangan
+        kabupaten: values.kabupatenKota,
+        kecamatan: values.kecamatan,
+        rt: values.rt,
+        rw: values.rw,
+        kode_pos: values.kodePos,
+        alamat_lengkap: values.alamatLengkap,
+        keterangan: values.keterangan,
       }, {
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
@@ -62,7 +66,7 @@ const AddAlamat: React.FC<AddAlamatProps> = ({ handleToast, closeFormWindow }) =
       if (error instanceof Error) {
         console.log("ERROR BOS")
         console.log(error)
-        setError(error)
+        handleToast("Gagal menambahkan alamat, coba lagi!", "WARNING")
       }
     } finally {
       setLoading(false)
@@ -72,50 +76,11 @@ const AddAlamat: React.FC<AddAlamatProps> = ({ handleToast, closeFormWindow }) =
   return (
     <form className="grid grid-cols-2 auto-rows-auto gap-x-2 w-full mb-20" onSubmit={handleForm}>
       <div className="w-full flex flex-col mb-5 relative">
-        <label htmlFor="kabupaten" className="mb-1 text-sm font-medium">Kabupaten</label>
-        <input
-          type="text"
-          id="kabupaten"
-          className="border border-darkaqua text-inherittext-gray-600 bg-transparent text-sm rounded-md px-2 py-1"
-          placeholder="Kabupaten"
-          required
-          {...register("kabupaten")}
-        />
-        {errors?.kabupaten && <p className="absolute top-14 left-0 text-[12px] text-red-500">{errors.kabupaten?.message}</p>} 
-      </div>
-
-      <div className="w-full flex flex-col mb-5 relative">
-        <label htmlFor="kodePos" className="mb-1 text-sm font-medium">Kode Pos</label>
-        <input
-          type="text"
-          id="kodePos"
-          className="border border-darkaqua text-inherittext-gray-600 bg-transparent text-sm rounded-md px-2 py-1"
-          placeholder="Kode Post"
-          required
-          {...register("kodePos")}
-        />
-        {errors?.kodePos && <p className="absolute top-14 left-0 text-[12px] text-red-500">{errors.kodePos?.message}</p>} 
-      </div>
-
-      <div className="w-full flex flex-col mb-5 relative">
-        <label htmlFor="kota" className="mb-1 text-sm font-medium">Kota</label>
-        <input
-          type="text"
-          id="kota"
-          className="border border-darkaqua text-inherittext-gray-600 bg-transparent text-sm rounded-md px-2 py-1"
-          placeholder="Kota"
-          required
-            {...register("kota")}
-        />
-        {errors?.kota && <p className="absolute top-14 left-0 text-[12px] text-red-500">{errors.kota?.message}</p>} 
-      </div>
-
-      <div className="w-full flex flex-col mb-5 relative">
         <label htmlFor="provinsi" className="mb-1 text-sm font-medium">Provinsi</label>
         <input
           type="text"
           id="provinsi"
-          className="border border-darkaqua text-inherittext-gray-600 bg-transparent text-sm rounded-md px-2 py-1"
+          className="border border-darkaqua text-inherit bg-transparent text-sm rounded-md px-2 py-1"
           placeholder="Provinsi"
           required
           {...register("provinsi")}
@@ -123,32 +88,97 @@ const AddAlamat: React.FC<AddAlamatProps> = ({ handleToast, closeFormWindow }) =
         {errors?.provinsi && <p className="absolute top-14 left-0 text-[12px] text-red-500">{errors.provinsi?.message}</p>} 
       </div>
 
-      <div className="col-span-2 w-full flex flex-col mb-5 relative">
-        <label htmlFor="namaLengkap" className="mb-1 text-sm font-medium">Alamat Lengkap</label>
+      <div className="w-full flex flex-col mb-5 relative">
+        <label htmlFor="kabupatenKota" className="mb-1 text-sm font-medium">Kabupaten/Kota</label>
         <input
           type="text"
-          id="namaLengkap"
-          className="border border-darkaqua text-inherittext-gray-600 bg-transparent text-sm rounded-md px-2 py-1"
-          placeholder="Alamat lengkap"
+          id="kabupatenKota"
+          className="border border-darkaqua text-inherit bg-transparent text-sm rounded-md px-2 py-1"
+          placeholder="Kabupaten/Kota"
           required
-          {...register("alamatLengkap")}
+          {...register("kabupatenKota")}
         />
-        {errors?.alamatLengkap && <p className="absolute top-14 left-0 text-[12px] text-red-500">{errors.alamatLengkap?.message}</p>} 
+        {errors?.kabupatenKota && <p className="absolute top-14 left-0 text-[12px] text-red-500">{errors.kabupatenKota?.message}</p>} 
       </div>
 
-      <div className="col-span-2 row-start-4 w-full flex flex-col mb-5 relative">
+      <div className="w-full flex flex-col mb-5 relative">
+        <label htmlFor="kecamatan" className="mb-1 text-sm font-medium">Kecamatan</label>
+        <input
+          type="text"
+          id="kecamatan"
+          className="border border-darkaqua text-inherit bg-transparent text-sm rounded-md px-2 py-1"
+          placeholder="Kecamatan"
+          required
+          {...register("kecamatan")}
+        />
+        {errors?.kecamatan && <p className="absolute top-14 left-0 text-[12px] text-red-500">{errors.kecamatan?.message}</p>} 
+      </div>
+      
+      <div className="w-full grid grid-cols-2 grid-rows-auto gap-x-2">
+        <div className="w-full flex flex-col mb-5 relative">
+          <label htmlFor="rt" className="mb-1 text-sm font-medium">RT</label>
+          <input
+            type="text"
+            id="rt"
+            className="border border-darkaqua text-inherit bg-transparent text-sm rounded-md px-2 py-1"
+            placeholder="RT"
+            required
+            {...register("rt")}
+          />
+          {errors?.rt && <p className="absolute top-14 left-0 text-[12px] text-red-500">{errors.rt?.message}</p>} 
+        </div>
+        <div className="w-full flex flex-col mb-5 relative">
+          <label htmlFor="rw" className="mb-1 text-sm font-medium">RW</label>
+          <input
+            type="text"
+            id="rw"
+            className="border border-darkaqua text-inherit bg-transparent text-sm rounded-md px-2 py-1"
+            placeholder="RW"
+            required
+            {...register("rw")}
+          />
+          {errors?.rw && <p className="absolute top-14 left-0 text-[12px] text-red-500">{errors.rw?.message}</p>} 
+        </div>
+      </div>
+
+      <div className="w-full flex flex-col mb-5 relative">
+        <label htmlFor="kodePos" className="mb-1 text-sm font-medium">Kode Pos</label>
+        <input
+          type="text"
+          id="kodePos"
+          className="border border-darkaqua text-inherit bg-transparent text-sm rounded-md px-2 py-1"
+          placeholder="Kode Pos"
+          required
+          {...register("kodePos")}
+        />
+        {errors?.kodePos && <p className="absolute top-14 left-0 text-[12px] text-red-500">{errors.kodePos?.message}</p>} 
+      </div>
+
+      <div className="w-full flex flex-col mb-5 relative">
         <label htmlFor="keterangan" className="mb-1 text-sm font-medium">Keterangan (opsional)</label>
         <input
           type="text"
           id="keterangan"
-          className="border border-darkaqua text-inherittext-gray-600 bg-transparent text-sm rounded-md px-2 py-1"
+          className="border border-darkaqua text-inherit bg-transparent text-sm rounded-md px-2 py-1"
           placeholder="Keterangan"
           {...register("keterangan")}
         />
         {errors?.keterangan && <p className="absolute top-14 left-0 text-[12px] text-red-500">{errors.keterangan?.message}</p>} 
       </div>
 
-      {error?.message && <p className="w-full text-center md:text-right absolute bottom-20 md:bottom-[-48px] right-0 text-sm mb-4 p-8 xl:p-0 text-red-500">{error?.message}</p>}
+      <div className="col-span-2 w-full flex flex-col mb-5 relative">
+        <label htmlFor="namaLengkap" className="mb-1 text-sm font-medium">Alamat Lengkap</label>
+        <input
+          type="text"
+          id="namaLengkap"
+          className="border border-darkaqua text-inherit bg-transparent text-sm rounded-md px-2 py-1"
+          placeholder="Alamat lengkap"
+          required
+          {...register("alamatLengkap")}
+        />
+        {errors?.alamatLengkap && <p className="absolute top-14 left-0 text-[12px] text-red-500">{errors.alamatLengkap?.message}</p>} 
+      </div>
+      
       <div className="col-span-2 row-start-5 justify-self-end flex items-center justify-center">
         <button onClick={closeFormWindow} className="flex w-32 top-56 left-0 items-center justify-center bg-red-500 text-white px-4 py-2 rounded-md">
           <div className="relative right-1">
@@ -173,6 +203,7 @@ const AddAlamat: React.FC<AddAlamatProps> = ({ handleToast, closeFormWindow }) =
           </>}
         </button>
       </div>
+      {/* {error?.message && <p className="col-span-2 row-start-6 w-full text-right text-sm my-4 p-0 text-red-500">{error?.message}</p>} */}
     </form>
   )
 }

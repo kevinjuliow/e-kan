@@ -44,7 +44,7 @@ const EachAlamat: React.FC<Props> = ({ data, handleToast, onAlamatRemoved }) => 
         <div className="w-full flex flex-col items-start p-2">
           <div className="w-full border-r border-gray-300">
             <p className="">
-              {`${data.alamat_lengkap}, ${data.kota}, ${data.provinsi}, ${data.kode_pos}`}
+              {`${data.alamat_lengkap}, RT ${data.rt}/RW ${data.rw}, ${data.kecamatan}, ${data.kabupaten}, ${data.provinsi}, ${data.kode_pos}`}
             </p>
             <p className="text-justify pr-2">
               {`Keterangan: ${data.keterangan}`}
@@ -58,7 +58,7 @@ const EachAlamat: React.FC<Props> = ({ data, handleToast, onAlamatRemoved }) => 
       :
       <>
         <p className="w-full px-2 border-r border-gray-300">
-          {`${data.alamat_lengkap}, ${data.kota}, ${data.provinsi}, ${data.kode_pos}`}
+        {`${data.alamat_lengkap} RT ${data.rt}/RW ${data.rw}, ${data.kecamatan}, ${data.kabupaten}, ${data.provinsi}, ${data.kode_pos}`}
         </p>
         <button className="px-4 py-2" onClick={handleDeleteAlamat}>
           <Trash size={24} hexColor={"#ef4444"} />
