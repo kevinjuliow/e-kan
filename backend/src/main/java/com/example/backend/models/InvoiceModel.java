@@ -1,5 +1,6 @@
 package com.example.backend.models;
 
+import com.example.backend.dtos.midtransDtos.Va_Numbers;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +36,6 @@ public class InvoiceModel {
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<InvoiceDetailModel> invoiceDetails = new ArrayList<>();
 
-    @CreationTimestamp
     @Column(updatable = false, name = "tanggal_pembelian")
     private Date tanggalPembelian;
 
@@ -43,12 +43,13 @@ public class InvoiceModel {
     private Double totalHarga = 0.0;
 
     @Column
-    private String status = "pending";
+    private String status;
 
     @Column
-    private String paymentUrl ;
-    @Column
-    private String paymentToken ;
+    private String paymentType;
+
+    @Embedded
+    private Va_Numbers vaNumbers ;
 
     public void calculateTotalHarga() {
         totalHarga = invoiceDetails.stream()
