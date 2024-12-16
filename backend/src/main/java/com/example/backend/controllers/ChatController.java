@@ -75,7 +75,7 @@ public class ChatController {
 
         if (authentication.getPrincipal() instanceof PenjualModel) {
             PenjualModel penjual = (PenjualModel) authentication.getPrincipal();
-            senderId = penjual.getId_penjual();
+            senderId = penjual.getIdPenjual();
             senderType = "PENJUAL";
         } else if (authentication.getPrincipal() instanceof PembeliModel) {
             PembeliModel pembeli = (PembeliModel) authentication.getPrincipal();
@@ -104,7 +104,7 @@ public class ChatController {
         // Check if the user is part of this chat group
         if (authentication.getPrincipal() instanceof PenjualModel) {
             PenjualModel penjual = (PenjualModel) authentication.getPrincipal();
-            chatService.validatePenjualAccessToChatGroup(penjual.getId_penjual(), chatGroupId);
+            chatService.validatePenjualAccessToChatGroup(penjual.getIdPenjual(), chatGroupId);
         } else if (authentication.getPrincipal() instanceof PembeliModel) {
             PembeliModel pembeli = (PembeliModel) authentication.getPrincipal();
             chatService.validatePembeliAccessToChatGroup(pembeli.getId_pembeli(), chatGroupId);
@@ -127,7 +127,7 @@ public class ChatController {
 
         if (authentication.getPrincipal() instanceof PenjualModel) {
             PenjualModel penjual = (PenjualModel) authentication.getPrincipal();
-            userId = penjual.getId_penjual();
+            userId = penjual.getIdPenjual();
             userType = "PENJUAL";
         } else if (authentication.getPrincipal() instanceof PembeliModel) {
             PembeliModel pembeli = (PembeliModel) authentication.getPrincipal();
@@ -150,21 +150,14 @@ public class ChatController {
     @SendTo("/topic/chat/{chatGroupId}")
     public ChatMessage sendChatMessage(
             @DestinationVariable UUID chatGroupId,
-            @Payload MessageCreateRequest messageCreateRequest,
-            SimpMessageHeaderAccessor headerAccessor
+            @Payload MessageCreateRequest messageCreateRequest
     ) {
-
-
-
-        // Determine sender type and ID based on authentication
         UUID senderId;
         String senderType;
 
-
         Object authentication = jwtService.validateWebSocketToken(messageCreateRequest.getToken());
-
         if (authentication instanceof PenjualModel penjual) {
-            senderId = penjual.getId_penjual();
+            senderId = penjual.getIdPenjual();
             senderType = "PENJUAL";
         } else if (authentication instanceof PembeliModel pembeli) {
             senderId = pembeli.getId_pembeli();

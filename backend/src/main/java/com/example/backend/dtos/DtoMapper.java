@@ -78,7 +78,7 @@ public class DtoMapper {
             return null;
         }
         PenjualDto dto = PenjualDto.builder()
-                .id_penjual(model.getId_penjual())
+                .id_penjual(model.getIdPenjual())
                 .nama(model.getNama())
                 .email(model.getEmail())
                 .website(model.getWebsite())

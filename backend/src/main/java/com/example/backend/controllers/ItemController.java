@@ -175,7 +175,7 @@ public class ItemController {
     public ResponseEntity<ApiResp<List<InvoiceModel>>> getAllProcessedItems() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if ((authentication.getPrincipal() instanceof PenjualModel penjualModel)) {
-            List<InvoiceModel> invoiceList = invoiceService.getAllProcessedItems(penjualModel.getIdPenjual());
+            List<InvoiceModel> invoiceList = invoiceService.getAllProcessedItems(penjualModel);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(new ApiResp<>(

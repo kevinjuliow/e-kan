@@ -2,6 +2,7 @@ package com.example.backend.repositories;
 
 import com.example.backend.models.InvoiceModel;
 import com.example.backend.models.PembeliModel;
+import com.example.backend.models.PenjualModel;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -29,5 +30,13 @@ public interface InvoiceRepo extends JpaRepository<InvoiceModel, UUID> {
     @Query("DELETE FROM InvoiceDetailModel idm WHERE idm.item.id_item = :itemId")
     void deleteInvoiceDetailsByItemId(@Param("itemId") UUID itemId);
 
-    Optional<List<InvoiceModel>> findByInvoiceModels_ItemModels_PenjualModels_idPenjual(UUID idPenjual);
+    @Query("SELECT DISTINCT i FROM InvoiceModel i " +
+            "JOIN i.invoiceDetails id " +
+            "JOIN id.item item " +
+            "WHERE item.penjual = :penjual AND i.status = :status " +
+            "ORDER BY i.tanggalPembelian DESC")
+    List<InvoiceModel> findInvoicesByItemPenjualAndStatus(
+            @Param("penjual") PenjualModel penjual,
+            @Param("status") String status
+    );
 }

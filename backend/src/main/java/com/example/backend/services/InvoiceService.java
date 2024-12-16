@@ -208,8 +208,10 @@ public class InvoiceService {
     }
 
     @Transactional
-    public List<InvoiceModel> getAllProcessedItems(UUID idPenjual){
-        return invoiceRepo.findByInvoiceModels_ItemModels_PenjualModels_idPenjual(idPenjual)
-                .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Id Penjual tidak ditemukan!"));
+    public List<InvoiceModel> getAllProcessedItems(PenjualModel penjual){
+            return invoiceRepo.findInvoicesByItemPenjualAndStatus(
+                    penjual,
+                    "PAID"
+            );
     }
 }
