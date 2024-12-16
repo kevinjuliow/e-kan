@@ -17,7 +17,7 @@ import java.util.*;
 
 @Service
 public class PaymentService {
-    @Value("${midtrans.snap.url}")
+    @Value("${midtrans.url}")
     private String MIDTRANS_SNAP_URL;
 
     @Value("${midtrans.server.key}")
