@@ -44,7 +44,7 @@ public class ProfilePictureController {
                 );
             }
             if (authentication.getPrincipal() instanceof PenjualModel currentPenjual) {
-                ProfilePictureModel profilePicture = service.uploadProfilePicturePenjual(currentPenjual.getId_penjual(), file);
+                ProfilePictureModel profilePicture = service.uploadProfilePicturePenjual(currentPenjual.getIdPenjual(), file);
                 return ResponseEntity.ok(
                         new ApiResp<>(
                                 HttpStatus.OK.value() ,
@@ -88,7 +88,7 @@ public class ProfilePictureController {
         }
 
         if (authentication.getPrincipal() instanceof PenjualModel currentPenjual) {
-            ProfilePictureModel profilePicture = service.getProfilePicturePenjual(currentPenjual.getId_penjual());
+            ProfilePictureModel profilePicture = service.getProfilePicturePenjual(currentPenjual.getIdPenjual());
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(profilePicture.getFileType()))
                     .header(HttpHeaders.CONTENT_DISPOSITION,
@@ -114,7 +114,7 @@ public class ProfilePictureController {
             );
         }
         if (authentication.getPrincipal() instanceof PenjualModel currentPenjual) {
-            service.deleteProfilePicturePenjual(currentPenjual.getId_penjual());
+            service.deleteProfilePicturePenjual(currentPenjual.getIdPenjual());
             return ResponseEntity.ok(
                     new ApiResp<>(
                             HttpStatus.OK.value(),

@@ -1,7 +1,6 @@
 package com.example.backend.services;
 
 import com.example.backend.Exceptions.GlobalExceptionHandler;
-import com.example.backend.models.InvoiceModel;
 import com.example.backend.models.ItemModel;
 import com.example.backend.models.PenjualModel;
 import com.example.backend.repositories.*;
@@ -50,7 +49,7 @@ public class ItemService {
         );
         if (input.getPenjual() == null ||
                 existingItem.getPenjual() == null ||
-                !input.getPenjual().getId_penjual().equals(existingItem.getPenjual().getId_penjual())) {
+                !input.getPenjual().getIdPenjual().equals(existingItem.getPenjual().getIdPenjual())) {
             throw new GlobalExceptionHandler.UnauthorizedAccessException("Unauthorized - Only the owner can edit this item");
         }
 
@@ -82,7 +81,7 @@ public class ItemService {
         );
         if (penjual == null ||
                 existingItem.getPenjual() == null ||
-                !existingItem.getPenjual().getId_penjual().equals(penjual.getId_penjual())) {
+                !existingItem.getPenjual().getIdPenjual().equals(penjual.getIdPenjual())) {
             throw new GlobalExceptionHandler.UnauthorizedAccessException("Unauthorized - Only the owner can delete this item");
         }
 

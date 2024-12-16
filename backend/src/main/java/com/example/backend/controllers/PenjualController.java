@@ -64,7 +64,7 @@ public class PenjualController {
     public ResponseEntity<ApiResp<List<PenjualDto>>> listPenjual () {
         List<PenjualModel> penjualList = penjualService.get();
         List<PenjualDto> penjualDtos = penjualList.stream().map(
-                penjual -> new PenjualDto(penjual.getId_penjual() ,
+                penjual -> new PenjualDto(penjual.getIdPenjual() ,
                         penjual.getNama() , penjual.getEmail() ,
                         penjual.getWebsite() , penjual.getAlamat() ,
                         penjual.getNo_telp() , penjual.getCreatedAt() , penjual.getUpdatedAt())
@@ -143,7 +143,7 @@ public class PenjualController {
 
         if (authentication.getPrincipal() instanceof PenjualModel penjual) {
             PenjualDto penjualDto = new PenjualDto(
-                    penjual.getId_penjual() , penjual.getNama() , penjual.getEmail() , penjual.getWebsite(),
+                    penjual.getIdPenjual() , penjual.getNama() , penjual.getEmail() , penjual.getWebsite(),
                     penjual.getAlamat() , penjual.getNo_telp() , penjual.getCreatedAt() , penjual.getUpdatedAt()
             );;
             ApiResp<PenjualDto> response = new ApiResp<>(
@@ -189,8 +189,8 @@ public class PenjualController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication() ;
 
         if (authentication.getPrincipal() instanceof PenjualModel penjual) {
-            PenjualModel currentPenjual = penjualService.update(input , penjual.getId_penjual());
-            PenjualDto penjualDto = new PenjualDto(currentPenjual.getId_penjual() ,
+            PenjualModel currentPenjual = penjualService.update(input , penjual.getIdPenjual());
+            PenjualDto penjualDto = new PenjualDto(currentPenjual.getIdPenjual() ,
                     currentPenjual.getNama() , currentPenjual.getEmail() , currentPenjual.getWebsite()
                     ,currentPenjual.getAlamat() ,  currentPenjual.getNo_telp()
                     , currentPenjual.getCreatedAt() , currentPenjual.getUpdatedAt());

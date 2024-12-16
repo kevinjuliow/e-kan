@@ -3,15 +3,12 @@ package com.example.backend.controllers;
 import com.example.backend.dtos.ApiResp;
 import com.example.backend.dtos.DtoMapper;
 import com.example.backend.dtos.itemPicturesDtos.ItemPIcturesDto;
-import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import com.example.backend.models.ItemModel;
 import com.example.backend.models.ItemPicturesModel;
 import com.example.backend.models.PenjualModel;
 import com.example.backend.services.ItemPicturesService;
 import com.example.backend.services.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -98,7 +95,7 @@ public class ItemPicturesController {
             if (authentication.getPrincipal() instanceof PenjualModel currentPenjual) {
                 ItemModel item = itemService.getById(itemId);
     
-                if (!(item.getPenjual().getId_penjual().equals(currentPenjual.getId_penjual()))){
+                if (!(item.getPenjual().getIdPenjual().equals(currentPenjual.getIdPenjual()))){
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                             new ApiResp<>(
                                     HttpStatus.FORBIDDEN.value() ,
@@ -143,7 +140,7 @@ public class ItemPicturesController {
         if (authentication.getPrincipal() instanceof PenjualModel currentPenjual) {
             ItemPicturesModel picture = service.getPicture(idPicture);
 
-            if (!picture.getItem().getPenjual().getId_penjual().equals(currentPenjual.getId_penjual())){
+            if (!picture.getItem().getPenjual().getIdPenjual().equals(currentPenjual.getIdPenjual())){
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                         new ApiResp<>(
                                 HttpStatus.FORBIDDEN.value() ,
