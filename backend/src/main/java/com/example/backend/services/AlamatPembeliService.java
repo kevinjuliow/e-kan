@@ -42,14 +42,20 @@ public class AlamatPembeliService {
         if (!existingAlamat.getKode_pos().equals(input.getKode_pos())) {
             existingAlamat.setKode_pos(input.getKode_pos());
         }
-        if (!existingAlamat.getKota().equals(input.getKota())) {
-            existingAlamat.setKota(input.getKota());
+        if (!existingAlamat.getKabupaten().equals(input.getKabupaten())) {
+            existingAlamat.setKabupaten(input.getKabupaten());
         }
         if (!existingAlamat.getProvinsi().equals(input.getProvinsi())) {
             existingAlamat.setProvinsi(input.getProvinsi());
         }
-        if (!existingAlamat.getKabupaten().equals(input.getKabupaten())) {
-            existingAlamat.setKabupaten(input.getKabupaten());
+        if (!existingAlamat.getKecamatan().equals(input.getKecamatan())) {
+            existingAlamat.setKecamatan(input.getKecamatan());
+        }
+        if (!existingAlamat.getRT().equals(input.getRT())) {
+            existingAlamat.setRT(input.getRT());
+        }
+        if (!existingAlamat.getRW().equals(input.getRW())) {
+            existingAlamat.setRW(input.getRW());
         }
         if (input.getKeterangan() != null && !input.getKeterangan().equals(existingAlamat.getKeterangan())) {
             existingAlamat.setKeterangan(input.getKeterangan());

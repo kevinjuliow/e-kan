@@ -1,6 +1,7 @@
 package com.example.backend.services;
 
 import com.example.backend.Exceptions.GlobalExceptionHandler;
+import com.example.backend.dtos.midtransDtos.Va_Numbers;
 import com.example.backend.models.*;
 import com.example.backend.repositories.CartItemRepo;
 import com.example.backend.repositories.ItemRepo;
@@ -114,13 +115,22 @@ public class InvoiceService {
 
 
     @Transactional
-    public void updatePaymentUrlAndToken (InvoiceModel model , String url , String token) {
-        if(!url.equals("") && !token.equals("")){
-            model.setPaymentUrl(url);
-            model.setPaymentToken(token);
-            invoiceRepo.save(model);
+    public void updatePayment(InvoiceModel model, String paymentType, String status, Va_Numbers vaNumbers, Date transactionTime) {
+        model.setPaymentType(paymentType);
+        model.setStatus(status);
+        if (vaNumbers != null) {
+            model.setVaNumbers(vaNumbers);
         }
+
+        // Update tanggalPembelian only if it is not already set (to respect @Column(updatable = false))
+        if (model.getTanggalPembelian() == null) {
+            model.setTanggalPembelian(transactionTime);
+        }
+
+        invoiceRepo.save(model); // Persist changes to the database
     }
+
+
 
     @Transactional
     public InvoiceModel markInvoiceAsPaid (UUID id_invoice , PembeliModel pembeli) {
@@ -134,6 +144,48 @@ public class InvoiceService {
 
         cartRepository.deleteByPembeliAndIsCheckedTrue(pembeli);
         return invoice;
+    }
+
+    @Transactional
+    public void updatePaymentStatus(InvoiceModel invoice, String transactionStatus) {
+        switch (transactionStatus) {
+            case "capture":
+                // For card payments, check if the transaction is 'challenge' or 'success'
+                invoice.setStatus("CAPTURED");
+                break;
+
+            case "settlement":
+                // The payment is successfully paid
+                invoice.setStatus("PAID");
+                break;
+
+            case "pending":
+                // Waiting for the customer to complete the payment
+                invoice.setStatus("PENDING");
+                break;
+
+            case "deny":
+                // Payment was denied
+                invoice.setStatus("DENIED");
+                break;
+
+            case "cancel":
+            case "expire":
+                // Payment was canceled or expired
+                invoice.setStatus("CANCELED");
+                break;
+
+            case "refund":
+                // Payment was refunded
+                invoice.setStatus("REFUNDED");
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unknown transaction status: " + transactionStatus);
+        }
+
+        // Save the updated invoice (if using a repository)
+        invoiceRepo.save(invoice);
     }
 
 
