@@ -88,7 +88,7 @@ public class ChatService {
         ChatGroup chatGroup = chatGroupRepository.findById(chatGroupId)
                 .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Chat group not found"));
 
-        if (!chatGroup.getPenjual().getId_penjual().equals(penjualId)) {
+        if (!chatGroup.getPenjual().getIdPenjual().equals(penjualId)) {
             throw new GlobalExceptionHandler.UnauthorizedAccessException("You do not have access to this chat group");
         }
     }

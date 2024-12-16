@@ -44,7 +44,7 @@ public class ProfilePictureController {
                 );
             }
             if (authentication.getPrincipal() instanceof PenjualModel currentPenjual) {
-                ProfilePictureModel profilePicture = service.uploadProfilePicturePenjual(currentPenjual.getId_penjual(), file);
+                ProfilePictureModel profilePicture = service.uploadProfilePicturePenjual(currentPenjual.getIdPenjual(), file);
                 return ResponseEntity.ok(
                         new ApiResp<>(
                                 HttpStatus.OK.value() ,
@@ -72,33 +72,27 @@ public class ProfilePictureController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<byte[]> getProfilePicture() {
+    @GetMapping("/pembeli/{idPembeli}")
+    public ResponseEntity<byte[]> getProfilePicturePembeli(@PathVariable UUID idPembeli) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication.getPrincipal() instanceof PembeliModel currentPembeli) {
-            ProfilePictureModel profilePicture = service.getProfilePicturePembeli(currentPembeli.getId_pembeli());
+            ProfilePictureModel profilePicture = service.getProfilePicturePembeli(idPembeli);
 
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(profilePicture.getFileType()))
                     .header(HttpHeaders.CONTENT_DISPOSITION,
                             "attachment; filename=\"" + profilePicture.getFileName() + "\"")
                     .body(profilePicture.getData());
-        }
 
-        if (authentication.getPrincipal() instanceof PenjualModel currentPenjual) {
-            ProfilePictureModel profilePicture = service.getProfilePicturePenjual(currentPenjual.getId_penjual());
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(profilePicture.getFileType()))
-                    .header(HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=\"" + profilePicture.getFileName() + "\"")
-                    .body(profilePicture.getData());
-
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
-
+    @GetMapping("/penjual/{idPenjual}")
+    public ResponseEntity<byte[]> getProfilePicturePenjual(@PathVariable UUID idPenjual) {
+            ProfilePictureModel profilePicture = service.getProfilePicturePenjual(idPenjual);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(profilePicture.getFileType()))
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + profilePicture.getFileName() + "\"")
+                    .body(profilePicture.getData());
+    }
 
     @DeleteMapping
     public ResponseEntity<ApiResp<Object>> destroy (UUID id) {
@@ -114,7 +108,7 @@ public class ProfilePictureController {
             );
         }
         if (authentication.getPrincipal() instanceof PenjualModel currentPenjual) {
-            service.deleteProfilePicturePenjual(currentPenjual.getId_penjual());
+            service.deleteProfilePicturePenjual(currentPenjual.getIdPenjual());
             return ResponseEntity.ok(
                     new ApiResp<>(
                             HttpStatus.OK.value(),

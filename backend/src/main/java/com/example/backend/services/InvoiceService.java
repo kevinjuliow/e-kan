@@ -206,4 +206,12 @@ public class InvoiceService {
             invoiceRepo.deleteAll(staleInvoices);
         }
     }
+
+    @Transactional
+    public List<InvoiceModel> getAllProcessedItems(PenjualModel penjual){
+            return invoiceRepo.findInvoicesByItemPenjualAndStatus(
+                    penjual,
+                    "PAID"
+            );
+    }
 }

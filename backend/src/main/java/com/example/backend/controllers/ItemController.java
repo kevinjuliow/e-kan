@@ -3,8 +3,10 @@ package com.example.backend.controllers;
 import com.example.backend.dtos.ApiResp;
 import com.example.backend.dtos.itemDtos.ItemDto;
 import com.example.backend.dtos.DtoMapper;
+import com.example.backend.models.InvoiceModel;
 import com.example.backend.models.ItemModel;
 import com.example.backend.models.PenjualModel;
+import com.example.backend.services.InvoiceService;
 import com.example.backend.services.ItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class ItemController {
     private final ItemService itemService;
     private final DtoMapper itemMapper;
+    private final InvoiceService invoiceService;
 
     @GetMapping
     public ResponseEntity<ApiResp<List<ItemDto>>> index() {
@@ -166,6 +169,29 @@ public class ItemController {
                 "Item deleted successfully",
                 null
         ));
+    }
+
+    @GetMapping("/processed")
+    public ResponseEntity<ApiResp<List<InvoiceModel>>> getAllProcessedItems() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication.getPrincipal() instanceof PenjualModel penjualModel)) {
+            List<InvoiceModel> invoiceList = invoiceService.getAllProcessedItems(penjualModel);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ApiResp<>(
+                            HttpStatus.OK.value(),
+                            "Berhasil mengambil item",
+                            invoiceList
+                    ));
+        }
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiResp<>(
+                        HttpStatus.UNAUTHORIZED.value(),
+                        "Unauthorized",
+                        null
+                ));
+
     }
 
 }
