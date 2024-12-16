@@ -76,7 +76,8 @@ public class SecurityConfiguration {
                                 "/api/pembeli/{id}", "/api/sosial/{id}",
                                 "/api/items/penjual/{id}",
                                 "/api/items/{itemId}/pictures",
-                                "/api/items/pictures/{pictureId}"
+                                "/api/items/pictures/{pictureId}" ,
+                                "/api/profile-picture/**"
                         ).permitAll()
 
                         // Any other requests require authentication
