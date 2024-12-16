@@ -157,6 +157,7 @@ public class InvoiceService {
             case "settlement":
                 // The payment is successfully paid
                 invoice.setStatus("PAID");
+                invoice.setTanggalPembayaran(new Date());
                 break;
 
             case "pending":
@@ -207,11 +208,5 @@ public class InvoiceService {
         }
     }
 
-    @Transactional
-    public List<InvoiceModel> getAllProcessedItems(PenjualModel penjual){
-            return invoiceRepo.findInvoicesByItemPenjualAndStatus(
-                    penjual,
-                    "PAID"
-            );
-    }
+
 }

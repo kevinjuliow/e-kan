@@ -187,6 +187,7 @@ public class DtoMapper {
                 .invoiceDetails(notaDetailsDto)
                 .totalHarga(model.getTotalHarga())
                 .tanggalPembelian(model.getTanggalPembelian())
+                .tanggalPembayaran(model.getTanggalPembayaran())
                 .status(model.getStatus())
                 .paymentType(model.getPaymentType())
                 .vaNumbers(model.getVaNumbers())
@@ -220,6 +221,21 @@ public class DtoMapper {
                 .createdAt(model.getCreatedAt())
                 .build();
         return dto;
+    }
+
+    public ProcessItemsDto toProcessItemsDto (ProcessItemsModel model) {
+        if (model == null) {
+            return null;
+        }
+
+        ProcessItemsDto dto = ProcessItemsDto.builder()
+                .idProcessItems(model.getIdProcessItems())
+                .pembeliModel(toPembeliDto(model.getPembeliModel()))
+                .itemModel(toItemDto(model.getItemModel()))
+                .idInvoice(model.getIdInvoice())
+                .build();
+
+        return dto ;
     }
 
 

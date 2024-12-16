@@ -23,6 +23,7 @@ public class InvoiceDto {
     private List<InvoiceDetailDto> invoiceDetails;
     private Double totalHarga;
     private Date tanggalPembelian;
+    private Date tanggalPembayaran;
 
     @Column
     private String paymentType;

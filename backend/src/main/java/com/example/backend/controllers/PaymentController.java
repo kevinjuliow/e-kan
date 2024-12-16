@@ -123,11 +123,10 @@ public class PaymentController {
     @PostMapping("/notification")
     public ResponseEntity<String> handleMidtransNotification(@RequestBody Map<String, Object> notification) {
         try {
-            // Extract necessary fields from notification body
             String orderId = (String) notification.get("order_id");
             String transactionStatus = (String) notification.get("transaction_status");
 
-            // Update the transaction in your database based on the status
+
             InvoiceModel invoice = invoiceService.getTransactionById(UUID.fromString(orderId));
             invoiceService.updatePaymentStatus(invoice, transactionStatus);
 
