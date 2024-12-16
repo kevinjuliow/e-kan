@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react';
 
 interface ProfileImageCropperProps {
   // updateProductImage: (imageSource: string | undefined) => void;
-  handleToast: (toastType: string) => void;
+  handleToast: (message: string, toastType: string) => void;
   closeCropperWindow: () => void;
   onRefetch: () => void;
 }
@@ -114,12 +114,12 @@ const ProfileImageCropper: React.FC<ProfileImageCropperProps> = ({ handleToast, 
           },
         });
   
-        handleToast("SUCCESS")
+        handleToast("Berhasil melakukan update gambar profil!", "SUCCESS")
         onSuccess() // Close the update image form
         onRefetch()
       } catch (error) {
         console.error("Failed to upload image:", error)
-        handleToast("WARNING")
+        handleToast("Gagal melakukan update gambar profil, coba lagi!", "WARNING")
       }
     }, "image/jpeg")
   }

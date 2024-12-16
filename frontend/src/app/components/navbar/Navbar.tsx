@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import "../../globals.css"
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { navbarMenuList } from "app/constant";
@@ -13,6 +13,7 @@ import { useUser } from "app/userprovider";
 
 const Navbar = () => {
   const pathname = usePathname()
+  const router = useRouter()
   const isSignupPage = pathname === '/auth/signup'
   const isLoginPage = pathname === '/auth/login'
   const isSignupOrLoginPage = pathname === '/auth/signup' || pathname === '/auth/login'
@@ -60,6 +61,17 @@ const Navbar = () => {
     };
   }, [isLanding]);
 
+  const [searchQuery, setSearchQuery] = useState<string>("")
+  const handleSearch = () => {
+    router.push(`/dashboard?search=${searchQuery}`)
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   const changeTextColor = (isLanding || isDashboard) && isScrolled ? 'text-gray-800' : (isLanding || isDashboard) && !isScrolled ? 'text-white' : (isLoginPage || isSignupPage) || ((!isLanding && !isDashboard && !isLoginPage && !isSignupPage) && isScrolled) ? 'text-gray-800' : 'text-gray-800' // changed from text-white temporarily
   const changeIconColor = (isLanding || isDashboard) && isScrolled ? '#1f2937' : (isLanding || isDashboard) && !isScrolled ? '#ffffff' : (isLoginPage || isSignupPage) || ((!isLanding && !isDashboard && !isLoginPage && !isSignupPage) && isScrolled) ? '#1f2937' :  '#ffffff'
 
@@ -85,8 +97,8 @@ const Navbar = () => {
             <div className="absolute inset-y-0 start-0 flex items-center px-4">
               <SearchIcon size={20} hexColor={"#ffffff"} />
             </div>
-            <input className="w-full px-2 py-2 ps-12 text-base rounded-lg bg-darkaqua focus:outline-none" placeholder="Cari ikan di sini..." required />
-            <button type="submit" className="text-white absolute end-2 bg-mediumaqua font-medium rounded-lg text-sm px-3 py-1">Search</button>
+            <input onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={handleKeyDown} className="w-full px-2 py-2 ps-12 text-base rounded-lg bg-darkaqua focus:outline-none" placeholder="Cari ikan di sini..." required />
+            <button onClick={handleSearch} type="submit" className="text-white absolute end-2 bg-mediumaqua font-medium rounded-lg text-sm px-3 py-1">Cari</button>
           </div>
         </>}
 

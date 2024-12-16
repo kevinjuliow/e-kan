@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react'
 import { PencilEditIcon, Trash } from '../icon';
+import Link from 'next/link';
 
 interface Props {
   data: Item;
@@ -61,10 +62,6 @@ const EachPostedProduct: React.FC<Props> = ({ data, onItemRemoved, handleToast }
     }
   }
 
-  const handleUpdateItemData = () => {
-    
-  }
-
   return (
     <>
       {image && <div className="w-full border border-gray-200 bg-white rounded-md p-2">
@@ -88,9 +85,9 @@ const EachPostedProduct: React.FC<Props> = ({ data, onItemRemoved, handleToast }
         <div className="col-start-3 place-items-end flex flex-col justify-between">
           
           <div className="flex items-center justify-center mt-2">
-            <button onClick={handleUpdateItemData} className="flex items-center">
+            <Link href={`/product/myproduct/${data.id_item}/edit`} className="flex items-center">
               <PencilEditIcon size={20} hexColor={"#6b7280"} />
-            </button>
+            </Link>
             <button onClick={handleRemoveFromPostedProduct} className="ms-2 flex items-center">
               <Trash size={20} hexColor={"#6b7280"} />
             </button>

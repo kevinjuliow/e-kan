@@ -1,9 +1,13 @@
 "use client"
 
 import BackButton from 'app/components/button/BackButton'
+import { Shop } from 'app/components/icon'
 import { Item } from 'app/interfaces/Item/types'
+import { useItemContext } from 'app/itemprovider'
 import axios from 'axios'
 import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 interface ParameterId {
@@ -15,6 +19,9 @@ interface ParameterId {
 const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
   const [itemData, setItemData] = useState<Item | null>(null)
   const [image, setImage] = useState<string | null>(null)
+  const [quantityToBuy, setQuantityToBuy] = useState<number>(0)
+  const { addItemToCheckout } = useItemContext()
+  const router = useRouter()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,13 +59,16 @@ const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
     console.log({ itemData });
   }, [itemData]);
 
-  const handleBuy = () => {
-
-  }
-
-  const [quantityToBuy, setQuantityToBuy] = useState<number>(0);
   const handleQuantityToBuy = (action: string) => {
     setQuantityToBuy(action === 'add' ? quantityToBuy + 1 : quantityToBuy === 0 ? quantityToBuy : quantityToBuy - 1)
+  }
+
+  const handleBuy = async () => {
+    if (itemData && image) {
+      console.log({ item: itemData, quantity: quantityToBuy })
+      await addItemToCheckout([{ item: itemData, quantity: quantityToBuy, source: 'direct' }]);
+    }
+    router.push('/checkout')
   }
   
   return (
@@ -67,7 +77,7 @@ const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
         <div className={`bgdetailitem-wave`}></div>
         <div className="max-w-screen-xl w-full h-full relative p-8 lg:px-0 flex flex-col items-center justify-center">
           <BackButton />
-          <div className="flex flex-col lg:flex-row items-start justify-center mb-20 w-full">
+          <div className="flex flex-col lg:flex-row items-start justify-center mb-6 w-full">
             <div className="grid grid-rows-[auto,auto] grid-cols-4 gap-3 items-center justify-center w-full max-w-[400px] md:max-w-full lg:max-w-[400px]">
               <div className="col-span-4">
                 <h1 className="lg:hidden font-black tracking-wide text-4xl mb-4">{itemData?.nama}</h1>
@@ -100,6 +110,10 @@ const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
               <button onClick={handleBuy} className="w-52 mt-6 border py-1 custom-hover-button cursor-pointer rounded-md font-medium bg-darkaqua text-white border-none">Beli</button>
             </div>
           </div>
+          <Link href={`/${itemData?.penjual.nama}/${itemData?.penjual.id_penjual}`} className="w-full flex items-center relative mb-10">
+            <Shop size={24} hexColor={"#007575"} />
+            <h1 className="ms-1 text-lg text-darkaqua relative top-0.5">{itemData?.penjual.nama}</h1>
+          </Link>
         </div>
       </div>
     </div>
