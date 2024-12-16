@@ -3,7 +3,7 @@
 import { Item } from "app/interfaces/Item/types";
 // import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { CartAddIcon, FishIcon } from "../icon";
+import { CartAddIcon, FishIcon, Shop } from "../icon";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -83,6 +83,10 @@ const EachItem: React.FC<Props> = ({ data }) => {
               <p className="uppercase tracking-wider text-sm font-bold text-darkaqua mb-2">{data.nama}</p>
               <p className="text-2xl text-darkaqua">Rp{data.harga}</p>
               <p className="text-mediumaqua text-xs">*Harga per {data.tipe_penjualan}</p>
+            </div>
+            <div className="px-4 py-2 w-full flex items-center border-t bg-white relative hover:bg-gray-200 cursor-pointer">
+              <Shop size={18} hexColor={"#007575"} />
+              <h1 className="ms-1 font-medium text-sm text-darkaqua relative top-0.5">{data.penjual.nama}</h1>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-t border-gray-300 text-darkaqua">
               <div className="flex items-center relative">
