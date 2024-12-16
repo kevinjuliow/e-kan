@@ -154,4 +154,10 @@ public class InvoiceService {
             invoiceRepo.deleteAll(staleInvoices);
         }
     }
+
+    @Transactional
+    public List<InvoiceModel> getAllProcessedItems(UUID idPenjual){
+        return invoiceRepo.findByInvoiceModels_ItemModels_PenjualModels_idPenjual(idPenjual)
+                .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Id Penjual tidak ditemukan!"));
+    }
 }
