@@ -54,3 +54,9 @@ export interface Alamat {
   keterangan: string
   pembeli: PembeliData
 }
+
+export interface CheckoutItem {
+  item: Item;
+  quantity: number;
+  source: 'direct' | 'cart';
+}
