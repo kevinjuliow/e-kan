@@ -28,4 +28,6 @@ public interface InvoiceRepo extends JpaRepository<InvoiceModel, UUID> {
     @Transactional
     @Query("DELETE FROM InvoiceDetailModel idm WHERE idm.item.id_item = :itemId")
     void deleteInvoiceDetailsByItemId(@Param("itemId") UUID itemId);
+
+    Optional<List<InvoiceModel>> findByInvoiceModels_ItemModels_PenjualModels_idPenjual(UUID idPenjual);
 }
