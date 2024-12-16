@@ -1,9 +1,12 @@
 package com.example.backend.dtos.InvoiceDtos;
 
 import com.example.backend.dtos.alamatDtos.AlamatPembeliDto;
+import com.example.backend.dtos.midtransDtos.Va_Numbers;
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import com.example.backend.models.AlamatPembeliModel;
 import jakarta.annotation.Nullable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import lombok.Builder;
 import lombok.Data;
 
@@ -21,10 +24,10 @@ public class InvoiceDto {
     private Double totalHarga;
     private Date tanggalPembelian;
 
-    @Nullable
-    private String paymentUrl ;
-    @Nullable
-    private String paymentToken ;
+    @Column
+    private String paymentType;
+    @Embedded
+    private Va_Numbers vaNumbers ;
 
     private String status;
 }

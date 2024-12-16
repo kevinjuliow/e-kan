@@ -3,7 +3,7 @@ package com.example.backend.models;
 import lombok.Data;
 
 @Data
-public class ChatMessageModel {
+public class ChatMesTest {
     private String content ;
 
     private String sender ;

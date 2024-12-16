@@ -2,6 +2,7 @@ package com.example.backend.dtos;
 
 import com.example.backend.dtos.alamatDtos.AlamatPembeliDto;
 import com.example.backend.dtos.cartItemDtos.CartItemDto;
+import com.example.backend.dtos.chat.ChatGroupDto;
 import com.example.backend.dtos.itemDtos.ItemDto;
 import com.example.backend.dtos.itemPicturesDtos.ItemPIcturesDto;
 import com.example.backend.dtos.mediaSosialDtos.MediaSosialDto;
@@ -11,6 +12,7 @@ import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import com.example.backend.dtos.penjualDtos.PenjualDto;
 import com.example.backend.dtos.profilePictureDtos.ProfilePictureDto;
 import com.example.backend.models.*;
+import com.example.backend.models.chat.ChatGroup;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -60,10 +62,12 @@ public class DtoMapper {
                     .id_alamat(model.getId_alamat())
                     .alamat_lengkap(model.getAlamat_lengkap())
                     .kode_pos(model.getKode_pos())
-                    .kota(model.getKota())
+                    .kecamatan(model.getKecamatan())
                     .provinsi(model.getProvinsi())
                     .kabupaten(model.getKabupaten())
                     .keterangan(model.getKeterangan())
+                    .RT(model.getRT())
+                    .RW(model.getRW())
                     .pembeli(toPembeliDto(model.getPembeli()))
                     .build();
             return dto;
@@ -184,17 +188,15 @@ public class DtoMapper {
                 .totalHarga(model.getTotalHarga())
                 .tanggalPembelian(model.getTanggalPembelian())
                 .status(model.getStatus())
-                .paymentUrl(model.getPaymentUrl())
-                .paymentToken(model.getPaymentToken())
+                .paymentType(model.getPaymentType())
+                .vaNumbers(model.getVaNumbers())
                 .build();
 
         return dto;
     }
 
     public InvoiceDetailDto toInvoiceDetailsDto(InvoiceDetailModel model) {
-        if (model == null) {
-            return null;
-        }
+
 
         InvoiceDetailDto dto = InvoiceDetailDto.builder()
                 .id_invoice_detail(model.getId_invoice_detail())
@@ -203,6 +205,20 @@ public class DtoMapper {
                 .harga(model.getHarga())
                 .build();
 
+        return dto;
+    }
+
+    public ChatGroupDto toChatGroupDto (ChatGroup model)  {
+        if (model == null) {
+            return null;
+        }
+
+        ChatGroupDto dto = ChatGroupDto.builder()
+                .id(model.getId())
+                .penjualDto(toPenjualDto(model.getPenjual()))
+                .pembeliDto(toPembeliDto(model.getPembeli()))
+                .createdAt(model.getCreatedAt())
+                .build();
         return dto;
     }
 
