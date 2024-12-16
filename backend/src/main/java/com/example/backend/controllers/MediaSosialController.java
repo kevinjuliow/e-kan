@@ -102,7 +102,7 @@ public class MediaSosialController {
         PenjualModel penjual = (PenjualModel) principal;
 
         MediaSosialModel existingMediaSosial = service.getById(id);
-        if (!existingMediaSosial.getPenjual().getId_penjual().equals(penjual.getId_penjual())) {
+        if (!existingMediaSosial.getPenjual().getIdPenjual().equals(penjual.getIdPenjual())) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body(new ApiResp<>(
@@ -139,7 +139,7 @@ public class MediaSosialController {
         PenjualModel penjual = (PenjualModel) principal;
 
         MediaSosialModel existingMediaSosial = service.getById(id);
-        if (!existingMediaSosial.getPenjual().getId_penjual().equals(penjual.getId_penjual())) {
+        if (!existingMediaSosial.getPenjual().getIdPenjual().equals(penjual.getIdPenjual())) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body(new ApiResp<>(
