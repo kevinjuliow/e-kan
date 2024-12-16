@@ -1,12 +1,21 @@
 package com.example.backend.dtos;
 
 import com.example.backend.dtos.alamatDtos.AlamatPembeliDto;
+import com.example.backend.dtos.cartItemDtos.CartItemDto;
+import com.example.backend.dtos.chat.ChatGroupDto;
 import com.example.backend.dtos.itemDtos.ItemDto;
+import com.example.backend.dtos.itemPicturesDtos.ItemPIcturesDto;
 import com.example.backend.dtos.mediaSosialDtos.MediaSosialDto;
+import com.example.backend.dtos.InvoiceDtos.InvoiceDetailDto;
+import com.example.backend.dtos.InvoiceDtos.InvoiceDto;
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import com.example.backend.dtos.penjualDtos.PenjualDto;
+import com.example.backend.dtos.profilePictureDtos.ProfilePictureDto;
 import com.example.backend.models.*;
+import com.example.backend.models.chat.ChatGroup;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class DtoMapper {
@@ -14,19 +23,20 @@ public class DtoMapper {
         if (model == null) {
             return null;
         }
+        ItemDto dto = ItemDto.builder()
+                .id_item(model.getId_item())
+                .nama(model.getNama())
+                .jenis_habitat(model.getJenis_habitat())
+                .jenis_bibit(model.getJenis_bibit())
+                .harga(model.getHarga())
+                .stock(model.getStock())
+                .description(model.getDescription())
+                .tipe_penjualan(model.getTipe_penjualan())
+                .ukuran_ikan(model.getUkuran_ikan())
+                .penjual(toPenjualDto(model.getPenjual())).build();
 
-        ItemDto dto = new ItemDto(
-                model.getId_item(),
-                model.getNama(),
-                model.getJenis_habitat(),
-                model.getJenis_bibit(),
-                model.getHarga(),
-                model.getStock(),
-                model.getDescription(),
-                null
-        );
 
-        dto.setPenjualDto(model.getPenjual());
+
         return dto;
     }
 
@@ -34,31 +44,32 @@ public class DtoMapper {
             if (model == null) {
                 return null;
             }
-            PembeliDto dto = new PembeliDto(
-                    model.getId_pembeli(),
-                    model.getNama(),
-                    model.getEmail(),
-                    model.getTanggal_lahir(),
-                    model.getNo_telp() ,
-                    model.getCreatedAt() ,
-                    model.getUpdatedAt()
-            );
+            PembeliDto dto = PembeliDto.builder()
+                    .id_pembeli(model.getId_pembeli())
+                    .nama(model.getNama())
+                    .email(model.getEmail())
+                    .tanggal_lahir(model.getTanggal_lahir())
+                    .no_telp(model.getNo_telp())
+                    .createdAt(model.getCreatedAt())
+                    .updatedAt(model.getUpdatedAt()).build();
             return dto;
     }
     public AlamatPembeliDto toAlamatDto (AlamatPembeliModel model) {
             if (model == null) {
                 return null;
             }
-            AlamatPembeliDto dto = new AlamatPembeliDto(
-                    model.getId_alamat(),
-                    model.getAlamat_lengkap(),
-                    model.getKode_pos(),
-                    model.getKota(),
-                    model.getProvinsi() ,
-                    model.getKabupaten() ,
-                    model.getKeterangan() ,
-                    toPembeliDto(model.getPembeli())
-            );
+            AlamatPembeliDto dto = AlamatPembeliDto.builder()
+                    .id_alamat(model.getId_alamat())
+                    .alamat_lengkap(model.getAlamat_lengkap())
+                    .kode_pos(model.getKode_pos())
+                    .kecamatan(model.getKecamatan())
+                    .provinsi(model.getProvinsi())
+                    .kabupaten(model.getKabupaten())
+                    .keterangan(model.getKeterangan())
+                    .RT(model.getRT())
+                    .RW(model.getRW())
+                    .pembeli(toPembeliDto(model.getPembeli()))
+                    .build();
             return dto;
     }
 
@@ -66,16 +77,16 @@ public class DtoMapper {
         if (model == null) {
             return null;
         }
-        PenjualDto dto = new PenjualDto(
-                model.getId_penjual(),
-                model.getNama(),
-                model.getEmail(),
-                model.getWebsite(),
-                model.getAlamat(),
-                model.getNo_telp() ,
-                model.getCreatedAt() ,
-                model.getUpdatedAt()
-        );
+        PenjualDto dto = PenjualDto.builder()
+                .id_penjual(model.getIdPenjual())
+                .nama(model.getNama())
+                .email(model.getEmail())
+                .website(model.getWebsite())
+                .alamat(model.getAlamat())
+                .no_telp(model.getNo_telp())
+                .createdAt(model.getCreatedAt())
+                .updatedAt(model.getUpdatedAt())
+                .build();
         return dto;
     }
 
@@ -92,4 +103,125 @@ public class DtoMapper {
 
         return dto ;
     }
+
+    public CartItemDto toCartItemDto(CartItemModel model) {
+        if (model == null) {
+            return null;
+        }
+        CartItemDto dto = CartItemDto.builder()
+                .id_cart(model.getId_cart())
+                .isChecked(model.getIsChecked())
+                .jumlah_item(model.getJumlah_item())
+                .pembeli(toPembeliDto(model.getPembeli()))
+                .item(toItemDto(model.getItem())).build();
+
+        return dto ;
+    }
+
+
+    public ProfilePictureDto toProfilePictureDto (ProfilePictureModel model) {
+        if (model == null) {
+            return null;
+        }
+
+        if (model.getPembeli() != null ) {
+            ProfilePictureDto dto = ProfilePictureDto.builder()
+                    .id(model.getId())
+                    .data(model.getData())
+                    .fileName(model.getFileName())
+                    .fileType(model.getFileType())
+                    .user_type(model.getUser_type())
+                    .pembeli(toPembeliDto(model.getPembeli()))
+                    .createdAt(model.getCreatedAt())
+                    .updatedAt(model.getUpdatedAt())
+                    .build();
+
+            return dto ;
+        }
+            ProfilePictureDto dto = ProfilePictureDto.builder()
+                    .id(model.getId())
+                    .data(model.getData())
+                    .fileName(model.getFileName())
+                    .fileType(model.getFileType())
+                    .user_type(model.getUser_type())
+                    .penjual(toPenjualDto(model.getPenjual()))
+                    .createdAt(model.getCreatedAt())
+                    .updatedAt(model.getUpdatedAt())
+                    .build();
+
+            return dto ;
+
+    }
+
+
+    public ItemPIcturesDto toItemPicturesDto (ItemPicturesModel model) {
+        if (model == null) {
+            return null;
+        }
+        ItemPIcturesDto dto = ItemPIcturesDto.builder()
+                .id(model.getId())
+                .data(model.getData())
+                .item(toItemDto(model.getItem()))
+                .fileName(model.getFileName())
+                .createdAt(model.getCreatedAt())
+                .updatedAt(model.getUpdatedAt())
+                .build() ;
+
+        return dto ;
+    }
+
+    public InvoiceDto toInvoiceDto(InvoiceModel model) {
+        if (model == null) {
+            return null;
+        }
+
+        // Map notaDetails to their respective DTOs
+        List<InvoiceDetailDto> notaDetailsDto = model.getInvoiceDetails().stream()
+                .map(this::toInvoiceDetailsDto)
+                .toList();
+
+        InvoiceDto dto = InvoiceDto.builder()
+                .id_invoice(model.getIdInvoice())
+                .pembeli(toPembeliDto(model.getPembeli()))
+                .alamat(toAlamatDto(model.getAlamat()))
+                .invoiceDetails(notaDetailsDto)
+                .totalHarga(model.getTotalHarga())
+                .tanggalPembelian(model.getTanggalPembelian())
+                .status(model.getStatus())
+                .paymentType(model.getPaymentType())
+                .vaNumbers(model.getVaNumbers())
+                .build();
+
+        return dto;
+    }
+
+    public InvoiceDetailDto toInvoiceDetailsDto(InvoiceDetailModel model) {
+
+
+        InvoiceDetailDto dto = InvoiceDetailDto.builder()
+                .id_invoice_detail(model.getId_invoice_detail())
+                .item(toItemDto(model.getItem()))
+                .jumlahItem(model.getJumlahItem())
+                .harga(model.getHarga())
+                .build();
+
+        return dto;
+    }
+
+    public ChatGroupDto toChatGroupDto (ChatGroup model)  {
+        if (model == null) {
+            return null;
+        }
+
+        ChatGroupDto dto = ChatGroupDto.builder()
+                .id(model.getId())
+                .penjualDto(toPenjualDto(model.getPenjual()))
+                .pembeliDto(toPembeliDto(model.getPembeli()))
+                .createdAt(model.getCreatedAt())
+                .build();
+        return dto;
+    }
+
+
+
 }

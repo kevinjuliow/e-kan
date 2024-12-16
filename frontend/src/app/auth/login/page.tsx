@@ -23,7 +23,7 @@ const Login = () => {
   const { errors } = formState;
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<any>();
+  const [error, setError] = useState<Error>();
   const router = useRouter();
 
   const handleForm = handleSubmit(async (values) => {
@@ -41,8 +41,10 @@ const Login = () => {
       }
 
       router.push('/dashboard');
-    } catch (error: any) {
-      setError(error);
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error);
+      }
     } finally {
       setLoading(false); // Set loading to false after the signIn process is complete
     }

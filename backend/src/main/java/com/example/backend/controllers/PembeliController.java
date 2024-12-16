@@ -1,13 +1,18 @@
 package com.example.backend.controllers;
 
-import com.example.backend.dtos.ApiResponse;
+import com.example.backend.dtos.ApiResp;
 import com.example.backend.dtos.DtoMapper;
 import com.example.backend.dtos.pembeliDtos.PembeliDto;
 import com.example.backend.dtos.pembeliDtos.RegisterPembeliDto;
 import com.example.backend.models.PembeliModel;
 import com.example.backend.services.PembeliService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,6 +25,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pembeli")
+@Tag(name = "Pembeli", description = "Pembeli Management APIs")
 @AllArgsConstructor
 public class PembeliController {
 
@@ -27,7 +33,20 @@ public class PembeliController {
     private final DtoMapper mapper ;
 
     @GetMapping("/profile")
-    public ResponseEntity<ApiResponse<PembeliDto>> authenticatedUser() {
+    @Operation(
+            summary = "Get authenticated user profile",
+            description = "Retrieves the profile information of the currently authenticated pembeli"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Successfully retrieved profile",
+            content = @Content(schema = @Schema(implementation = PembeliDto.class))
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized - User not authenticated"
+    )
+    public ResponseEntity<ApiResp<PembeliDto>> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() instanceof PembeliModel) {
@@ -35,7 +54,7 @@ public class PembeliController {
             PembeliDto pembeliDto = new PembeliDto(pembeli.getId_pembeli() ,
                     pembeli.getNama() , pembeli.getEmail() , pembeli.getTanggal_lahir() , pembeli.getNo_telp()
                     , pembeli.getCreatedAt() , pembeli.getUpdatedAt());
-            ApiResponse<PembeliDto> response = new ApiResponse<>(
+            ApiResp<PembeliDto> response = new ApiResp<>(
                     HttpStatus.OK.value(),
                     "OK" ,
                     pembeliDto
@@ -46,7 +65,20 @@ public class PembeliController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<ApiResponse<PembeliDto>> updatePembeli(@RequestBody RegisterPembeliDto input) {
+    @Operation(
+            summary = "update pembeli",
+            description = "Update profile for pembeli"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Profile updated Successfully",
+            content = @Content(schema = @Schema(implementation = PembeliDto.class))
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized - User not authenticated"
+    )
+    public ResponseEntity<ApiResp<PembeliDto>> updatePembeli(@RequestBody RegisterPembeliDto input) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() instanceof PembeliModel) {
@@ -55,14 +87,14 @@ public class PembeliController {
             PembeliDto pembeliDto = new PembeliDto(currentPembeli.getId_pembeli() ,
                     currentPembeli.getNama() , currentPembeli.getEmail() , currentPembeli.getTanggal_lahir() , currentPembeli.getNo_telp()
                     , currentPembeli.getCreatedAt() , currentPembeli.getUpdatedAt());
-            ApiResponse<PembeliDto> response = new ApiResponse<>(
+            ApiResp<PembeliDto> response = new ApiResp<>(
                     HttpStatus.OK.value() ,
                     "Profile updated Successfully" ,
                     pembeliDto
             );
             return ResponseEntity.ok(response);
         }
-        ApiResponse<PembeliDto> responseError = new ApiResponse<>(
+        ApiResp<PembeliDto> responseError = new ApiResp<>(
                 HttpStatus.BAD_REQUEST.value() ,
                 "BAD REQUEST" ,
                 null
@@ -71,7 +103,32 @@ public class PembeliController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PembeliDto>>> listPembeli(){
+    @Operation(
+            summary = "Get all pembeli",
+            description = "Retrieve a list of all pembeli in the system"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully retrieved list of pembeli",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    implementation = ApiResp.class,
+                                    subTypes = {PembeliDto.class}
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "No pembeli found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResp.class)
+                    )
+            )
+    })
+    public ResponseEntity<ApiResp<List<PembeliDto>>> listPembeli(){
         List<PembeliModel> pembeliList = pembeliService.get();
         List<PembeliDto> pembeliDtos = pembeliList.stream()
                 .map(pembeli -> new PembeliDto(pembeli.getId_pembeli() ,
@@ -79,14 +136,14 @@ public class PembeliController {
                         , pembeli.getCreatedAt() , pembeli.getUpdatedAt())).collect(Collectors.toList());
 
         if (pembeliDtos.isEmpty()){
-            ApiResponse<List<PembeliDto>> responseNoContent = new ApiResponse<>(
+            ApiResp<List<PembeliDto>> responseNoContent = new ApiResp<>(
                     HttpStatus.NO_CONTENT.value(),
                     "NO CONTENT" ,
                     pembeliDtos
             );
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(responseNoContent);
         }
-        ApiResponse<List<PembeliDto>> response = new ApiResponse<>(
+        ApiResp<List<PembeliDto>> response = new ApiResp<>(
                 HttpStatus.OK.value() ,
                 "OK" ,
                 pembeliDtos
@@ -95,11 +152,30 @@ public class PembeliController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<PembeliDto>> showPembeli(@PathVariable UUID id) {
+    @Operation(
+            summary = "Get pembeli by ID",
+            description = "Retrieve a specific pembeli by their UUID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully retrieved pembeli",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PembeliDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Pembeli not found",
+                    content = @Content
+            )
+    })
+    public ResponseEntity<ApiResp<PembeliDto>> showPembeli(@PathVariable UUID id) {
             System.out.println("ID : " + id);
             PembeliModel pembeli = pembeliService.getById(id);
             PembeliDto pembeliDto = mapper.toPembeliDto(pembeli);
-            return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
+            return ResponseEntity.ok(new ApiResp<>(HttpStatus.OK.value(),
                     "Success Retrieve User ID " + pembeli.getId_pembeli() , (pembeliDto)));
     }
 

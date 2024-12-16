@@ -1,6 +1,5 @@
 package com.example.backend.models;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -27,7 +26,7 @@ public class PenjualModel implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(unique = true)
-    private UUID id_penjual;
+    private UUID idPenjual;
 
     @Column(nullable = false)
     private String nama ;
@@ -46,6 +45,9 @@ public class PenjualModel implements UserDetails {
     private String website ;
 
     private String alamat ;
+
+    @OneToOne(mappedBy = "penjual", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProfilePictureModel profilePicture;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")

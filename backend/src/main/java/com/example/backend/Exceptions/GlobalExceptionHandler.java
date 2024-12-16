@@ -1,6 +1,6 @@
 package com.example.backend.Exceptions;
 
-import com.example.backend.dtos.ApiResponse;
+import com.example.backend.dtos.ApiResp;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -32,14 +33,14 @@ public class GlobalExceptionHandler {
 
     // Handle validation errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationExceptions(
+    public ResponseEntity<ApiResp<Map<String, String>>> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage())
         );
 
-        ApiResponse<Map<String, String>> response = new ApiResponse<>(
+        ApiResp<Map<String, String>> response = new ApiResp<>(
                 HttpStatus.BAD_REQUEST.value(),
                 "Validation failed",
                 errors
@@ -50,8 +51,8 @@ public class GlobalExceptionHandler {
 
     // Handle resource not found
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiResponse<Object>> handleResourceNotFoundException(ResourceNotFoundException ex) {
-        ApiResponse<Object> response = new ApiResponse<>(
+    public ResponseEntity<ApiResp<Object>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        ApiResp<Object> response = new ApiResp<>(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage(),
                 null
@@ -61,8 +62,8 @@ public class GlobalExceptionHandler {
 
     // Handle unauthorized access
     @ExceptionHandler({UnauthorizedAccessException.class, AccessDeniedException.class})
-    public ResponseEntity<ApiResponse<Object>> handleUnauthorizedAccess(Exception ex) {
-        ApiResponse<Object> response = new ApiResponse<>(
+    public ResponseEntity<ApiResp<Object>> handleUnauthorizedAccess(Exception ex) {
+        ApiResp<Object> response = new ApiResp<>(
                 HttpStatus.FORBIDDEN.value(),
                 ex.getMessage(),
                 null
@@ -72,8 +73,8 @@ public class GlobalExceptionHandler {
 
     // Handle JWT related exceptions
     @ExceptionHandler({SignatureException.class, ExpiredJwtException.class, MalformedJwtException.class})
-    public ResponseEntity<ApiResponse<Object>> handleJwtExceptions(Exception ex) {
-        ApiResponse<Object> response = new ApiResponse<>(
+    public ResponseEntity<ApiResp<Object>> handleJwtExceptions(Exception ex) {
+        ApiResp<Object> response = new ApiResp<>(
                 HttpStatus.UNAUTHORIZED.value(),
                 "Invalid or expired JWT token",
                 null
@@ -83,11 +84,11 @@ public class GlobalExceptionHandler {
 
     // Handle authentication exceptions
     @ExceptionHandler({BadCredentialsException.class, AccountStatusException.class})
-    public ResponseEntity<ApiResponse<Object>> handleAuthenticationExceptions(Exception ex) {
+    public ResponseEntity<ApiResp<Object>> handleAuthenticationExceptions(Exception ex) {
         String message = ex instanceof BadCredentialsException ?
                 "Invalid credentials" : "The account is locked";
 
-        ApiResponse<Object> response = new ApiResponse<>(
+        ApiResp<Object> response = new ApiResp<>(
                 HttpStatus.UNAUTHORIZED.value(),
                 message,
                 null
@@ -97,8 +98,8 @@ public class GlobalExceptionHandler {
 
     // Handle data integrity violations
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ApiResponse<Object>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        ApiResponse<Object> response = new ApiResponse<>(
+    public ResponseEntity<ApiResp<Object>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        ApiResp<Object> response = new ApiResp<>(
                 HttpStatus.CONFLICT.value(),
                 "Data integrity violation: " + ex.getMostSpecificCause().getMessage(),
                 null
@@ -108,8 +109,8 @@ public class GlobalExceptionHandler {
 
     // Handle invalid data
     @ExceptionHandler(InvalidDataException.class)
-    public ResponseEntity<ApiResponse<Object>> handleInvalidData(InvalidDataException ex) {
-        ApiResponse<Object> response = new ApiResponse<>(
+    public ResponseEntity<ApiResp<Object>> handleInvalidData(InvalidDataException ex) {
+        ApiResp<Object> response = new ApiResp<>(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
                 null
@@ -117,10 +118,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    //Handle Resource already exists
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ApiResp<Object>> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex) {
+        ApiResp<Object> response = new ApiResp<>(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
     // Handle HTTP method not supported
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ApiResponse<Object>> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
-        ApiResponse<Object> response = new ApiResponse<>(
+    public ResponseEntity<ApiResp<Object>> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
+        ApiResp<Object> response = new ApiResp<>(
                 HttpStatus.METHOD_NOT_ALLOWED.value(),
                 ex.getMessage(),
                 null
@@ -130,9 +142,9 @@ public class GlobalExceptionHandler {
 
     // Handle malformed JSON
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiResponse<Object>> handleMalformedJSON(HttpMessageNotReadableException ex) {
+    public ResponseEntity<ApiResp<Object>> handleMalformedJSON(HttpMessageNotReadableException ex) {
 
-        ApiResponse<Object> response = new ApiResponse<>(
+        ApiResp<Object> response = new ApiResp<>(
                 HttpStatus.BAD_REQUEST.value(),
                 "Malformed JSON request",
                 null
@@ -142,9 +154,9 @@ public class GlobalExceptionHandler {
 
     //Handle UUID Not the same type
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiResponse<Object>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    public ResponseEntity<ApiResp<Object>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
         if (ex.getRequiredType() != null && ex.getRequiredType().equals(UUID.class)) {
-            ApiResponse<Object> response = new ApiResponse<>(
+            ApiResp<Object> response = new ApiResp<>(
                     HttpStatus.NOT_FOUND.value(),
                     "Invalid UUID format",
                     null
@@ -152,7 +164,7 @@ public class GlobalExceptionHandler {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
-        ApiResponse<Object> response = new ApiResponse<>(
+        ApiResp<Object> response = new ApiResp<>(
                 HttpStatus.BAD_REQUEST.value(),
                 "Invalid argument type: " + ex.getMessage(),
                 null
@@ -160,14 +172,37 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<?> handleMultipartException(MultipartException ex) {
+
+        ApiResp<Object> response = new ApiResp<>(
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid multipart request: " + ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+    }
+
+    // Handle BadRequestException
+    @ExceptionHandler(GlobalExceptionHandler.BadRequestException.class)
+    public ResponseEntity<ApiResp<Object>> handleBadRequestException(GlobalExceptionHandler.BadRequestException ex) {
+        ApiResp<Object> response = new ApiResp<>(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
     // Handle all other exceptions
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Object>> handleAllOtherExceptions(Exception ex) {
+    public ResponseEntity<ApiResp<Object>> handleAllOtherExceptions(Exception ex) {
         log.error("Unexpected error occurred", ex);
         log.error("Exception type: {}", ex.getClass().getName());
         log.error("Exception message: {}", ex.getMessage());
 
-        ApiResponse<Object> response = new ApiResponse<>(
+        ApiResp<Object> response = new ApiResp<>(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "An unexpected error occurred",
                 null
@@ -198,6 +233,13 @@ public class GlobalExceptionHandler {
         public InvalidDataException(String message) {
             super(message);
         }
+    }
+
+    public static class BadRequestException extends RuntimeException {
+        public BadRequestException(String message){super(message);}
+    }
+    public static class UnauthorizedException extends RuntimeException {
+        public UnauthorizedException(String message){super(message);}
     }
 
 }

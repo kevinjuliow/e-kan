@@ -4,12 +4,14 @@ import com.example.backend.dtos.penjualDtos.PenjualDto;
 import com.example.backend.models.PenjualModel;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.UUID;
 
 @AllArgsConstructor
 @Data
+@Builder
 public class ItemDto {
     private UUID id_item ;
     @NotNull
@@ -22,24 +24,13 @@ public class ItemDto {
     private Double harga ;
 
     private int stock ;
+    private String tipe_penjualan ;
+
+    private String ukuran_ikan ;
 
     private String description ;
 
     private PenjualDto penjual ;
 
-
-
-    public void setPenjualDto(PenjualModel penjualModel) {
-        this.penjual = new PenjualDto(
-                penjualModel.getId_penjual(),
-                penjualModel.getNama(),
-                penjualModel.getEmail(),
-                penjualModel.getWebsite(),
-                penjualModel.getAlamat(),
-                penjualModel.getNo_telp(),
-                penjualModel.getCreatedAt(),
-                penjualModel.getUpdatedAt()
-        );
-    }
 }
 

@@ -1,12 +1,17 @@
 package com.example.backend.services;
 
+import com.example.backend.Exceptions.GlobalExceptionHandler;
 import com.example.backend.models.PembeliModel;
 import com.example.backend.models.PenjualModel;
+import com.example.backend.repositories.PembeliRepo;
+import com.example.backend.repositories.PenjualRepo;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -24,6 +29,12 @@ public class JwtService {
 
     @Value("${security.jwt.expiration-time}")
     private long jwtExpiration;
+
+    @Autowired
+    PenjualRepo penjualRepo ;
+
+    @Autowired
+    PembeliRepo pembeliRepo ;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -106,5 +117,59 @@ public class JwtService {
         String tokenUserType = extractUserType(token);
         String actualUserType = getUserType(userDetails);
         return tokenUserType.equals(actualUserType);
+    }
+
+    public String extractUsernameFromExpiredToken(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSignInKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getSubject();
+        }
+    }
+
+    public Object validateWebSocketToken(String token) {
+        try {
+            if (token == null || token.isEmpty()) {
+                throw new GlobalExceptionHandler.UnauthorizedAccessException("Token is null or empty");
+            }
+
+            String username = extractUsername(token);
+
+            // Determine user type
+            String userType = extractUserType(token);
+
+            if ("PENJUAL".equals(userType)) {
+                // Assuming you have a PenjualRepository or Service
+                PenjualModel penjual = penjualRepo.findByEmail(username)
+                        .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Penjual not found"));
+
+                // Additional token validation
+                if (!isTokenValid(token, penjual)) {
+                    throw new GlobalExceptionHandler.UnauthorizedAccessException("Invalid token for Penjual");
+                }
+
+                return penjual;
+            } else if ("PEMBELI".equals(userType)) {
+                // Assuming you have a PembeliRepository or Service
+                PembeliModel pembeli = pembeliRepo.findByEmail(username)
+                        .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Pembeli not found"));
+
+                // Additional token validation
+                if (!isTokenValid(token, pembeli)) {
+                    throw new GlobalExceptionHandler.UnauthorizedAccessException("Invalid token for Pembeli");
+                }
+
+                return pembeli;
+            } else {
+                throw new GlobalExceptionHandler.UnauthorizedAccessException("Unknown user type");
+            }
+        } catch (Exception e) {
+            throw new GlobalExceptionHandler.UnauthorizedAccessException("Token validation failed: " + e.getMessage());
+        }
     }
 }

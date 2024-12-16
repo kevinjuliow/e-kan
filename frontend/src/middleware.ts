@@ -1,10 +1,24 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+
 // next auth automatically protected the routes
 export { default } from "next-auth/middleware"
 
-// next auth automatically protected these routes inside matcher
-export const config = {
-  // matcher: ['/api/:path*', '/dashboard'],
-  matcher: ['/api/:path*', '/cart'],
+const protectedRoutes = ['/api/:path*', '/cart', '/profile', '/product/add']
 
-  // If user wants to buy the fish, user should login
+// this will apply to all routes by default
+export async function middleware(req: NextRequest) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  // Check every protected route
+  if (protectedRoutes.some(route => req.nextUrl.pathname.startsWith(route))) {
+    if (!token) {
+      return NextResponse.redirect(new URL('/auth/login', req.url))
+    }
+    if (!token || token.userType !== 'PENJUAL' && req.nextUrl.pathname === '/product/add') {
+      return NextResponse.rewrite(new URL('/error/unauthorized', req.url));
+    }
+  }
+
+  return NextResponse.next();
 }

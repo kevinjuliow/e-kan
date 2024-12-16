@@ -35,7 +35,7 @@ const SignUp = () => {
 
   const { errors } = formState;
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<any>();
+  const [error, setError] = useState<Error>();
   const isDateFilled = watch("tanggalLahir");
 
   const handleForm = handleSubmit(async (values) => {
@@ -65,8 +65,10 @@ const SignUp = () => {
         password: values.password,
         callbackUrl: '/dashboard'
       });
-    } catch (error: any) {
-      setError(error);
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error);
+      }
     } finally {
       setLoading(false);
     }

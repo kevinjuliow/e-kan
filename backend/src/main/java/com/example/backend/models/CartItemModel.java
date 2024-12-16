@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.UUID;
 
@@ -15,23 +17,24 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "cart_item")
 public class CartItemModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(unique = true)
-    private UUID id_cart ;
+    private UUID id_cart;
 
     @Column
     private int jumlah_item = 1;
 
     @Column
-    private Boolean is_checked = false ;
+    private Boolean isChecked = false ;
 
     @ManyToOne
-    @JoinColumn(name = "penjual_id")
-    private PenjualModel penjual ;
+    @JoinColumn(name = "item_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private ItemModel item ;
 
     @ManyToOne
     @JoinColumn(name = "pembeli_id")
     private PembeliModel pembeli ;
-
 }

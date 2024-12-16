@@ -1,19 +1,19 @@
 "use client"
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
 interface User {
-  data: {
-    id: number;
-    nama: string;
-    email: string;
-  }
+  nama: string;
+  email: string;
+  userType: string;
 }
 
 interface UserContextProps {
   user: User | null;
+  userImage: string | null;
+  fetchUserImage: () => void;
 }
 
 interface Props {
@@ -25,17 +25,26 @@ const UserContext = createContext<UserContextProps | undefined>(undefined);
 export const UserProvider: React.FC<Props> = ({ children }) => {
   const { data: session } = useSession();
   const [user, setUser] = useState<User | null>(null);
+  const [userImage, setUserImage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
       if (session?.accessToken) {
         try {
-          const response = await axios.get(`${process.env.API_BASEURL}/api/pembeli/profile`, {
-            headers: {
-              Authorization: `Bearer ${session.accessToken}`,
-            },
-          });
-          setUser(response.data);
+          let userType = 'pembeli'
+          let response = await getUser(session?.accessToken, 'pembeli')
+    
+          if (!response) {
+            userType = 'penjual'
+            response = await getUser(session?.accessToken, 'penjual')
+          }
+
+          if (!response) {
+            throw new Error()
+          }
+
+          response.userType = userType
+          setUser(response);
         } catch (error) {
           console.error("Failed to fetch user data:", error);
         }
@@ -44,15 +53,77 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
 
     if (session?.accessToken) {
       fetchUser();
+      console.log("fetchUser RUN ONCE")
+    }
+  }, [session]);
+
+  const fetchUserImage = async () => {
+    if (session?.accessToken) {
+      try {
+        const responseImage = await getUserImage(session?.accessToken)
+        
+        setUserImage(responseImage ?? null)
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (session?.accessToken) {
+      fetchUserImage()
+      console.log("fetchUserImage RUN ONCE")
     }
   }, [session]);
 
   return (
-    <UserContext.Provider value={{ user }}>
+    <UserContext.Provider value={{ user, userImage, fetchUserImage }}>
       {children}
     </UserContext.Provider>
   );
 };
+
+const getUser = async (accessToken: string, userType: string) => {
+  try {
+    const response = await axios.get(`${process.env.API_BASEURL}/api/${userType}/profile`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data.data
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error?.response?.status === 401) {
+        return null
+      }
+    }
+  }
+}
+
+const getUserImage = async (accessToken: string) => {
+  try {
+    const imageResponse = await axios.get(`${process.env.API_BASEURL}/api/profile-picture`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      // telling axios that the server's response isn't a normal JSON or text-based response, but rather a binary large object (Blob)
+      responseType: 'blob'
+    })
+
+    if (!imageResponse) {
+      throw new Error('Some error occurred when fetching an image!');
+    }
+
+    // Converts Blob into URL
+    const imageUrl = URL.createObjectURL(imageResponse.data);
+
+    return imageUrl
+  } catch (error) {
+    if (error instanceof Error) {
+      return null
+    }
+  }
+}
 
 // Custom hook to access user data
 export const useUser = () => {
