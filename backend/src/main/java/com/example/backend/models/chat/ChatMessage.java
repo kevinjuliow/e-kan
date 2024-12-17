@@ -30,6 +30,9 @@ public class ChatMessage {
     @JsonIgnore
     private ChatGroup chatGroup;
 
+    @Column(name = "recipient_id")
+    private UUID recipientId;
+
     @Column(name = "sender_id")
     private UUID senderId;
 
