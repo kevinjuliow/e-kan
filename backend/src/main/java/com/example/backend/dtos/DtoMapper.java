@@ -233,6 +233,7 @@ public class DtoMapper {
                 .pembeliModel(toPembeliDto(model.getPembeliModel()))
                 .itemModel(toItemDto(model.getItemModel()))
                 .idInvoice(model.getIdInvoice())
+                .isDelivered(model.isDelivered())
                 .build();
 
         return dto ;

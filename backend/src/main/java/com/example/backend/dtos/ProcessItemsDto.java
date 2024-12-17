@@ -22,4 +22,6 @@ public class ProcessItemsDto {
     private ItemDto itemModel;
 
     private UUID idInvoice;
+
+    private Boolean isDelivered;
 }

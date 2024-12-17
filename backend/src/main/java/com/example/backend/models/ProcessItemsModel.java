@@ -31,5 +31,8 @@ public class ProcessItemsModel {
 
     @Column(nullable = false)
     private UUID idInvoice;
+
+    @Column
+    private boolean isDelivered = false;
 }
 
