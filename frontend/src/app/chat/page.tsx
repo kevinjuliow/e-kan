@@ -78,8 +78,8 @@ const Chat = () => {
     if (!selectedChat || !session?.accessToken) return;
 
     const stompClient = new Client({
-      brokerURL: `ws://localhost:8000/api/ws`,
-      webSocketFactory: () => new SockJS("http://localhost:8000/api/ws"),
+      brokerURL: `${process.env.WEBSOCKET_URL}/api/ws`,
+      webSocketFactory: () => new SockJS(`${process.env.API_BASEURL}/api/ws`),
       onConnect: () => {
         console.log("Connected to WebSocket");
 
