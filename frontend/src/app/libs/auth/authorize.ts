@@ -41,7 +41,7 @@ export async function authorize(credentials: any) {
       console.log("PASSED")
     }
     const { userType } = jwt.decode(token)
-    const id_user = userType === 'pembeli' ? getUserResponse.id_pembeli : getUserResponse.id_penjual
+    const id_user = userType === 'PEMBELI' ? getUserResponse.id_pembeli : getUserResponse.id_penjual
     const { nama, email } = getUserResponse
     if (token) {
       // Return user with token as a part of user object
