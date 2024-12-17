@@ -90,8 +90,13 @@ const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
             </div>
             <div className="ms-0 lg:ms-10 mt-8 lg:mt-0 w-full">
               <h1 className="hidden lg:block font-black tracking-wide text-4xl mb-4">{itemData?.nama}</h1>
-              <div className="flex items-center w-auto">
-                <h2 className="mb-2 font-medium bg-darkaqua text-white px-2 py-1 rounded-lg">Habitat air {itemData?.jenis_habitat.toLowerCase()}</h2>
+              <div className="flex items-center justify-start">
+                <div className="flex items-center w-auto me-2">
+                  <h2 className="mb-2 font-medium bg-darkaqua text-white px-2 py-1 rounded-lg">Habitat air {itemData?.jenis_habitat.toLowerCase()}</h2>
+                </div>
+                <div className="flex items-center w-auto">
+                  <h2 className="mb-2 font-medium bg-darkaqua text-white px-2 py-1 rounded-lg">Jenis bibit {itemData?.jenis_bibit.toLowerCase()}</h2>
+                </div>
               </div>
               <p className="w-full text-justify text-gray-600 leading-5">{itemData?.description?.slice(0, 400)}{(itemData?.description?.length || 0) > 400 ? '...' : ''}</p>
               <p className="relative mt-10 lg:mt-6">
