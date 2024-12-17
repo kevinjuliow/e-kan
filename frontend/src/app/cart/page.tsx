@@ -163,7 +163,7 @@ const Cart = () => {
           <div className="block md:hidden">
             <MobileCart totalPrice={totalPrice} />
           </div>
-        </div> : <h1 className="font-medium text-xl mt-48 text-center">Belum ada ikan yang ditambahkan ke dalam keranjang!</h1> }
+        </div> : <h1 className="font-medium text-xl mt-48 text-center">Belum ada produk yang ditambahkan ke dalam keranjang!</h1> }
         {message && <Toast message={message} toastType={toastType ?? "SUCCESS"} onClose={() => {}} />}
       </div>
     </div>
