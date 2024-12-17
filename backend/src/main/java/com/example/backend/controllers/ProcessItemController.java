@@ -68,4 +68,28 @@ public class ProcessItemController {
                         null
                 ));
     }
+
+
+    @PutMapping("/{invoiceId}")
+    public ResponseEntity<ApiResp<List<ProcessItemsDto>>> updateDeliveryByInvoiceId(@PathVariable UUID invoiceId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication.getPrincipal() instanceof PenjualModel penjualModel)) {
+            List<ProcessItemsModel> processItems = processItemsService.updateDeliveryByIdInvoice(invoiceId , penjualModel);
+            return ResponseEntity.ok(
+                    new ApiResp<>(
+                            HttpStatus.OK.value(),
+                            "Success update process item delivery",
+                            processItems.stream().map(mapper::toProcessItemsDto).collect(Collectors.toList())
+                    )
+            );
+        }
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiResp<>(
+                        HttpStatus.UNAUTHORIZED.value(),
+                        "Unauthorized",
+                        null
+                ));
+
+    }
 }
