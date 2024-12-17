@@ -9,13 +9,18 @@ import { useSession } from 'next-auth/react';
 import { CartData } from 'app/interfaces/Item/types';
 import ArrowBackButton from 'app/components/button/ArrowBackButton';
 import { Toast, useToast } from 'app/components/toast/Toast';
+import { useItemContext } from 'app/itemprovider';
+import { useRouter } from 'next/navigation';
 
 const Cart = () => {
   const { data: session } = useSession()
+  const router = useRouter()
   const { message, toastType, showToast } = useToast()
   const [cartData, setCartData] = useState<CartData[]>([])
   const [selectedId, setSelectedId] = useState<string[]>([])
   const [totalPrice, setTotalPrice] = useState<number>(0)
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const { addItemToCheckout } = useItemContext()
 
   const fetchData = async () => {
     try {
@@ -76,19 +81,13 @@ const Cart = () => {
   // Update total price of selected item
   const updateTotalPrice = () => {
     const selectedItems = cartData.filter((eachCartData) => selectedId.includes(eachCartData.item.id_item));
-    const total = selectedItems.reduce((sum, eachCartData) => sum + eachCartData.item.harga, 0);
-    setTotalPrice(total);
-  };
-
-  // const updateTotalPrice = () => {
-    //   const selectedItems = cartData.filter((eachCartData) => selectedId.includes(eachCartData.item.id_item));
-  //   const total = selectedItems.reduce((sum, eachCartData) => sum + eachCartData.item.harga * quantities[eachCartData.item.id_item], 0);
-  //   setTotalPrice(total);
-  // };
+    const total = selectedItems.reduce((sum, eachCartData) => sum + eachCartData.item.harga * (quantities[eachCartData.id_cart] || 1), 0)
+    setTotalPrice(total)
+  }  
   
   useEffect(() => {
     updateTotalPrice();
-  }, [selectedId]);
+  }, [selectedId, quantities]);  
 
   const isCartDataItemExist = (Array.isArray(cartData) && cartData.length > 0)
   const groupedItems = isCartDataItemExist
@@ -101,26 +100,25 @@ const Cart = () => {
     }, {} as Record<string, typeof cartData>)
   : {};
 
-  // handle quantities of cart item, adding or removing
-  // const [quantities, setQuantities] = useState<Record<string, number>>(
-  //   cartData.reduce((acc, eachCartData) => {
-  //     acc[eachCartData.item.id_item] = 1; // Default quantity adalah 1
-  //     return acc;
-  //   }, {} as Record<string, number>)
-  // );
-
-  // const updateQuantity = (id: string, newQuantity: number) => {
-  //   setQuantities((prev) => ({
-  //     ...prev,
-  //     [id]: newQuantity,
-  //   }));
-  // };
+  const handleQuantityChange = (idCart: string, quantity: number) => {
+    setQuantities((prev) => ({ ...prev, [idCart]: quantity }))
+  }  
 
   // handle button to buy item
   const handleBuy = () => {
-
+    const checkoutItems = cartData
+      .filter((eachCartData) => selectedId.includes(eachCartData.item.id_item))
+      .map((eachCartData) => ({
+        item: eachCartData.item,
+        quantity: quantities[eachCartData.id_cart] || 1,
+        source: "cart" as const,
+      }));
+  
+    addItemToCheckout(checkoutItems)
+    console.log('Items added to checkout:', checkoutItems)
+    router.push('/checkout')
   }
-
+  
   const handleToast = (toastType: string, namaItem: string) => {
     if (toastType === 'SUCCESS') {
       showToast("Berhasil menghapus " + namaItem + " dari keranjang!", "SUCCESS")
@@ -147,7 +145,7 @@ const Cart = () => {
                 </div>
                 {cartData.map((eachCartData, index) => {
                   return (
-                    <CartItem key={index} data={eachCartData} idCart={eachCartData.id_cart} isChecked={selectedId.includes(eachCartData.item.id_item)} onChangePassed={handleCheckboxChange} onItemRemoved={fetchData} handleToast={handleToast} />
+                    <CartItem key={index} data={eachCartData} idCart={eachCartData.id_cart} isChecked={selectedId.includes(eachCartData.item.id_item)} onChangePassed={handleCheckboxChange} onItemRemoved={fetchData} handleToast={handleToast} onQuantityChange={handleQuantityChange} />
                   )
                 })}
               </div>
