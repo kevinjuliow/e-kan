@@ -5,14 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @Builder
 @AllArgsConstructor
 public class MessageCreateRequest {
 
-    private Long senderId;
-    private Long recipientId;
+    private UUID senderId;
+    private UUID recipientId;
     private String content;
     private Date timestamp;
     private String token;

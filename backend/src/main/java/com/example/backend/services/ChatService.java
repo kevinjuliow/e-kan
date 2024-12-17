@@ -49,7 +49,7 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatMessage sendMessage(UUID chatGroupId, UUID senderId, String senderType, String content) {
+    public ChatMessage sendMessage(UUID chatGroupId, UUID senderId, String senderType, UUID recipientId, String content) {
         // Find the chat group
         ChatGroup chatGroup = chatGroupRepository.findById(chatGroupId)
                 .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Chat group not found"));
@@ -60,6 +60,7 @@ public class ChatService {
         message.setSenderId(senderId);
         message.setSenderType(senderType);
         message.setContent(content);
+        message.setRecipientId(recipientId);
         message.setType(ChatMessage.MessageType.CHAT);
 
         return chatMessageRepository.save(message);
@@ -102,5 +103,19 @@ public class ChatService {
             throw new GlobalExceptionHandler.UnauthorizedAccessException("You do not have access to this chat group");
         }
     }
+
+    public UUID getRecipientId(UUID chatGroupId, UUID senderId) {
+        ChatGroup chatGroup = chatGroupRepository.findById(chatGroupId)
+                .orElseThrow(() -> new IllegalArgumentException("Chat group not found"));
+
+        if (chatGroup.getPenjual().getIdPenjual().equals(senderId)) {
+            return chatGroup.getPembeli().getIdPembeli();
+        } else if (chatGroup.getPembeli().getIdPembeli().equals(senderId)) {
+            return chatGroup.getPenjual().getIdPenjual();
+        } else {
+            throw new IllegalArgumentException("Sender does not belong to this chat group");
+        }
+    }
+
 
 }

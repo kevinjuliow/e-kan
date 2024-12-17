@@ -11,6 +11,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@prisma/client": "^5.21.1",
+    "@stomp/stompjs": "^7.0.0",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.7",
     "axios": "^1.7.7",
@@ -24,6 +25,9 @@
     "react-hook-form": "^7.53.1",
     "react-image-crop": "^11.0.7",
     "react-scroll": "^1.9.0",
+    "socket.io-client": "^4.8.1",
+    "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -31,6 +35,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/react-scroll": "^1.8.10",
+    "@types/sockjs-client": "^1.5.4",
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
     "postcss": "^8",
