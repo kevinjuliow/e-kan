@@ -1,10 +1,7 @@
 package com.example.backend.services;
 
 import com.example.backend.Exceptions.GlobalExceptionHandler;
-import com.example.backend.models.InvoiceDetailModel;
-import com.example.backend.models.InvoiceModel;
-import com.example.backend.models.PenjualModel;
-import com.example.backend.models.ProcessItemsModel;
+import com.example.backend.models.*;
 import com.example.backend.repositories.InvoiceRepo;
 import com.example.backend.repositories.ProcessItemsRepo;
 import jakarta.transaction.Transactional;
@@ -14,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -24,33 +22,28 @@ public class ProcessItemsService {
 
     @Transactional
     public List<ProcessItemsModel> getAllProcessedItems(PenjualModel penjual) {
-        List<InvoiceModel> invoices = invoiceRepo.findInvoicesByItemPenjualAndStatus(
-                penjual,
-                "PAID"
-        );
+      return processItemsRepo.findAllByItemModel_PenjualOrderByIdInvoice(penjual)
+              .orElseThrow(()-> new GlobalExceptionHandler.ResourceNotFoundException("This penjual have no items to be processed"));
+    }
 
-        List<ProcessItemsModel> processItemsList = new ArrayList<>();
 
-        for (InvoiceModel invoice : invoices) {
-            List<InvoiceDetailModel> filteredDetails = invoice.getInvoiceDetails().stream()
-                    .filter(detail -> detail.getItem().getPenjual().getIdPenjual().equals(penjual.getIdPenjual()))
-                    .toList();
+    @Transactional
+    public void saveAllPaidItems(UUID idInvoice) {
+        InvoiceModel invoice = invoiceRepo.findByIdInvoiceAndStatus(idInvoice , "PAID")
+                .orElseThrow(()-> new GlobalExceptionHandler.ResourceNotFoundException("Invoice not found / invoice not yet been paid"));
 
-            // Create a ProcessItemsModel for each filtered item
-            for (InvoiceDetailModel detail : filteredDetails) {
-                ProcessItemsModel processItem = ProcessItemsModel.builder()
-                        .idInvoice(invoice.getIdInvoice())
-                        .pembeliModel(invoice.getPembeli())
-                        .itemModel(detail.getItem())
-                        .build();
 
-                processItemsList.add(processItem);
-            }
-        }
+        List<ProcessItemsModel> processItems = invoice.getInvoiceDetails().stream().map(detail -> {
 
-        processItemsRepo.saveAll(processItemsList);
+            ProcessItemsModel processItem = new ProcessItemsModel();
+            processItem.setIdInvoice(invoice.getIdInvoice());
+            processItem.setPembeliModel(invoice.getPembeli());
+            processItem.setItemModel(detail.getItem());
 
-        return processItemsList;
+            return processItem;
+
+        }).collect(Collectors.toList());
+        processItemsRepo.saveAll(processItems);
     }
 
 

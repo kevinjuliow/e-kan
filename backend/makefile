@@ -1,5 +1,5 @@
 run :
 	mvn spring-boot:run
 
-serve :
-	ngrok
+ngrok :
+	ngrok http --url=powerful-nearly-sponge.ngrok-free.app 8000

@@ -10,6 +10,7 @@ import com.example.backend.models.InvoiceModel;
 import com.example.backend.models.PembeliModel;
 import com.example.backend.services.PaymentService;
 import com.example.backend.services.InvoiceService;
+import com.example.backend.services.ProcessItemsService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ import java.util.UUID;
 public class PaymentController {
     private final PaymentService paymentService;
     private final InvoiceService invoiceService;
+    private final ProcessItemsService processItemsService ;
     private final DtoMapper mapper ;
 
     @PostMapping("/create/{invoiceId}")
@@ -129,7 +131,7 @@ public class PaymentController {
 
             InvoiceModel invoice = invoiceService.getTransactionById(UUID.fromString(orderId));
             invoiceService.updatePaymentStatus(invoice, transactionStatus);
-
+            processItemsService.saveAllPaidItems(UUID.fromString(orderId));
             return ResponseEntity.ok("Notification handled successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

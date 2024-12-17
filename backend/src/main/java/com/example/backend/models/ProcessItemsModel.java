@@ -21,11 +21,11 @@ public class ProcessItemsModel {
     @Column(unique = true)
     private UUID idProcessItems;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "pembeli_id", nullable = false)
     private PembeliModel pembeliModel;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "item_id", nullable = false)
     private ItemModel itemModel;
 

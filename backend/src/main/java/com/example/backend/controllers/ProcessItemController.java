@@ -29,10 +29,6 @@ public class ProcessItemController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if ((authentication.getPrincipal() instanceof PenjualModel penjualModel)) {
             List<ProcessItemsModel> invoiceList = processItemsService.getAllProcessedItems(penjualModel);
-            if (invoiceList.isEmpty()){
-                return ResponseEntity.noContent().build();
-            }
-
             List<ProcessItemsDto> invoiceListDto = invoiceList.stream().map(mapper::toProcessItemsDto).collect(Collectors.toList());
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -41,7 +37,6 @@ public class ProcessItemController {
                             "Success Retrieve process item",
                             invoiceListDto
                     ));
-
         }
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
