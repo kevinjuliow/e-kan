@@ -67,6 +67,7 @@ This project consists of:
    Create a `.env.local` file and add:
    ```env
    NEXT_DEV_API_URL=http://localhost:8000/api
+   WEBSOCKET_URL=ws://localhost:8000/api/ws
    ```
 
 4. Run the development server:
