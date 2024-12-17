@@ -4,7 +4,7 @@ import { getToken } from "next-auth/jwt";
 // next auth automatically protected the routes
 export { default } from "next-auth/middleware"
 
-const protectedRoutes = ['/api/:path*', '/cart', '/profile', '/product/add']
+const protectedRoutes = ['/api/:path*', '/cart', '/profile', '/product/add', '/checkout']
 
 // this will apply to all routes by default
 export async function middleware(req: NextRequest) {
