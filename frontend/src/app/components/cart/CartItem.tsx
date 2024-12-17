@@ -16,9 +16,10 @@ interface Props {
   onChangePassed: (e: React.ChangeEvent<HTMLInputElement>, idCart: string) => void;
   onItemRemoved: () => void; // refetch after succesfully delete an item
   handleToast: (toastType: string, namaItem: string) => void;
+  onQuantityChange: (idCart: string, quantity: number) => void;
 }
 
-const CartItem: React.FC<Props> = ({ data, idCart, isChecked, onChangePassed, onItemRemoved, handleToast }) => {
+const CartItem: React.FC<Props> = ({ data, idCart, isChecked, onChangePassed, onItemRemoved, handleToast, onQuantityChange }) => {
   const { data: session } = useSession()
   const [quantityToBuy, setQuantityToBuy] = useState<number>(1);
   const [image, setImage] = useState<string | null>(null)
@@ -46,7 +47,9 @@ const CartItem: React.FC<Props> = ({ data, idCart, isChecked, onChangePassed, on
   }, [data.item.id_item])
 
   const handleQuantityToBuy = (action: string) => {
-    setQuantityToBuy(action === 'add' ? quantityToBuy + 1 : quantityToBuy === 1 ? quantityToBuy : quantityToBuy - 1)
+    const newQuantity = action === 'add' ? quantityToBuy + 1 : quantityToBuy === 1 ? 1 : quantityToBuy - 1
+    setQuantityToBuy(newQuantity)
+    onQuantityChange(idCart, newQuantity)
   }
 
   const handleRemoveFromCart = async () => {
@@ -87,7 +90,7 @@ const CartItem: React.FC<Props> = ({ data, idCart, isChecked, onChangePassed, on
         </div>
 
         {/* Item Price */}
-        <p className="font-bold justify-self-end">Rp{data.item.harga}</p>
+        <p className="font-bold justify-self-end">Rp{data.item.harga * quantityToBuy}</p>
 
         {/* Button and More Information */}
         {/* <div className="col-span-2 col-start-2 justify-self-end self-end flex flex-col items-center justify-center"> */}
