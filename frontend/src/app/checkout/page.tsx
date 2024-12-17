@@ -78,8 +78,9 @@ const Checkout = () => {
   }, [checkoutItem])
 
   const handleCheckout = async () => {
+    let invoiceId;
+
     if (checkoutItem && checkoutItem[0]?.source === 'direct') { // handle checkout from product detail (single buy)
-      let invoiceId;
       try {
         const response = await axios.post(`${process.env.API_BASEURL}/api/transactions/direct`, null, {
           params: {
@@ -104,33 +105,9 @@ const Checkout = () => {
           handleToast("Gagal melakukan checkout, coba lagi!", "WARNING")
         }
       }
-
-      try {
-        const response = await axios.post(`${process.env.API_BASEURL}/api/payment/create/${invoiceId}`, {
-          paymentMethod: "bank_transfer",
-          bank: selectedBank
-        }, {
-          headers: {
-            Authorization: `Bearer ${session?.accessToken}`,
-          },
-        });
-
-        if (!response) {
-          throw new Error('Some error occurred at midtrans!');
-        }
-
-        console.log(response.data.data)
-
-        router.push(`/checkout/payment?invoiceId=${invoiceId}`);
-      } catch (error) {
-        if (error instanceof Error) {
-          handleToast("Gagal melakukan checkout, coba lagi!", "WARNING")
-        }
-      }
-
     } else { // handle checkout from cart
       try {
-        const response = await axios.post(`${process.env.API_BASEURL}/transactions/cart`, null, {
+        const response = await axios.post(`${process.env.API_BASEURL}/api/transactions/cart`, null, {
           params: {
             alamatId: selectedAlamat,
           },
@@ -140,13 +117,41 @@ const Checkout = () => {
         });
 
         if (!response) {
+          console.log("MASUK ERROR")
           throw new Error('Some error occurred at making invoice by cart!');
         }
+
+        
+        const { id_invoice } = await response.data.data
+        invoiceId = id_invoice
 
       } catch (error) {
         if (error instanceof Error) {
           handleToast("Gagal melakukan checkout, coba lagi!", "WARNING")
         }
+      }
+    }
+
+    try {
+      const response = await axios.post(`${process.env.API_BASEURL}/api/payment/create/${invoiceId}`, {
+        paymentMethod: "bank_transfer",
+        bank: selectedBank
+      }, {
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+      });
+
+      if (!response) {
+        throw new Error('Some error occurred at midtrans!');
+      }
+
+      console.log(response.data.data)
+
+      router.push(`/checkout/payment?invoiceId=${invoiceId}`);
+    } catch (error) {
+      if (error instanceof Error) {
+        handleToast("Gagal melakukan checkout, coba lagi!", "WARNING")
       }
     }
   }
