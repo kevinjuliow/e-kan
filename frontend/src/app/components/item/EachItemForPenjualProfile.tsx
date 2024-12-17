@@ -1,12 +1,11 @@
 "use client"
 
 import { Item } from "app/interfaces/Item/types";
-// import Image from "next/image";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { CartAddIcon, FishIcon, Shop } from "../icon";
+import { CartAddIcon, FishIcon } from "../icon";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link"
 import { Toast, useToast } from "../toast/Toast";
 
@@ -14,7 +13,7 @@ interface Props {
   data: Item;
 }
 
-const EachItem: React.FC<Props> = ({ data }) => {
+const EachItemForPenjualProfile: React.FC<Props> = ({ data }) => {
   const { data: session } = useSession()
   // const [loading, setLoading] = useState<boolean>(false);
   // const [error, setError] = useState<Error>()
@@ -84,10 +83,6 @@ const EachItem: React.FC<Props> = ({ data }) => {
               <p className="text-2xl text-darkaqua">Rp{data.harga}</p>
               <p className="text-mediumaqua text-xs">*Harga per {data.tipe_penjualan}</p>
             </div>
-            <Link href={`/profile/penjual/${data.penjual.id_penjual}`} className="px-4 py-2 w-full flex items-center border-t bg-white relative hover:bg-gray-200">
-              <Shop size={18} hexColor={"#007575"} />
-              <h1 className="ms-1 font-medium text-sm text-darkaqua relative top-0.5">{data.penjual.nama}</h1>
-            </Link>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-t border-gray-300 text-darkaqua">
               <div className="flex items-center relative">
                 <FishIcon size={18} hexColor={"#007575"} />
@@ -108,4 +103,4 @@ const EachItem: React.FC<Props> = ({ data }) => {
   );
 };
 
-export default EachItem;
+export default EachItemForPenjualProfile;
