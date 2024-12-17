@@ -81,7 +81,7 @@ This project consists of:
 
 1. Create a database named `e_kan` in your MySQL server:
    ```sql
-   CREATE DATABASE ekan;
+   CREATE DATABASE e_kan;
    ```
 
 2. Ensure the credentials match those in the `application.properties` file.
