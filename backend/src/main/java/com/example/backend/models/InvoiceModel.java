@@ -36,8 +36,11 @@ public class InvoiceModel {
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<InvoiceDetailModel> invoiceDetails = new ArrayList<>();
 
-    @Column(updatable = false, name = "tanggal_pembelian")
+    @Column(name = "tanggal_pembelian")
     private Date tanggalPembelian;
+
+    @Column(name = "tanggal_pembayaran")
+    private Date tanggalPembayaran;
 
     @Column
     private Double totalHarga = 0.0;

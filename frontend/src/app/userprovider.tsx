@@ -60,7 +60,7 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
   const fetchUserImage = async () => {
     if (session?.accessToken) {
       try {
-        const responseImage = await getUserImage(session?.accessToken)
+        const responseImage = await getUserImage(session?.user.userType.toLowerCase(), session?.user.id)
         
         setUserImage(responseImage ?? null)
       } catch (error) {
@@ -100,12 +100,9 @@ const getUser = async (accessToken: string, userType: string) => {
   }
 }
 
-const getUserImage = async (accessToken: string) => {
+const getUserImage = async (userType: string, userId: string) => {
   try {
-    const imageResponse = await axios.get(`${process.env.API_BASEURL}/api/profile-picture`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      },
+    const imageResponse = await axios.get(`${process.env.API_BASEURL}/api/profile-picture/${userType}/${userId}`, {
       // telling axios that the server's response isn't a normal JSON or text-based response, but rather a binary large object (Blob)
       responseType: 'blob'
     })

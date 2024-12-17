@@ -33,7 +33,7 @@ public class ProfilePictureController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (authentication.getPrincipal() instanceof PembeliModel currentPembeli) {
-                ProfilePictureModel profilePicture = service.uploadProfilePicturePembeli(currentPembeli.getId_pembeli(), file);
+                ProfilePictureModel profilePicture = service.uploadProfilePicturePembeli(currentPembeli.getIdPembeli(), file);
 
                 return ResponseEntity.ok(
                         new ApiResp<>(
@@ -98,7 +98,7 @@ public class ProfilePictureController {
     public ResponseEntity<ApiResp<Object>> destroy (UUID id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof PembeliModel currentPembeli) {
-            service.deleteProfilePicturePembeli(currentPembeli.getId_pembeli());
+            service.deleteProfilePicturePembeli(currentPembeli.getIdPembeli());
             return ResponseEntity.ok(
                     new ApiResp<>(
                             HttpStatus.OK.value(),

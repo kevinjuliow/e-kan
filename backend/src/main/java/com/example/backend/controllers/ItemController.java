@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class ItemController {
     private final ItemService itemService;
     private final DtoMapper itemMapper;
-    private final InvoiceService invoiceService;
+
 
     @GetMapping
     public ResponseEntity<ApiResp<List<ItemDto>>> index() {
@@ -171,28 +171,7 @@ public class ItemController {
         ));
     }
 
-    @GetMapping("/processed")
-    public ResponseEntity<ApiResp<List<InvoiceModel>>> getAllProcessedItems() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if ((authentication.getPrincipal() instanceof PenjualModel penjualModel)) {
-            List<InvoiceModel> invoiceList = invoiceService.getAllProcessedItems(penjualModel);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new ApiResp<>(
-                            HttpStatus.OK.value(),
-                            "Berhasil mengambil item",
-                            invoiceList
-                    ));
-        }
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(new ApiResp<>(
-                        HttpStatus.UNAUTHORIZED.value(),
-                        "Unauthorized",
-                        null
-                ));
 
-    }
 
 }
 

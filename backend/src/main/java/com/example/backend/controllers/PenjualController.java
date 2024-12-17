@@ -108,7 +108,7 @@ public class PenjualController {
                     )
             )
     })
-    public ResponseEntity<ApiResp<PenjualDto>> showPenjual(UUID id) {
+    public ResponseEntity<ApiResp<PenjualDto>> showPenjual(@PathVariable UUID id) {
         PenjualModel penjual = penjualService.getById(id);
         return ResponseEntity.ok(
                 new ApiResp<>(

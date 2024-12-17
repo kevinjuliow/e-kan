@@ -55,7 +55,7 @@ public class PembeliControllerTests {
         // Setup mock user
         mockPembeli = new PembeliModel();
         UUID userId = UUID.randomUUID();
-        mockPembeli.setId_pembeli(userId);
+        mockPembeli.setIdPembeli(userId);
         mockPembeli.setNama("Test User");
         mockPembeli.setEmail("test@example.com");
         mockPembeli.setTanggal_lahir(new Date());
@@ -125,7 +125,7 @@ public class PembeliControllerTests {
                 .andExpect(jsonPath("$.data.nama").value(inputDto.getNama()))
                 .andExpect(jsonPath("$.data.email").value(inputDto.getEmail()));
 
-        verify(pembeliService).update(any(RegisterPembeliDto.class), eq(mockPembeli.getId_pembeli()));
+        verify(pembeliService).update(any(RegisterPembeliDto.class), eq(mockPembeli.getIdPembeli()));
     }
 
     @Test

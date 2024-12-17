@@ -51,7 +51,7 @@ public class PembeliController {
 
         if (authentication.getPrincipal() instanceof PembeliModel) {
             PembeliModel pembeli = (PembeliModel) authentication.getPrincipal();
-            PembeliDto pembeliDto = new PembeliDto(pembeli.getId_pembeli() ,
+            PembeliDto pembeliDto = new PembeliDto(pembeli.getIdPembeli() ,
                     pembeli.getNama() , pembeli.getEmail() , pembeli.getTanggal_lahir() , pembeli.getNo_telp()
                     , pembeli.getCreatedAt() , pembeli.getUpdatedAt());
             ApiResp<PembeliDto> response = new ApiResp<>(
@@ -83,8 +83,8 @@ public class PembeliController {
 
         if (authentication.getPrincipal() instanceof PembeliModel) {
             PembeliModel pembeli = (PembeliModel) authentication.getPrincipal();
-            PembeliModel currentPembeli = pembeliService.update(input , pembeli.getId_pembeli());
-            PembeliDto pembeliDto = new PembeliDto(currentPembeli.getId_pembeli() ,
+            PembeliModel currentPembeli = pembeliService.update(input , pembeli.getIdPembeli());
+            PembeliDto pembeliDto = new PembeliDto(currentPembeli.getIdPembeli() ,
                     currentPembeli.getNama() , currentPembeli.getEmail() , currentPembeli.getTanggal_lahir() , currentPembeli.getNo_telp()
                     , currentPembeli.getCreatedAt() , currentPembeli.getUpdatedAt());
             ApiResp<PembeliDto> response = new ApiResp<>(
@@ -131,7 +131,7 @@ public class PembeliController {
     public ResponseEntity<ApiResp<List<PembeliDto>>> listPembeli(){
         List<PembeliModel> pembeliList = pembeliService.get();
         List<PembeliDto> pembeliDtos = pembeliList.stream()
-                .map(pembeli -> new PembeliDto(pembeli.getId_pembeli() ,
+                .map(pembeli -> new PembeliDto(pembeli.getIdPembeli() ,
                         pembeli.getNama() , pembeli.getEmail() , pembeli.getTanggal_lahir() , pembeli.getNo_telp()
                         , pembeli.getCreatedAt() , pembeli.getUpdatedAt())).collect(Collectors.toList());
 
@@ -176,7 +176,7 @@ public class PembeliController {
             PembeliModel pembeli = pembeliService.getById(id);
             PembeliDto pembeliDto = mapper.toPembeliDto(pembeli);
             return ResponseEntity.ok(new ApiResp<>(HttpStatus.OK.value(),
-                    "Success Retrieve User ID " + pembeli.getId_pembeli() , (pembeliDto)));
+                    "Success Retrieve User ID " + pembeli.getIdPembeli() , (pembeliDto)));
     }
 
 }
