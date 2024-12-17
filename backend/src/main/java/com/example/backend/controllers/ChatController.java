@@ -60,41 +60,6 @@ public class ChatController {
                 .body(new ApiResp<>(HttpStatus.CREATED.value(),  "Success Create chat group" , mapper.toChatGroupDto(chatGroup)));
     }
 
-    @PostMapping("/{chatGroupId}/send-message")
-    public ResponseEntity<ChatMessage> sendMessage(
-            @PathVariable UUID chatGroupId,
-            @RequestBody String content
-    ) {
-        // Get current authenticated user
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Determine sender type and ID based on authentication
-        UUID senderId;
-        String senderType;
-
-        if (authentication.getPrincipal() instanceof PenjualModel) {
-            PenjualModel penjual = (PenjualModel) authentication.getPrincipal();
-            senderId = penjual.getIdPenjual();
-            senderType = "PENJUAL";
-        } else if (authentication.getPrincipal() instanceof PembeliModel) {
-            PembeliModel pembeli = (PembeliModel) authentication.getPrincipal();
-            senderId = pembeli.getIdPembeli();
-            senderType = "PEMBELI";
-        } else {
-            throw new GlobalExceptionHandler.UnauthorizedAccessException("Invalid user type");
-        }
-
-        ChatMessage message = chatService.sendMessage(chatGroupId, senderId, senderType, content);
-
-        // Broadcast message to the specific chat group
-        messagingTemplate.convertAndSend(
-                "/topic/chat/" + chatGroupId,
-                message
-        );
-
-        return ResponseEntity.ok(message);
-    }
-
     @GetMapping("/messages/{chatGroupId}")
     public ResponseEntity<List<ChatMessage>> getChatMessages(@PathVariable UUID chatGroupId) {
         // Get current authenticated user
@@ -165,7 +130,9 @@ public class ChatController {
             throw new GlobalExceptionHandler.UnauthorizedAccessException("Invalid user type");
         }
 
-        // Save and return the message
-        return chatService.sendMessage(chatGroupId, senderId, senderType, messageCreateRequest.getContent());
+        UUID recipientId = chatService.getRecipientId(chatGroupId, senderId);
+
+        return chatService.sendMessage(chatGroupId, senderId, senderType, recipientId, messageCreateRequest.getContent());
     }
+
 }

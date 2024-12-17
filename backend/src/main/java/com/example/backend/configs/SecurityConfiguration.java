@@ -66,7 +66,9 @@ public class SecurityConfiguration {
                                 "/topic/**",
                                 "/api/ws/**",
                                 "/api/app/**",
-                                "/api/topic/**"
+                                "/api/topic/**",
+                                "/socket.io/**" ,
+                                "/api/socket.io/**"
                         ).permitAll()
 
 
