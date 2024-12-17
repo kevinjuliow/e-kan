@@ -32,7 +32,7 @@ public class InvoiceController {
     private final DtoMapper mapper ;
 
     @PostMapping("/cart")
-    public ResponseEntity<ApiResp<InvoiceModel>> checkoutFromCart(
+    public ResponseEntity<ApiResp<InvoiceDto>> checkoutFromCart(
             @RequestParam UUID alamatId
     ) {
         try {
@@ -55,12 +55,10 @@ public class InvoiceController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResp<>(
                         HttpStatus.CREATED.value(),
                         "Created Invoice" ,
-                        nota
+                        mapper.toInvoiceDto(nota)
                 ));
             }
-
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null);
         }

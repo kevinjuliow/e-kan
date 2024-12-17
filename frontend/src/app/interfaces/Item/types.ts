@@ -60,3 +60,28 @@ export interface CheckoutItem {
   quantity: number;
   source: 'direct' | 'cart';
 }
+
+export interface InvoiceDetail {
+  id_invoice_detail: string
+  item: Item
+  jumlahItem: number
+  harga: number
+}
+
+export interface VaNumber {
+  bank: string
+  va_number: string
+}
+
+export interface Invoice {
+  id_invoice: string
+  pembeli: PembeliData
+  alamat: Alamat
+  invoiceDetails: InvoiceDetail[]
+  totalHarga: number
+  tanggalPembelian: string
+  tanggalPembayaran: string
+  paymentType: string
+  vaNumbers: VaNumber
+  status: string
+}

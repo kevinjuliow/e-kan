@@ -22,11 +22,7 @@ const Profile = () => {
   const { userImage, fetchUserImage } = useUser()
 
   const handleToast = (message: string, toastType: string) => {
-    if (toastType === 'SUCCESS') {
-      showToast(message, toastType)
-    } else {
-      showToast(message, toastType)
-    }
+    showToast(message, toastType)
   }
 
   const handleOpenUpdateProfilePictureForm = () => {
