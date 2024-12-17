@@ -1,6 +1,7 @@
 package com.example.backend.models;
 
 import com.example.backend.dtos.midtransDtos.Va_Numbers;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
