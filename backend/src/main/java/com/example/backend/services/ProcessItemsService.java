@@ -54,4 +54,15 @@ public class ProcessItemsService {
         );
         processItemsRepo.deleteAllByIdInvoice(idInvoice);
     }
+
+    @Transactional
+    public List<ProcessItemsModel> updateDeliveryByIdInvoice(UUID idInvoice , PenjualModel penjualModel) {
+        List<ProcessItemsModel> processItemsList = processItemsRepo.findAllByIdInvoiceAndItemModel_Penjual(idInvoice , penjualModel)
+                .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Invoice not found"));
+
+        processItemsList.forEach(processItemsModel -> processItemsModel.setDelivered(false));
+
+        return processItemsRepo.saveAll(processItemsList);
+    }
+
 }
