@@ -92,7 +92,7 @@ public class CartItemController {
         if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
             CartItemModel foundModel = service.getById(id) ;
 
-            if (!foundModel.getPembeli().getId_pembeli().equals(currentUser.getId_pembeli())){
+            if (!foundModel.getPembeli().getIdPembeli().equals(currentUser.getIdPembeli())){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(
                                 new ApiResp<>(
@@ -130,7 +130,7 @@ public class CartItemController {
         if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
             CartItemModel foundModel = service.getById(id) ;
 
-            if (!foundModel.getPembeli().getId_pembeli().equals(currentUser.getId_pembeli())){
+            if (!foundModel.getPembeli().getIdPembeli().equals(currentUser.getIdPembeli())){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(
                                 new ApiResp<>(

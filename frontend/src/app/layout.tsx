@@ -8,6 +8,7 @@ import MobileNavbar from "./components/mobile/MobileNavbar";
 import { getServerSession } from "next-auth";
 import { AuthOptions } from "./libs/auth/auth";
 import { UserProvider } from "./userprovider";
+import { ItemProvider } from "./itemprovider";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -40,13 +41,15 @@ export default async function RootLayout({
     <html lang="en">
       <Provider session={session}>
         <UserProvider>
-          <body className={`${leagueSpartan.className} bg-[#D4EBEF]`}>
-            <Navbar />
-            <main className="flex flex-wrap flex-col items-center justify-between mx-auto w-full text-gray-800">
-              {children}
-            </main>
-            <MobileNavbar />
-          </body>
+          <ItemProvider>
+            <body className={`${leagueSpartan.className} bg-[#D4EBEF]`}>
+              <Navbar />
+              <main className="flex flex-wrap flex-col items-center justify-between mx-auto w-full text-gray-800">
+                {children}
+              </main>
+              <MobileNavbar />
+            </body>
+          </ItemProvider>
         </UserProvider>
       </Provider>
     </html>

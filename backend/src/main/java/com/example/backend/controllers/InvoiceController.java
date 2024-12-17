@@ -10,7 +10,6 @@ import com.example.backend.services.AlamatPembeliService;
 import com.example.backend.services.InvoiceService;
 import com.example.backend.services.PembeliService;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -42,7 +41,7 @@ public class InvoiceController {
             if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
                 AlamatPembeliModel alamat = alamatService.getById(alamatId);
 
-                if (!alamat.getPembeli().getId_pembeli().equals(currentUser.getId_pembeli())) {
+                if (!alamat.getPembeli().getIdPembeli().equals(currentUser.getIdPembeli())) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                             new ApiResp<>(
                                     HttpStatus.FORBIDDEN.value(),
@@ -79,7 +78,7 @@ public class InvoiceController {
             if (authentication.getPrincipal() instanceof PembeliModel currentUser) {
                 AlamatPembeliModel alamat = alamatService.getById(alamatId);
 
-                if (!alamat.getPembeli().getId_pembeli().equals(currentUser.getId_pembeli())) {
+                if (!alamat.getPembeli().getIdPembeli().equals(currentUser.getIdPembeli())) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                             new ApiResp<>(
                                     HttpStatus.FORBIDDEN.value(),
@@ -150,7 +149,7 @@ public class InvoiceController {
            InvoiceModel invoice = invoiceService.getTransactionById(invoiceId);
 
             // Check if the invoice belongs to the current user
-            if (!invoice.getPembeli().getId_pembeli().equals(currentUser.getId_pembeli())) {
+            if (!invoice.getPembeli().getIdPembeli().equals(currentUser.getIdPembeli())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(new ApiResp<>(HttpStatus.FORBIDDEN.value(),
                                 "only owner can delete the invoice", null));

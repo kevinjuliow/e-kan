@@ -12,7 +12,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -28,7 +27,7 @@ public class InvoiceService {
 
     public List<InvoiceModel> getAllInvoice (PembeliModel model) {
         return invoiceRepo.findByPembeli(model).orElseThrow(
-                ()-> new GlobalExceptionHandler.ResourceNotFoundException("Invoice not found with pembeli with id : " + model.getId_pembeli())
+                ()-> new GlobalExceptionHandler.ResourceNotFoundException("Invoice not found with pembeli with id : " + model.getIdPembeli())
         );
     }
 
@@ -137,7 +136,7 @@ public class InvoiceService {
         InvoiceModel invoice = invoiceRepo.findById(id_invoice).orElseThrow(
                 ()-> new GlobalExceptionHandler.ResourceNotFoundException("Invoice not found")
         );
-        if (!invoice.getPembeli().getId_pembeli().equals(pembeli.getId_pembeli())) {
+        if (!invoice.getPembeli().getIdPembeli().equals(pembeli.getIdPembeli())) {
             new GlobalExceptionHandler.UnauthorizedAccessException("Unauthorized pembeli , only owner can verify");
         }
         invoice.setStatus("paid");

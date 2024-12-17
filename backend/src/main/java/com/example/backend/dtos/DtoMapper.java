@@ -45,7 +45,7 @@ public class DtoMapper {
                 return null;
             }
             PembeliDto dto = PembeliDto.builder()
-                    .id_pembeli(model.getId_pembeli())
+                    .id_pembeli(model.getIdPembeli())
                     .nama(model.getNama())
                     .email(model.getEmail())
                     .tanggal_lahir(model.getTanggal_lahir())

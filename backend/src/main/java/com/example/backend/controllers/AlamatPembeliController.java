@@ -88,7 +88,7 @@ public class AlamatPembeliController {
 
 
         AlamatPembeliModel existingAlamat = service.getById(id);
-        if (!existingAlamat.getPembeli().getId_pembeli().equals(pembeli.getId_pembeli())) {
+        if (!existingAlamat.getPembeli().getIdPembeli().equals(pembeli.getIdPembeli())) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body(new ApiResp<>(
@@ -124,7 +124,7 @@ public class AlamatPembeliController {
 
 
         AlamatPembeliModel existingAlamat = service.getById(id);
-        if (!existingAlamat.getPembeli().getId_pembeli().equals(pembeli.getId_pembeli())) {
+        if (!existingAlamat.getPembeli().getIdPembeli().equals(pembeli.getIdPembeli())) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body(new ApiResp<>(

@@ -18,7 +18,6 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,7 +55,7 @@ public class ChatController {
         }
 
         PembeliModel pembeli = (PembeliModel) authentication.getPrincipal();
-        ChatGroup chatGroup = chatService.createChatGroup(penjualId, pembeli.getId_pembeli());
+        ChatGroup chatGroup = chatService.createChatGroup(penjualId, pembeli.getIdPembeli());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResp<>(HttpStatus.CREATED.value(),  "Success Create chat group" , mapper.toChatGroupDto(chatGroup)));
     }
@@ -79,7 +78,7 @@ public class ChatController {
             senderType = "PENJUAL";
         } else if (authentication.getPrincipal() instanceof PembeliModel) {
             PembeliModel pembeli = (PembeliModel) authentication.getPrincipal();
-            senderId = pembeli.getId_pembeli();
+            senderId = pembeli.getIdPembeli();
             senderType = "PEMBELI";
         } else {
             throw new GlobalExceptionHandler.UnauthorizedAccessException("Invalid user type");
@@ -107,7 +106,7 @@ public class ChatController {
             chatService.validatePenjualAccessToChatGroup(penjual.getIdPenjual(), chatGroupId);
         } else if (authentication.getPrincipal() instanceof PembeliModel) {
             PembeliModel pembeli = (PembeliModel) authentication.getPrincipal();
-            chatService.validatePembeliAccessToChatGroup(pembeli.getId_pembeli(), chatGroupId);
+            chatService.validatePembeliAccessToChatGroup(pembeli.getIdPembeli(), chatGroupId);
         } else {
             throw new GlobalExceptionHandler.UnauthorizedAccessException("Invalid user type");
         }
@@ -131,7 +130,7 @@ public class ChatController {
             userType = "PENJUAL";
         } else if (authentication.getPrincipal() instanceof PembeliModel) {
             PembeliModel pembeli = (PembeliModel) authentication.getPrincipal();
-            userId = pembeli.getId_pembeli();
+            userId = pembeli.getIdPembeli();
             userType = "PEMBELI";
         } else {
             throw new GlobalExceptionHandler.UnauthorizedAccessException("Invalid user type");
@@ -160,7 +159,7 @@ public class ChatController {
             senderId = penjual.getIdPenjual();
             senderType = "PENJUAL";
         } else if (authentication instanceof PembeliModel pembeli) {
-            senderId = pembeli.getId_pembeli();
+            senderId = pembeli.getIdPembeli();
             senderType = "PEMBELI";
         } else {
             throw new GlobalExceptionHandler.UnauthorizedAccessException("Invalid user type");
