@@ -39,11 +39,12 @@ const SignUp = () => {
   const isDateFilled = watch("tanggalLahir");
 
   const handleForm = handleSubmit(async (values) => {
+    console.log("signup page")
     console.log(process.env.NEXTAUTH_URL)
-    console.log(process.env.NEXT_DEV_API_BASEURL)
+    console.log(process.env.API_BASEURL)
     setLoading(true)
     try {
-      const response = await axios.post(`${'http://localhost:8000'}/api/auth/pembeli/signup`, {
+      const response = await axios.post(`${process.env.API_BASEURL}/api/auth/pembeli/signup`, {
         "email": values.email,
         "password": values.password,
         "nama": values.namaLengkap,
