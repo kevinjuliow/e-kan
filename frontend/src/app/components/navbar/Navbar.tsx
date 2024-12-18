@@ -10,6 +10,7 @@ import { navbarMenuList } from "app/constant";
 import { Link as ReactScroll } from 'react-scroll'
 import { BoxIcon, CartIcon, ChatIcon, PlusNonSolid, SearchIcon } from "../icon";
 import { useUser } from "app/userprovider";
+import { EKanLogo } from "../icon/ekanlogo";
 
 const Navbar = () => {
   const pathname = usePathname()
@@ -78,8 +79,9 @@ const Navbar = () => {
   return (
     <nav className={`${!isLanding && isBlur ? 'backdrop-blur-xl bg-opacity-100 bg-[#D4EBEF] transition duration-300 custom-box-shadow-bottom' : isBlur ? 'backdrop-blur-md bg-opacity-60' : 'backdrop-blur-none bg-opacity-100'} w-full flex h-24 items-center fixed z-50`}>
       <div className={`max-w-screen-xl w-full flex items-center ${!isSignupOrLoginPage ? 'justify-between' : 'justify-center'} mx-auto px-8 xl:px-0`}>
-        <Link href={'/'} className="flex items-center space-x-3 rtl:space-x-reverse">
-          <span className={`self-center text-2xl font-semibold whitespace-nowrap transition duration-300 ${changeTextColor}`}>e-Kan</span>
+        <Link href={'/'} className="flex items-center space-x-1 rtl:space-x-reverse">
+          <EKanLogo />
+          <span className={`self-center text-lg font-semibold whitespace-nowrap transition duration-300 ${changeTextColor}`}>e-Kan</span>
         </Link>
 
         {isLanding && <>
