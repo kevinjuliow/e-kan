@@ -222,7 +222,7 @@ const Chat = () => {
                       const isUserMessage = message.senderId === session?.user?.id;
                       return (
                         <div key={index} className={`flex ${isUserMessage ? "justify-end" : "justify-start"}`}>
-                          <div className={`px-4 py-2 rounded-lg max-w-xs md:max-w-md ${isUserMessage ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"}`}>
+                          <div className={`px-4 py-2 rounded-lg max-w-xs md:max-w-md ${isUserMessage ? "bg-darkaqua text-white" : "bg-gray-200 text-gray-800"}`}>
                             {message.content}
                           </div>
                         </div>
@@ -238,7 +238,7 @@ const Chat = () => {
                       onChange={(e) => setMessageInput(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                       placeholder="Ketik pesan..."
-                      className="flex-grow px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+                      className="flex-grow px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-lightaqua"
                     />
                     <button onClick={sendMessage} className="bg-darkaqua text-white px-6 py-2 rounded-lg transition">Kirim</button>
                   </div>
