@@ -2,20 +2,24 @@ import jwt from 'jsonwebtoken';
 import axios, { AxiosError } from 'axios';
 
 export async function authorize(credentials: any) {
+  console.log("step 1: get into authorize")
   if (!credentials?.email || !credentials.password) { // if there is no credentials
     return null;
   }
 
+  console.log("step 2: pass the if statement")
   try {
     console.log(`ENV URL: ${process.env.API_BASEURL}`)
     // try to login as pembeli
     let response = await loginUser(credentials.email, credentials.password, 'pembeli')
     
+    console.log(response)
     // if response has a value of null, then try to login as penjual
     if (!response) {
       response = await loginUser(credentials.email, credentials.password, 'penjual')
     }
 
+    console.log(response)
     if (!response) {
       throw new Error('Email atau password salah, coba lagi!')
     }
@@ -27,6 +31,7 @@ export async function authorize(credentials: any) {
 
     // Getting user data to be returned
     if (token) {
+      console.log("step 3: pass the if statement checking token")
       console.log("GETTING PEMBELI DATA")
       getUserResponse = await getUser(token, 'pembeli')
       
