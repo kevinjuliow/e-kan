@@ -7,9 +7,9 @@ const GuideBNI = () => {
         <h1 className="font-medium">Panduan Pembayaran:</h1>
         <div className="text-sm">
         <p>1. Akses BNI Mobile Banking dari handphone kemudian masukkan user ID dan password.</p>
-        <p>2. Pilih menu "Transfer".</p>
-        <p>3. Pilih menu "Virtual Account Billing" kemudian pilih rekening debet.</p>
-        <p>4. Masukkan nomor Virtual Account Anda pada menu "input baru".</p>
+        <p>2. Pilih menu &quot;Transfer&quot;.</p>
+        <p>3. Pilih menu &quot;Virtual Account Billing&quot; kemudian pilih rekening debet.</p>
+        <p>4. Masukkan nomor Virtual Account Anda pada menu &quot;input baru&quot;.</p>
         <p>5. Tagihan yang harus dibayarkan akan muncul pada layar konfirmasi</p>
         <p>6. Konfirmasi transaksi dan masukkan password transaksi.</p>
         </div>
