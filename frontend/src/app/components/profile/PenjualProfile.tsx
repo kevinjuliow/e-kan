@@ -174,7 +174,7 @@ const PenjualProfile: React.FC<PenjualProfileProps> = ({ handleToast }) => {
         <p className="ms-1 text-sm relative top-0.5">Edit Profil</p>
       </button>
       
-      {!updateFormState && <button onClick={(e) => handleUpdateState(e)} className="flex md:hidden w-32 absolute top-56 left-0 items-center justify-center bg-mediumaqua text-white px-4 py-2 rounded-md">
+      {!updateFormState && <button onClick={(e) => handleUpdateState(e)} className="flex md:hidden w-32 absolute top-[300px] left-0 items-center justify-center bg-mediumaqua text-white px-4 py-2 rounded-md">
         <div className="relative right-1">
           <PencilEditIcon size={20} hexColor={"#ffffff"} />
         </div>
@@ -190,7 +190,7 @@ const PenjualProfile: React.FC<PenjualProfileProps> = ({ handleToast }) => {
       </button>}
       
       {updateFormState && 
-      <button onClick={(e) => handleUpdateState(e)} className="flex md:hidden w-32 absolute top-56 left-0 items-center justify-center bg-red-500 text-white px-4 py-2 rounded-md">
+      <button onClick={(e) => handleUpdateState(e)} className="flex md:hidden w-32 absolute top-[300px] left-0 items-center justify-center bg-red-500 text-white px-4 py-2 rounded-md">
         <div className="relative right-1">
           <XMarkNonSolidIcon size={20} hexColor={"#ffffff"} />
         </div>
@@ -198,7 +198,7 @@ const PenjualProfile: React.FC<PenjualProfileProps> = ({ handleToast }) => {
       </button>}
 
       {updateFormState && 
-      <button type="submit" className="w-32 absolute top-56 right-0 md:top-12 md:right-0 flex items-center justify-center bg-mediumaqua text-white px-4 py-2 rounded-md">
+      <button type="submit" className="w-32 absolute top-[300px] right-0 md:top-12 md:right-0 flex items-center justify-center bg-mediumaqua text-white px-4 py-2 rounded-md">
         {loading ? 
           <div role="status" className="">
             <svg aria-hidden="true" className="inline w-5 h-5 text-gray-200 animate-spin dark:text-gray-600 fill-white" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
