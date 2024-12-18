@@ -123,7 +123,7 @@ const Navbar = () => {
               <>
                 <Link href={"/product/add"} className={`flex items-end justify-center rounded-lg border-2 px-2 py-1 me-4`} style={{ borderColor: changeIconColor }}>
                   <PlusNonSolid size={24} hexColor={changeIconColor} />
-                  <p className={`${changeTextColor} ms-1 font-medium text-sm`}>Tambah Produk</p>
+                  <p className={`${changeTextColor} ms-1 font-medium text-sm hidden sm:block`}>Tambah Produk</p>
                 </Link>
                 <Link href={"/product/myproduct"} className="me-4">
                   <BoxIcon size={24} hexColor={changeIconColor} />
