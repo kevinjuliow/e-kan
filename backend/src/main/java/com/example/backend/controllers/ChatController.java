@@ -110,6 +110,22 @@ public class ChatController {
         );
     }
 
+    @DeleteMapping("/group/{groupId}")
+    public ResponseEntity<ApiResp<Object>> deleteGroupChat (@PathVariable UUID groupId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof PembeliModel pembeliModel) {
+            chatService.deleteByGroupId(groupId , pembeliModel);
+            return ResponseEntity.ok(
+                    new ApiResp<>(HttpStatus.OK.value(),
+                            "Success delete chat group with id " + groupId ,
+                            null)
+            );
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body( new ApiResp<>(HttpStatus.UNAUTHORIZED.value(),
+                "UNAUTHORIZED",
+                null));
+    }
+
     @MessageMapping("/chat/{chatGroupId}/send-message")
     @SendTo("/topic/chat/{chatGroupId}")
     public ChatMessage sendChatMessage(

@@ -16,4 +16,5 @@ public interface ChatGroupRepo extends JpaRepository<ChatGroup , UUID> {
     Optional<ChatGroup> findByPenjualAndPembeli(PenjualModel penjual , PembeliModel pembeli);
     List<ChatGroup> findByPenjual(PenjualModel penjual);
     List<ChatGroup> findByPembeli(PembeliModel pembeli);
+
 }
