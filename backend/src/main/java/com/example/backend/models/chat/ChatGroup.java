@@ -42,4 +42,6 @@ public class ChatGroup {
     @OneToMany(mappedBy = "chatGroup", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.EAGER)
     private List<ChatMessage> messages = new ArrayList<>();
 
+    @Column
+    private boolean isStarted = false;
 }

@@ -153,27 +153,57 @@ const Chat = () => {
   }, [messageInput, selectedChat, session?.accessToken, session?.user]);
 
   return (
-    <div className="w-full flex items-center justify-center bg-gray-50 min-h-screen p-6">
-      <div className="max-w-5xl w-full bg-white shadow-lg rounded-lg border overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center p-4 border-b bg-gray-100">
-          <ArrowBackButton url="/dashboard" size={24} hexColor="#1f2937" />
-          <h1 className="text-2xl font-semibold text-gray-800 ml-3">Chat</h1>
+    <div className="w-full flex items-center justify-center mt-24">
+      <div className={`bgdashboard-wave`}></div>
+      <div className="max-w-screen-md w-full h-full relative p-8 xl:px-0 flex flex-col items-center justify-center">
+        <div className="flex items-center mb-4 w-full">
+          <ArrowBackButton url={"/dashboard"} size={20} hexColor={"#1f2937"} />
+          <h1 className="text-2xl font-bold text-left w-full ms-2">Chat</h1>
         </div>
+        <div className="w-full bg-white shadow-lg rounded-lg border overflow-hidden">
+          {/* Main Content */}
+          <div className="flex h-[720px]">
+            {/* Chat List */}
+            <div className="w-1/3 bg-gray-100 border-r overflow-y-auto">
+              {session?.user.userType === "PENJUAL"
+                ? pembeliList.map((pembeli) => (
+                    <div key={pembeli.id}
+                      className={`flex items-center gap-3 p-4 border-b cursor-pointer transition ${selectedChat?.id === pembeli.id ? "bg-blue-100" : "hover:bg-gray-200"}`}
+                      onClick={() => setSelectedChat({ id: pembeli.id, nama: pembeli.nama })}
+                    >
+                      <Image
+                        src="/default_profile.png"
+                        alt="profile"
+                        width={40}
+                        height={40}
+                        className="rounded-full"
+                      />
+                      <div className="text-gray-800 font-medium">{pembeli.nama}</div>
+                    </div>
+                  ))
+                : penjualList.map((penjual) => (
+                    <div key={penjual.id}
+                      className={`flex items-center gap-3 p-4 border-b cursor-pointer transition ${selectedChat?.id === penjual.id ? "bg-blue-100" : "hover:bg-gray-200"}`}
+                      onClick={() => setSelectedChat({ id: penjual.id, nama: penjual.nama })}
+                    >
+                      <Image
+                        src="/default_profile.png"
+                        alt="profile"
+                        width={40}
+                        height={40}
+                        className="rounded-full"
+                      />
+                      <div className="text-gray-800 font-medium">{penjual.nama}</div>
+                    </div>
+                  ))}
+            </div>
 
-        {/* Main Content */}
-        <div className="flex h-[720px]">
-          {/* Chat List */}
-          <div className="w-1/3 bg-gray-100 border-r overflow-y-auto">
-            {session?.user.userType === "PENJUAL"
-              ? pembeliList.map((pembeli) => (
-                  <div
-                    key={pembeli.id}
-                    className={`flex items-center gap-3 p-4 border-b cursor-pointer transition ${
-                      selectedChat?.id === pembeli.id ? "bg-blue-100" : "hover:bg-gray-200"
-                    }`}
-                    onClick={() => setSelectedChat({ id: pembeli.id, nama: pembeli.nama })}
-                  >
+            {/* Chat Section */}
+            <div className="w-2/3 flex flex-col">
+              {selectedChat ? (
+                <>
+                  {/* Chat Header */}
+                  <div className="p-4 border-b bg-gray-50 flex items-center gap-4">
                     <Image
                       src="/default_profile.png"
                       alt="profile"
@@ -181,89 +211,42 @@ const Chat = () => {
                       height={40}
                       className="rounded-full"
                     />
-                    <div className="text-gray-800 font-medium">{pembeli.nama}</div>
+                    <div className="text-lg font-semibold text-gray-800">{selectedChat.nama}</div>
                   </div>
-                ))
-              : penjualList.map((penjual) => (
-                  <div
-                    key={penjual.id}
-                    className={`flex items-center gap-3 p-4 border-b cursor-pointer transition ${
-                      selectedChat?.id === penjual.id ? "bg-blue-100" : "hover:bg-gray-200"
-                    }`}
-                    onClick={() => setSelectedChat({ id: penjual.id, nama: penjual.nama })}
-                  >
-                    <Image
-                      src="/default_profile.png"
-                      alt="profile"
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
-                    <div className="text-gray-800 font-medium">{penjual.nama}</div>
-                  </div>
-                ))}
-          </div>
 
-          {/* Chat Section */}
-          <div className="w-2/3 flex flex-col">
-            {selectedChat ? (
-              <>
-                {/* Chat Header */}
-                <div className="p-4 border-b bg-gray-50 flex items-center gap-4">
-                  <Image
-                    src="/default_profile.png"
-                    alt="profile"
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                  />
-                  <div className="text-lg font-semibold text-gray-800">{selectedChat.nama}</div>
-                </div>
-
-                {/* Chat Messages */}
-                <div ref={chatMessagesRef} className="flex-grow overflow-y-auto p-6 bg-gray-50 space-y-4">
-                  {chatMessages.map((message, index) => {
-                    const isUserMessage = message.senderId === session?.user?.id;
-                    return (
-                      <div
-                        key={index}
-                        className={`flex ${isUserMessage ? "justify-end" : "justify-start"}`}
-                      >
-                        <div
-                          className={`px-4 py-2 rounded-lg max-w-xs md:max-w-md ${
-                            isUserMessage ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
-                          }`}
-                        >
-                          {message.content}
+                  {/* Chat Messages */}
+                  <div ref={chatMessagesRef} className="flex-grow overflow-y-auto p-6 bg-gray-50 space-y-4">
+                    {chatMessages.map((message, index) => {
+                      const isUserMessage = message.senderId === session?.user?.id;
+                      return (
+                        <div key={index} className={`flex ${isUserMessage ? "justify-end" : "justify-start"}`}>
+                          <div className={`px-4 py-2 rounded-lg max-w-xs md:max-w-md ${isUserMessage ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"}`}>
+                            {message.content}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                      );
+                    })}
+                  </div>
 
-                {/* Message Input */}
-                <div className="p-4 bg-gray-100 flex items-center gap-3 border-t">
-                  <input
-                    type="text"
-                    value={messageInput}
-                    onChange={(e) => setMessageInput(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-                    placeholder="Type a message..."
-                    className="flex-grow px-4 py-2 border rounded-full focus:outline-none focus:ring focus:ring-blue-300"
-                  />
-                  <button
-                    onClick={sendMessage}
-                    className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
-                  >
-                    Send
-                  </button>
+                  {/* Message Input */}
+                  <div className="p-4 bg-gray-100 flex items-center gap-3 border-t">
+                    <input
+                      type="text"
+                      value={messageInput}
+                      onChange={(e) => setMessageInput(e.target.value)}
+                      onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+                      placeholder="Ketik pesan..."
+                      className="flex-grow px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+                    />
+                    <button onClick={sendMessage} className="bg-darkaqua text-white px-6 py-2 rounded-lg transition">Kirim</button>
+                  </div>
+                </>
+              ) : (
+                <div className="flex-grow flex items-center justify-center text-gray-500 text-lg">
+                  <p>Pilih chat untuk melakukan chat!</p>
                 </div>
-              </>
-            ) : (
-              <div className="flex-grow flex items-center justify-center text-gray-500 text-lg">
-                Select a chat to start messaging
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>

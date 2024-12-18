@@ -219,6 +219,7 @@ public class DtoMapper {
                 .penjualDto(toPenjualDto(model.getPenjual()))
                 .pembeliDto(toPembeliDto(model.getPembeli()))
                 .createdAt(model.getCreatedAt())
+                .isStarted(model.isStarted())
                 .build();
         return dto;
     }
