@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import { MapIcon, PencilEditIcon, ReceiptIcon, UserIcon } from 'app/components/icon'
+import { BoxOrderIcon, MapIcon, PencilEditIcon, ReceiptIcon, UserIcon } from 'app/components/icon'
 import PembeliProfile from 'app/components/profile/PembeliProfile'
 import PenjualProfile from 'app/components/profile/PenjualProfile'
 import { Toast, useToast } from 'app/components/toast/Toast'
@@ -12,10 +12,11 @@ import ProfileImageCropper from 'app/components/cropper/ProfileImageCropper'
 import { useUser } from 'app/userprovider'
 import Alamat from 'app/components/profile/Alamat'
 import AddAlamat from 'app/components/profile/AddAlamat'
+import PesananMasuk from 'app/components/profile/PesananMasuk'
 
 const Profile = () => {
   const { data: session } = useSession()
-  const [activeTab, setActiveTab] = useState<string | 'account' | 'alamat' | 'riwayat'>('account')
+  const [activeTab, setActiveTab] = useState<string | 'account' | 'alamat' | 'riwayat' | 'produkpesanan'>('account')
   const { message, toastType, showToast } = useToast()
   const [openAddImage, setOpenAddImage] = useState<boolean>(false);
   const [openAddAlamat, setOpenAddAlamat] = useState<boolean>(false);
@@ -77,7 +78,7 @@ const Profile = () => {
                 <p className="ps-1 relative top-0.5 hidden sm:block">Akun Saya</p>
               </button>
             </li>
-            {session?.user.userType === 'PEMBELI' && (
+            {session?.user.userType === 'PEMBELI' ? (
             <>
               <li className="w-24 sm:w-40">
                 <button onClick={() => setActiveTab('alamat')} className={`relative w-full flex items-center justify-center px-4 py-2 rounded-t-lg group ${activeTab === 'alamat' ? 'bg-mediumaqua text-white' : 'bg-none text-darkaqua'}`} aria-current="page">
@@ -92,7 +93,14 @@ const Profile = () => {
                 </button>
               </li>
             </>
-            )}
+            ) : 
+            <li className="w-24 sm:w-40">
+              <button onClick={() => setActiveTab('produkpesanan')} className={`relative w-full flex items-center justify-center px-4 py-2 rounded-t-lg group ${activeTab === 'produkpesanan' ? 'bg-mediumaqua text-white' : 'bg-none text-darkaqua'}`} aria-current="page">
+                <BoxOrderIcon size={24} hexColor={`${activeTab === 'produkpesanan' ? "#ffffff" : "#007575"}`} />
+                <p className="ps-1 relative top-0.5 hidden sm:block">Pesanan Masuk</p>
+              </button>
+            </li>
+            }
           </ul>
         </div>
 
@@ -102,6 +110,7 @@ const Profile = () => {
           {activeTab === 'alamat' && !openAddAlamat && session?.user.userType === 'PEMBELI' && <Alamat handleToast={handleToast} closeFormWindow={handleOpenAddAlamatForm} />}
           {activeTab === 'alamat' && openAddAlamat && session?.user.userType === 'PEMBELI' && <AddAlamat handleToast={handleToast} closeFormWindow={handleOpenAddAlamatForm} />}
           {activeTab === 'riwayat' && session?.user.userType === 'PEMBELI' && <StatusTransaksi />}
+          {activeTab === 'produkpesanan' && session?.user.userType === 'PENJUAL' && <PesananMasuk />}
         </div>
         {message && <Toast message={message} toastType={toastType ?? "SUCCESS"} onClose={() => {}} />}
       </div>
