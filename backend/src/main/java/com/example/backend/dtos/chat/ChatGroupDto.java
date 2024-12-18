@@ -17,4 +17,5 @@ public class ChatGroupDto {
     private PenjualDto penjualDto ;
     private PembeliDto pembeliDto ;
     private Date createdAt ;
+    private boolean isStarted;
 }

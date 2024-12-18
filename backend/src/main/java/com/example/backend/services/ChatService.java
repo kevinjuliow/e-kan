@@ -63,6 +63,8 @@ public class ChatService {
         message.setRecipientId(recipientId);
         message.setType(ChatMessage.MessageType.CHAT);
 
+
+        chatGroup.setStarted(true);
         return chatMessageRepository.save(message);
     }
 
