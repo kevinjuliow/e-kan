@@ -50,7 +50,9 @@ const Chat = () => {
 
         // Conditional logic for userType
         if (session?.user.userType === "PENJUAL") {
-          const filteredPembeli = response.data.data.map((item: any) => ({
+          const filteredData = response.data.data.filter((item: any) => item.started === true);
+
+          const filteredPembeli = filteredData.map((item: any) => ({
             id: item.id,
             ...item.pembeliDto,
           }));
