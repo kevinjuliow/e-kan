@@ -60,7 +60,7 @@ public class ProcessItemsService {
         List<ProcessItemsModel> processItemsList = processItemsRepo.findAllByIdInvoiceAndItemModel_Penjual(idInvoice , penjualModel)
                 .orElseThrow(() -> new GlobalExceptionHandler.ResourceNotFoundException("Invoice not found"));
 
-        processItemsList.forEach(processItemsModel -> processItemsModel.setDelivered(false));
+        processItemsList.forEach(processItemsModel -> processItemsModel.setDelivered(true));
 
         return processItemsRepo.saveAll(processItemsList);
     }
