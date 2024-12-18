@@ -120,4 +120,17 @@ public class ChatService {
     }
 
 
+    @Transactional
+    public void deleteByGroupId(UUID groupId , PembeliModel pembeli){
+        ChatGroup group = chatGroupRepository.findById(groupId).orElseThrow(
+                ()-> new GlobalExceptionHandler.ResourceNotFoundException("chat group not found")
+        );
+
+        if (!group.getPembeli().getIdPembeli().equals(pembeli.getIdPembeli())){
+           throw new GlobalExceptionHandler.UnauthorizedAccessException("unauthorized");
+        }
+        chatGroupRepository.deleteById(groupId);
+    }
+
+
 }
