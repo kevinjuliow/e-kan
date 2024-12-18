@@ -78,6 +78,11 @@ const Checkout = () => {
   }, [checkoutItem])
 
   const handleCheckout = async () => {
+    if (selectedBank === null) {
+      handleToast("Mohon memilih Bank!", "WARNING")
+      return;
+    }
+
     let invoiceId;
 
     if (checkoutItem && checkoutItem[0]?.source === 'direct') { // handle checkout from product detail (single buy)
