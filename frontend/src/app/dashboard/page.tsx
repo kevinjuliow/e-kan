@@ -23,7 +23,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     router.refresh() // refresh page automatically
-  })
+  }, [])
 
   return (
     <div className="w-full flex items-center justify-center mt-24">
