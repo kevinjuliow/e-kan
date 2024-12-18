@@ -21,9 +21,11 @@ export async function authorize(credentials: any) {
 
     console.log(response)
     if (!response) {
+      console.log("eh ternyata response gak ada semua, jadi error")
       throw new Error('Email atau password salah, coba lagi!')
     }
 
+    console.log("berhasil dapetin respon yey")
     // Check if login success and retrieve a token
     const { token } = response;
 
@@ -41,6 +43,7 @@ export async function authorize(credentials: any) {
       }
   
       if (!getUserResponse) {
+        console.log("ini masuk error setelah mau dapetin userData")
         throw new Error()
       }
       console.log("PASSED")
@@ -68,16 +71,21 @@ export async function authorize(credentials: any) {
 }
 
 async function loginUser(email: string, password: string, userType: 'pembeli' | 'penjual') {
+  console.log("MASUK loginUser")
+  console.log("email in loginUser: " + email)
+  console.log("password in loginUser: " + password)
+  console.log("userType in loginUser: " + userType)
   try {
+    console.log(`${process.env.API_BASEURL}/api/auth/${userType}/login`)
     const response = await axios.post(`${process.env.API_BASEURL}/api/auth/${userType}/login`, {
       email, password
     })
+    console.log("di bawah ini response axios post dari loginUser")
+    console.log(response)
     return response.data.data
   } catch (error) {
-    if (error instanceof AxiosError) {
-      if (error?.response?.status === 401) {
-        return null
-      }
+    if (error instanceof Error) {
+      console.log(error)
     }
   }
 }
