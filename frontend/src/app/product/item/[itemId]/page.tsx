@@ -64,6 +64,9 @@ const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
   }
 
   const handleBuy = async () => {
+    if (quantityToBuy === 0) {
+      return
+    }
     if (itemData && image) {
       console.log({ item: itemData, quantity: quantityToBuy })
       await addItemToCheckout([{ item: itemData, quantity: quantityToBuy, source: 'direct' }]);
