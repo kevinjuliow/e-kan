@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react'
 import { BoxIcon, InternetIcon, MapIcon } from 'app/components/icon'
 import ArrowBackButton from 'app/components/button/ArrowBackButton'
-import { useSession } from 'next-auth/react'
 import axios from 'axios'
 import PenjualProduct from 'app/components/product/PenjualProduct'
 import { PenjualData } from 'app/interfaces/Item/types'
@@ -17,7 +16,6 @@ interface ParameterId {
 
 const PublicPenjualProfile: React.FC<ParameterId> = ({ params }) => {
   console.log(params.penjualId)
-  const { data: session } = useSession()
   const [activeTab, setActiveTab] = useState<string | 'produk'>('produk')
   const [penjualData, setPenjualData] = useState<PenjualData | null>(null)
   const [penjualImage, setPenjualImage] = useState<string | null>(null)
@@ -37,36 +35,32 @@ const PublicPenjualProfile: React.FC<ParameterId> = ({ params }) => {
   }
 
   const fetchPenjualImage = async () => {
-      if (session?.accessToken) {
-        try {
-          const imageResponse = await axios.get(`${process.env.API_BASEURL}/api/profile-picture/penjual/${params.penjualId}`, {
-            // telling axios that the server's response isn't a normal JSON or text-based response, but rather a binary large object (Blob)
-            responseType: 'blob'
-          })
+      try {
+        const imageResponse = await axios.get(`${process.env.API_BASEURL}/api/profile-picture/penjual/${params.penjualId}`, {
+          // telling axios that the server's response isn't a normal JSON or text-based response, but rather a binary large object (Blob)
+          responseType: 'blob'
+        })
       
-          if (!imageResponse) {
-            throw new Error('Some error occurred when fetching an image!');
-          }
+        if (!imageResponse) {
+          throw new Error('Some error occurred when fetching an image!');
+        }
       
-          // Converts Blob into URL
-          const imageUrl = URL.createObjectURL(imageResponse.data);
+        // Converts Blob into URL
+        const imageUrl = URL.createObjectURL(imageResponse.data);
       
-          setPenjualImage(imageUrl ?? null)
-        } catch (error) {
-          if (error instanceof Error) {
-            console.log(error)
-          }
+        setPenjualImage(imageUrl ?? null)
+      } catch (error) {
+        if (error instanceof Error) {
+          console.log(error)
         }
       }
     };
   
     useEffect(() => {
-      if (session?.accessToken) {
-        fetchPenjualData()
-        fetchPenjualImage()
-        console.log("fetch data user RUN ONCE")
-      }
-    }, [session]);
+      fetchPenjualData()
+      fetchPenjualImage()
+      console.log("fetch data user RUN ONCE")
+    }, []);
 
   return (
     <>

@@ -2,7 +2,7 @@
 
 import ShowItem from 'app/components/item/ShowItem'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -20,6 +20,10 @@ const Dashboard = () => {
   const handleSearch = () => {
     router.push(`/dashboard?search=${searchQuery}`);
   };
+
+  useEffect(() => {
+    router.refresh() // refresh page automatically
+  }, [])
 
   return (
     <div className="w-full flex items-center justify-center mt-24">
