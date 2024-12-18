@@ -81,11 +81,11 @@ async function loginUser(email: string, password: string, userType: 'pembeli' | 
       email, password
     })
     console.log("di bawah ini response axios post dari loginUser")
-    console.log(response)
+    console.log("response", response)
     return response.data.data
   } catch (error) {
     if (error instanceof Error) {
-      console.log(error)
+      console.log("error", error)
     }
   }
 }
