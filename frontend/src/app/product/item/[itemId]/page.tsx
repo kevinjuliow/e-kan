@@ -125,7 +125,7 @@ const DetailProductItem: React.FC<ParameterId> = ({ params }) => {
         <div className={`bgdetailitem-wave`}></div>
         <div className="max-w-screen-xl w-full h-full relative p-8 lg:px-0 flex flex-col items-center justify-center">
           <BackButton />
-          {(itemData && image && penjualImage) ? <>
+          {(itemData && image) ? <>
             <div className="flex flex-col lg:flex-row items-start justify-center mb-6 w-full">
               <div className="grid grid-rows-[auto,auto] grid-cols-4 gap-3 items-center justify-center w-full max-w-[400px] md:max-w-full lg:max-w-[400px]">
                 <div className="col-span-4">
