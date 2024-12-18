@@ -71,6 +71,9 @@ public class ItemService {
         if(input.getTipe_penjualan() != null && !input.getTipe_penjualan().equals(existingItem.getTipe_penjualan())) {
             existingItem.setTipe_penjualan(input.getTipe_penjualan());
         }
+        if(input.getDescription() != null) {
+            existingItem.setDescription(input.getDescription());
+        }
         return repo.save(existingItem);
     }
 
