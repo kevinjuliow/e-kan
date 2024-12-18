@@ -12,5 +12,7 @@ import java.util.UUID;
 public interface ProcessItemsRepo extends JpaRepository<ProcessItemsModel , UUID> {
     Optional< List<ProcessItemsModel> > findAllByIdInvoice(UUID invoiceId);
     Optional< List<ProcessItemsModel> > findAllByItemModel_PenjualOrderByIdInvoice(PenjualModel penjualModel);
+    Optional< List<ProcessItemsModel> > findAllByIdInvoiceAndItemModel_Penjual(UUID invoiceId , PenjualModel penjualModel);
+
     void deleteAllByIdInvoice(UUID invoiceId);
 }

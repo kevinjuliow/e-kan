@@ -67,6 +67,7 @@ This project consists of:
    Create a `.env.local` file and add:
    ```env
    NEXT_DEV_API_URL=http://localhost:8000/api
+   WEBSOCKET_URL=ws://localhost:8000/api/ws
    ```
 
 4. Run the development server:
@@ -80,7 +81,7 @@ This project consists of:
 
 1. Create a database named `e_kan` in your MySQL server:
    ```sql
-   CREATE DATABASE ekan;
+   CREATE DATABASE e_kan;
    ```
 
 2. Ensure the credentials match those in the `application.properties` file.
