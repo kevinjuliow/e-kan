@@ -110,7 +110,8 @@ public class SecurityConfiguration {
                 "http://localhost:3000" ,
                 "http://127.0.0.1:5500",
                 "http://localhost:5500",
-                "https://powerful-nearly-sponge.ngrok-free.app"
+                "https://powerful-nearly-sponge.ngrok-free.app",
+                "https://e-kan-store.vercel.app/"
         ));
         configuration.setAllowCredentials(true);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

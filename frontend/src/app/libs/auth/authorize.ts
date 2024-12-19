@@ -2,24 +2,30 @@ import jwt from 'jsonwebtoken';
 import axios, { AxiosError } from 'axios';
 
 export async function authorize(credentials: any) {
+  console.log("step 1: get into authorize")
   if (!credentials?.email || !credentials.password) { // if there is no credentials
     return null;
   }
 
+  console.log("step 2: pass the if statement")
   try {
     console.log(`ENV URL: ${process.env.API_BASEURL}`)
     // try to login as pembeli
     let response = await loginUser(credentials.email, credentials.password, 'pembeli')
     
+    console.log(response)
     // if response has a value of null, then try to login as penjual
     if (!response) {
       response = await loginUser(credentials.email, credentials.password, 'penjual')
     }
 
+    console.log(response)
     if (!response) {
+      console.log("eh ternyata response gak ada semua, jadi error")
       throw new Error('Email atau password salah, coba lagi!')
     }
 
+    console.log("berhasil dapetin respon yey")
     // Check if login success and retrieve a token
     const { token } = response;
 
@@ -27,6 +33,7 @@ export async function authorize(credentials: any) {
 
     // Getting user data to be returned
     if (token) {
+      console.log("step 3: pass the if statement checking token")
       console.log("GETTING PEMBELI DATA")
       getUserResponse = await getUser(token, 'pembeli')
       
@@ -36,6 +43,7 @@ export async function authorize(credentials: any) {
       }
   
       if (!getUserResponse) {
+        console.log("ini masuk error setelah mau dapetin userData")
         throw new Error()
       }
       console.log("PASSED")
@@ -63,16 +71,21 @@ export async function authorize(credentials: any) {
 }
 
 async function loginUser(email: string, password: string, userType: 'pembeli' | 'penjual') {
+  console.log("MASUK loginUser")
+  console.log("email in loginUser: " + email)
+  console.log("password in loginUser: " + password)
+  console.log("userType in loginUser: " + userType)
   try {
+    console.log(`${process.env.API_BASEURL}/api/auth/${userType}/login`)
     const response = await axios.post(`${process.env.API_BASEURL}/api/auth/${userType}/login`, {
       email, password
     })
+    console.log("di bawah ini response axios post dari loginUser")
+    console.log("response", response)
     return response.data.data
   } catch (error) {
-    if (error instanceof AxiosError) {
-      if (error?.response?.status === 401) {
-        return null
-      }
+    if (error instanceof Error) {
+      console.log("error", error)
     }
   }
 }

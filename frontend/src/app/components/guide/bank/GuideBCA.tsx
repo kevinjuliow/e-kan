@@ -6,9 +6,9 @@ const GuideBCA = () => {
       <div className="">
         <h1 className="font-medium">Panduan Pembayaran:</h1>
         <div className="text-sm">
-          <p>1. Buka BCA mobile, pilih menu "m-Transfer"</p>
-          <p>2. Pilih menu "BCA Virtual Account"</p>
-          <p>3. Masukkan nomor BCA Virtual Account dan klik "Send"</p>
+          <p>1. Buka BCA mobile, pilih menu &quot;m-Transfer&quot;</p>
+          <p>2. Pilih menu &quot;BCA Virtual Account&quot;</p>
+          <p>3. Masukkan nomor BCA Virtual Account dan klik &quot;Send&quot;</p>
           <p>4. Cek detail transaksi dan nominal transfer</p>
           <p>5. Masukkan PIN m-BCA</p>
         </div>

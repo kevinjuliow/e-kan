@@ -155,7 +155,7 @@ const Chat = () => {
   }, [messageInput, selectedChat, session?.accessToken, session?.user]);
 
   return (
-    <div className="w-full flex items-center justify-center mt-24">
+    <div className="w-full flex items-center justify-center mt-24 mb-24">
       <div className={`bgdashboard-wave`}></div>
       <div className="max-w-screen-md w-full h-full relative p-8 xl:px-0 flex flex-col items-center justify-center">
         <div className="flex items-center mb-4 w-full">
@@ -164,7 +164,7 @@ const Chat = () => {
         </div>
         <div className="w-full bg-white shadow-lg rounded-lg border overflow-hidden">
           {/* Main Content */}
-          <div className="flex h-[720px]">
+          <div className="flex h-[480px]">
             {/* Chat List */}
             <div className="w-1/3 bg-gray-100 border-r overflow-y-auto">
               {session?.user.userType === "PENJUAL"
@@ -222,7 +222,7 @@ const Chat = () => {
                       const isUserMessage = message.senderId === session?.user?.id;
                       return (
                         <div key={index} className={`flex ${isUserMessage ? "justify-end" : "justify-start"}`}>
-                          <div className={`px-4 py-2 rounded-lg max-w-xs md:max-w-md ${isUserMessage ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"}`}>
+                          <div className={`px-4 py-2 rounded-lg max-w-xs md:max-w-md ${isUserMessage ? "bg-darkaqua text-white" : "bg-gray-200 text-gray-800"}`}>
                             {message.content}
                           </div>
                         </div>
@@ -238,7 +238,7 @@ const Chat = () => {
                       onChange={(e) => setMessageInput(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                       placeholder="Ketik pesan..."
-                      className="flex-grow px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+                      className="flex-grow px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-lightaqua"
                     />
                     <button onClick={sendMessage} className="bg-darkaqua text-white px-6 py-2 rounded-lg transition">Kirim</button>
                   </div>
