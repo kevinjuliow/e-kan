@@ -113,28 +113,40 @@ const getUser = async (accessToken: string, userType: string) => {
 
 const getUserImage = async (userType: string, userId: string) => {
   try {
-    const imageResponse = await axios.get(`${process.env.API_BASEURL}/api/profile-picture/${userType}/${userId}`, {
-      // telling axios that the server's response isn't a normal JSON or text-based response, but rather a binary large object (Blob)
-      responseType: 'blob',
-      headers: {
-        "ngrok-skip-browser-warning": "true",
-      },
-    })
-
-    if (!imageResponse) {
-      throw new Error('Some error occurred when fetching an image!');
+    const response = await axios.get(`${process.env.API_BASEURL}/api/profile-picture/${userType}/${userId}`);
+    if (response.data?.data) {
+      return response.data.data; // This contains the "data:image/jpeg;base64,..." string
     }
-
-    // Converts Blob into URL
-    const imageUrl = URL.createObjectURL(imageResponse.data);
-
-    return imageUrl
   } catch (error) {
-    if (error instanceof Error) {
-      return null
-    }
+    console.error("Failed to fetch image:", error);
+    return null;
   }
-}
+};
+
+// const getUserImage = async (userType: string, userId: string) => {
+//   try {
+//     const imageResponse = await axios.get(`${process.env.API_BASEURL}/api/profile-picture/${userType}/${userId}`, {
+//       // telling axios that the server's response isn't a normal JSON or text-based response, but rather a binary large object (Blob)
+//       responseType: 'blob',
+//       headers: {
+//         "ngrok-skip-browser-warning": "true",
+//       },
+//     })
+
+//     if (!imageResponse) {
+//       throw new Error('Some error occurred when fetching an image!');
+//     }
+
+//     // Converts Blob into URL
+//     const imageUrl = URL.createObjectURL(imageResponse.data);
+
+//     return imageUrl
+//   } catch (error) {
+//     if (error instanceof Error) {
+//       return null
+//     }
+//   }
+// }
 
 // Custom hook to access user data
 export const useUser = () => {
