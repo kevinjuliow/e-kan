@@ -75,16 +75,16 @@ const PesananMasuk = () => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center justify-center">
+    <div className="w-full flex flex-col items-center justify-center mb-20">
       {Object.entries(groupedItems).length > 0 ? 
-        <h1 className="w-full text-left mb-2">Pesanan Masuk</h1>
+        <h1 className="w-full text-left mb-2 font-medium">Pesanan Masuk</h1>
         : <h1 className="w-full text-center mb-2">Tidak ada pesanan masuk!</h1>
       }
 
       {/* Render grouped items */}
       {Object.entries(groupedItems).map(([idInvoice, items]) => (
-        <div key={idInvoice} className="w-full border rounded-md p-4 mb-4 shadow">
-          <h2 className="text-xl font-semibold mb-2">ID Invoice: {idInvoice}</h2>
+        <div key={idInvoice} className="w-full border rounded-md p-4 mb-4 shadow-md">
+          <h2 className="font-semibold">ID Invoice: {idInvoice}</h2>
           <ul>
             {items.map((item) => (
               <li key={item.idProcessItems} className="ml-4 list-disc">
@@ -92,7 +92,7 @@ const PesananMasuk = () => {
               </li>
             ))}
           </ul>
-          <button onClick={() => handleDeliver(idInvoice)} className="mt-4 border py-1 custom-hover-button cursor-pointer rounded-md font-medium bg-darkaqua text-white border-none">Deliver</button>
+          <button onClick={() => handleDeliver(idInvoice)} className="mt-4 border px-2 py-1 custom-hover-button cursor-pointer rounded-md font-medium bg-darkaqua text-white border-none">Deliver</button>
         </div>
       ))}
     </div>
