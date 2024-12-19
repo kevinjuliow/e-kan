@@ -155,7 +155,7 @@ const Chat = () => {
   }, [messageInput, selectedChat, session?.accessToken, session?.user]);
 
   return (
-    <div className="w-full flex items-center justify-center mt-24">
+    <div className="w-full flex items-center justify-center mt-24 mb-24">
       <div className={`bgdashboard-wave`}></div>
       <div className="max-w-screen-md w-full h-full relative p-8 xl:px-0 flex flex-col items-center justify-center">
         <div className="flex items-center mb-4 w-full">
@@ -164,7 +164,7 @@ const Chat = () => {
         </div>
         <div className="w-full bg-white shadow-lg rounded-lg border overflow-hidden">
           {/* Main Content */}
-          <div className="flex h-[720px]">
+          <div className="flex h-[480px]">
             {/* Chat List */}
             <div className="w-1/3 bg-gray-100 border-r overflow-y-auto">
               {session?.user.userType === "PENJUAL"
