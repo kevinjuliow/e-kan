@@ -29,24 +29,34 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     const fetchUser = async () => {
+      console.log(process.env.API_BASEURL)
+      console.log(process.env.NEXTAUTH_URL)
+      console.log("userprovider fetch fetchUser function")
       if (session?.accessToken) {
+        console.log("step 1: pass the if statement")
         try {
           let userType = 'pembeli'
           let response = await getUser(session?.accessToken, 'pembeli')
-    
+          console.log(response)
+
           if (!response) {
             userType = 'penjual'
             response = await getUser(session?.accessToken, 'penjual')
           }
+          console.log(response)
 
           if (!response) {
+            console.log("tidak ada response sama sekali, masuk error")
             throw new Error()
           }
 
+          console.log("berhasil dapetin user data response")
           response.userType = userType
           setUser(response);
         } catch (error) {
-          console.error("Failed to fetch user data:", error);
+          if (error instanceof Error) {
+            console.error("Failed to fetch user data:", error.message);
+          }
         }
       }
     };
@@ -88,6 +98,7 @@ const getUser = async (accessToken: string, userType: string) => {
     const response = await axios.get(`${process.env.API_BASEURL}/api/${userType}/profile`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        "ngrok-skip-browser-warning": "true"
       },
     });
     return response.data.data
@@ -104,7 +115,10 @@ const getUserImage = async (userType: string, userId: string) => {
   try {
     const imageResponse = await axios.get(`${process.env.API_BASEURL}/api/profile-picture/${userType}/${userId}`, {
       // telling axios that the server's response isn't a normal JSON or text-based response, but rather a binary large object (Blob)
-      responseType: 'blob'
+      responseType: 'blob',
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
     })
 
     if (!imageResponse) {
